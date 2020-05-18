@@ -1,0 +1,13 @@
+name: ${project.name}
+version: ${project.version}
+main: com.dumbdogdiner.StickyCommands.Main
+authors: [NotZachery]
+load: STARTUP
+api-version: 1.14
+commands:
+  top:
+    description: Teleport to the highest block above you
+  jump:
+    description: Jump to the block you are looking at
+  speed:
+    description: Set your walk or fly speed

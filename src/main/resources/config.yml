@@ -1,0 +1,15 @@
+General:
+  # Allow anyone who has been /op'ed to bypass all permission checks
+  # (effectively making them have the same control as console)
+  OpsBypassPermissions: true
+  # The translation file you wish to use. (Default: messages.en_us.yml)
+  TranslationFile: "messages.en_us.yml"
+
+database:
+  dbhost: localhost
+  dbport: 3306
+  dbname: dbname
+  dbusername: root
+  dbpassword: root
+  # Maximum number of times mysql will try to reconnect before giving up.
+  MaxReconnects: 5

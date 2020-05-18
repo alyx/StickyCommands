@@ -1,0 +1,12 @@
+# Messages.yml - All plugin text is in this file
+# 
+# Anything between curley brackets is replaced with the values of the named variables.
+
+# Global variables, you can use these in any message in this file.
+Prefix: "&dDDD &5» "
+NetworkName: "&fMy Network"
+Website: "dumbdogdiner.com"
+
+# Common error messages used throughout the plugin
+InvalidSyntax: "{PREFIX}&cInvalid Syntax!"
+ServerError: "{PREFIX}&cThe server encountered an error, please try again later."
