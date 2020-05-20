@@ -58,6 +58,7 @@ public class DatabaseUtil {
         try {
             DatabaseUtil.OpenConnection();
         } catch (SQLException e) {
+            System.out.println(Configuration.dbname); 
             // e.printStackTrace();
             self.getLogger().severe(
                     "Cannot connect to database, ensure your database is setup correctly and restart the server.");
@@ -75,7 +76,8 @@ public class DatabaseUtil {
                     + "FirstLogin TIMESTAMP NOT NULL,"
                     + "LastLogin TIMESTAMP NOT NULL," 
                     + "LastServer TEXT NOT NULL," 
-                    + "TimesConnected INT NULL" 
+                    + "TimesConnected INT NULL,"
+                    + "IsOnline BOOLEAN DEFAULT FALSE" 
                     + ")")
                     .execute();
         } catch (SQLException e) {
@@ -95,10 +97,10 @@ public class DatabaseUtil {
      * @param IPAddress  IP address of the minecraft player
      * @param FirstLogin The first time they logged in (as a timestamp)
      * @param LastLogin  The last time they logged in (as a timestamp)
+     * @param IsOnline   Is the user online
      * @return True if the user was created successfully
      */
-    public static Future<Boolean> InsertUser(String UUID, String PlayerName, String IPAddress, Timestamp FirstLogin,
-            Timestamp LastLogin) {
+    public static Future<Boolean> InsertUser(String UUID, String PlayerName, String IPAddress, Timestamp FirstLogin, Timestamp LastLogin, Boolean IsOnline) {
         FutureTask<Boolean> t = new FutureTask<>(new Callable<Boolean>() {
             @Override
             public Boolean call() {
@@ -116,20 +118,22 @@ public class DatabaseUtil {
                     CheckUser.setString(j++, UUID);
                     ResultSet results = CheckUser.executeQuery();
                     if (results.next() && !results.wasNull()) {
-                        UpdateUser(UUID, PlayerName, IPAddress, LastLogin);
+                        UpdateUser(UUID, PlayerName, IPAddress, LastLogin, true, true);
                         return true;
                     }
 
                     // Preapre a statement
                     int i = 1;
                     PreparedStatement InsertUser = connection.prepareStatement(String.format(
-                            "INSERT INTO Users (UUID, PlayerName, IPAddress, FirstLogin, LastLogin, TimesConnected) VALUES (?, ?, ?, ?, ?, ?)"));
+                            "INSERT INTO Users (UUID, PlayerName, IPAddress, FirstLogin, LastLogin, LastServer, TimesConnected, IsOnline) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"));
                     InsertUser.setString(i++, UUID);
                     InsertUser.setString(i++, PlayerName);
                     InsertUser.setString(i++, IPAddress);
                     InsertUser.setTimestamp(i++, FirstLogin);
                     InsertUser.setTimestamp(i++, LastLogin);
+                    InsertUser.setString(i++, "none");
                     InsertUser.setInt(i++, 1);
+                    InsertUser.setBoolean(i++, IsOnline);
                     InsertUser.executeUpdate();
                 } catch (Throwable e) {
                     e.printStackTrace();
@@ -151,9 +155,11 @@ public class DatabaseUtil {
      * @param PlayerName Users current player name
      * @param IPAddress  Users current IP address
      * @param LastLogin  The timestamp of the last time a user logged in
+     * @param IsOnline   Is the user online
+     * @param IsJoining   Will update the times connected if true, other wise false
      * @return True if the update was successful.
      */
-    public static Future<Boolean> UpdateUser(String UUID, String PlayerName, String IPAddress, Timestamp LastLogin)
+    public static Future<Boolean> UpdateUser(String UUID, String PlayerName, String IPAddress, Timestamp LastLogin, Boolean IsOnline, Boolean IsJoining)
     // (Timestamp LastLogin, String PlayerName, String IPAddress, String UUID)
     {
         FutureTask<Boolean> t = new FutureTask<>(new Callable<Boolean>() {
@@ -171,7 +177,7 @@ public class DatabaseUtil {
                     ResultSet results = CheckUser.executeQuery();
                     if (!results.next()) {
                         Timestamp FirstLogin = TimeUtil.TimestampNow();
-                        InsertUser(UUID, PlayerName, IPAddress, FirstLogin, LastLogin);
+                        InsertUser(UUID, PlayerName, IPAddress, FirstLogin, LastLogin, true);
                         return true;
                     }
 
@@ -192,11 +198,16 @@ public class DatabaseUtil {
                     // Preapre a statement
                     int i = 1;
                     PreparedStatement UpdateUser = connection.prepareStatement(String.format(
-                            "UPDATE Users SET LastLogin = ?, PlayerName = ?, IPAddress = ?, TimesConnected = ? WHERE UUID = ?"));
+                            "UPDATE Users SET LastLogin = ?, PlayerName = ?, IPAddress = ?, LastServer = ?, TimesConnected = ?, IsOnline = ? WHERE UUID = ?"));
                     UpdateUser.setTimestamp(i++, LastLogin);
                     UpdateUser.setString(i++, PlayerName);
                     UpdateUser.setString(i++, IPAddress);
-                    UpdateUser.setInt(i++, ++tc);
+                    UpdateUser.setString(i++, "none");
+                    if (IsJoining)
+                        UpdateUser.setInt(i++, ++tc);
+                    else
+                        UpdateUser.setInt(i++, tc);
+                    UpdateUser.setBoolean(i++, IsOnline);
                     UpdateUser.setString(i++, UUID);
                     UpdateUser.executeUpdate();
                 } catch (Throwable e) {
@@ -211,5 +222,38 @@ public class DatabaseUtil {
 
         return (Future<Boolean>) t;
     }
+
+    /**
+     * Lookup a user in the database
+     * 
+     * @param Search    The lookup term for the database (Can be IP, Username, or UUID)
+     * @return A result set with the user data, or a null one if the user doesn't exist.
+     */
+    public static Future<ResultSet> LookupUser(String Search) {
+        FutureTask<ResultSet> t = new FutureTask<>(new Callable<ResultSet>() {
+            @Override
+            public ResultSet call() {
+                // This is where you should do your database interaction
+                try {
+                    // Preapre a statement
+                    int i = 1;
+                    PreparedStatement InsertUser = connection.prepareStatement(String.format(
+                            "SELECT * FROM Users WHERE UUID = ? OR PlayerName = ? OR IPAddress = ? LIMIT 1"));
+                    InsertUser.setString(i++, Search);
+                    InsertUser.setString(i++, Search);
+                    InsertUser.setString(i++, Search);
+                    return InsertUser.executeQuery();
+                } catch (Throwable e) {
+                    e.printStackTrace();
+                    return null;
+                }
+            }
+        });
+
+        Main.pool.execute(t);
+
+        return (Future<ResultSet>) t;
+    }
+
 
 }

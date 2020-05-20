@@ -3,10 +3,19 @@
 # Anything between curley brackets is replaced with the values of the named variables.
 
 # Global variables, you can use these in any message in this file.
-Prefix: "&dDDD &5» "
-NetworkName: "&fMy Network"
-Website: "dumbdogdiner.com"
+prefix: "&dDDD &5» "
+networkName: "&fMy Network"
+website: "dumbdogdiner.com"
 
 # Common error messages used throughout the plugin
-InvalidSyntax: "{PREFIX}&cInvalid Syntax!"
-ServerError: "{PREFIX}&cThe server encountered an error, please try again later."
+invalidSyntax: "{PREFIX}&cInvalid Syntax!"
+serverError: "{PREFIX}&cThe server encountered an error, please try again later."
+noPermission: "{PREFIX}&cError! Permission denied!"
+playerDoesNotExist: "{PREFIX}&cError! The player {PLAYER} does not exist!"
+playerHasNotJoined: "{PREFIX}&cError! The player {PLAYER} has not joined before!"
+
+# The config supports new lines (\n), it can be used on any node
+seenMessage: "{PREFIX}Player: {PLAYER}\n{PREFIX}UUID: {UUID} IP: {IPADDRESS} First Login: {FIRSTLOGIN} Last Login: {LASTLOGIN} Online: {ONLINE} TimesConnected: {TIMESCONNECTED}"
+topMessage: "{PREFIX}&dWoosh! You're at the top!"
+jumpMessage: "{PREFIX}&dWEEEEE!!!"
+speedMessage: "{PREFIX}&dYour speed has been set to &5{SPEED}&d!"

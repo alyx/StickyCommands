@@ -21,7 +21,7 @@ public class User {
     public static boolean PermissionDenied(CommandSender sender, String PermissionNode) {
         try {
             sender.sendMessage(
-                    Messages.Translate("NoPermission", new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER) {
+                    Messages.Translate("noPermission", new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER) {
                         {
                             put("player", sender.getName());
                             put("permission", PermissionNode);
@@ -33,5 +33,4 @@ public class User {
         }
         return true;
     }
-
 }

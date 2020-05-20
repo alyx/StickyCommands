@@ -18,15 +18,15 @@ public class Messages {
     private static Messages localself = null;
 
     // Everything else
-    public static String Prefix;
-    public static String NetworkName;
-    public static String Website;
-    public static String ServerError;
-    public static String InvalidSyntax;
+    public static String prefix;
+    public static String networkName;
+    public static String website;
+    public static String serverError;
+    public static String invalidSyntax;
 
     // Initialized by our GetMessages() function.
     protected Messages() {
-        String TranslationFile = self.getConfig().getString("General.TranslationFile", "messages.en_us.yml");
+        String TranslationFile = self.getConfig().getString("general.translationFile", "messages.en_us.yml");
         CustomConfigFile = new File(self.getDataFolder(), TranslationFile);
         if (!CustomConfigFile.exists()) {
             CustomConfigFile.getParentFile().mkdirs();
@@ -57,15 +57,11 @@ public class Messages {
             this.CustomConfig = fc;
 
             // Messages
-            Messages.Prefix = this.CustomConfig.getString("Prefix", "[DDD] ").replace("&", "\u00A7");
-            Messages.NetworkName = Messages._Translate(this.CustomConfig.getString("NetworkName", "My Network"),
-                    new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER));
-            Messages.ServerError = Messages._Translate(
-                    this.CustomConfig.getString("ServerError", "The server encountered an error!"),
-                    new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER));
-            Messages.InvalidSyntax = Messages._Translate(
-                    this.CustomConfig.getString("InvalidSyntax", "&cInvalid Syntax!"),
-                    new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER));
+            Messages.prefix = this.CustomConfig.getString("prefix", "[DDD] ").replace("&", "\u00A7");
+            Messages.networkName = Messages._Translate(this.CustomConfig.getString("networkName", "My Network"), new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER));
+            Messages.website = Messages._Translate(this.CustomConfig.getString("website", "YourWebsiteHere.com"), new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER));
+            Messages.serverError = Messages._Translate(this.CustomConfig.getString("serverError", "The server encountered an error!"), new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER));
+            Messages.invalidSyntax = Messages._Translate( this.CustomConfig.getString("invalidSyntax", "&cInvalid Syntax!"), new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER));
         } catch (IOException | InvalidConfigurationException e) {
             e.printStackTrace();
         }
@@ -84,8 +80,8 @@ public class Messages {
         if (ConfigMessage == null)
             return null;
 
-        Variables.put("prefix", Messages.Prefix);
-        Variables.put("networkname", Messages.NetworkName);
+        Variables.put("prefix", Messages.prefix);
+        Variables.put("networkname", Messages.networkName);
 
         return TranslationUtil.Translate(ConfigMessage, "&", Variables);
     }
@@ -94,8 +90,8 @@ public class Messages {
         if (ConfigMessage == null)
             return null;
 
-        Variables.put("prefix", Messages.Prefix);
-        Variables.put("networkname", Messages.NetworkName);
+        Variables.put("prefix", Messages.prefix);
+        Variables.put("networkname", Messages.networkName);
 
         return TranslationUtil.TranslateVariables(ConfigMessage, Variables);
     }

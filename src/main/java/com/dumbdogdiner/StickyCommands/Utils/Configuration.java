@@ -1,8 +1,11 @@
 package com.dumbdogdiner.StickyCommands.Utils;
 
+import com.dumbdogdiner.StickyCommands.Main;
+
 import org.bukkit.configuration.file.FileConfiguration;
 
 public class Configuration {
+    static Main self = Main.getPlugin(Main.class);
     private static Configuration me;
 
     public static String dbhost = "";
@@ -45,6 +48,6 @@ public class Configuration {
         Configuration.dbname = config.getString("database.name");
         Configuration.dbusername = config.getString("database.username");
         Configuration.dbpassword = config.getString("database.password");
-        Configuration.MaxReconnects = config.getInt("database.MaxReconnects");
+        Configuration.MaxReconnects = config.getInt("database.maxReconnects");
     }
 }

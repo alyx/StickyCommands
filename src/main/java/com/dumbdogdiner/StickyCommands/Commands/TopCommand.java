@@ -1,6 +1,10 @@
 package com.dumbdogdiner.StickyCommands.Commands;
 
+import java.util.Map;
+import java.util.TreeMap;
+
 import com.dumbdogdiner.StickyCommands.Utils.LocationUtil;
+import com.dumbdogdiner.StickyCommands.Utils.Messages;
 import com.dumbdogdiner.StickyCommands.Utils.PermissionUtil;
 import com.dumbdogdiner.StickyCommands.Utils.User;
 
@@ -33,8 +37,22 @@ public class TopCommand implements CommandExecutor {
             // Don't finish the command
             return false;
         }
-        user.teleport(loc);
-        // TODO: Send message
+        try {
+            // Format our message.
+            Map<String, String> Variables = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER) {
+                {
+                    put("player", user.getName());
+                }
+            };
+            user.teleport(loc);
+            user.sendMessage(Messages.Translate("topMessage", Variables));
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            sender.sendMessage(Messages.serverError);
+            return true;
+        }
+        
         return false;
     }
 }

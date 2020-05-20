@@ -1,6 +1,10 @@
 package com.dumbdogdiner.StickyCommands.Commands;
 
+import java.util.Map;
+import java.util.TreeMap;
+
 import com.dumbdogdiner.StickyCommands.Utils.LocationUtil;
+import com.dumbdogdiner.StickyCommands.Utils.Messages;
 import com.dumbdogdiner.StickyCommands.Utils.PermissionUtil;
 import com.dumbdogdiner.StickyCommands.Utils.User;
 
@@ -29,17 +33,23 @@ public class JumpCommand implements CommandExecutor {
             loc.setPitch(cloc.getPitch());
             loc.setY(loc.getY() + 1);
             if (loc.getBlock().getType() == Material.AIR)
-                loc.setY(user.getWorld().getHighestBlockYAt(loc));;
-            loc = LocationUtil.getSafeDestination(
-                new Location(user.getWorld(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), user.getLocation().getYaw(), user.getLocation().getPitch()));
-        } catch (Exception ex) {
+                loc.setY(user.getWorld().getHighestBlockYAt(loc));
+            loc = LocationUtil.getSafeDestination(new Location(user.getWorld(), loc.getBlockX(), loc.getBlockY(),
+                    loc.getBlockZ(), user.getLocation().getYaw(), user.getLocation().getPitch()));
+            // Format our message.
+            Map<String, String> Variables = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER) {
+                {
+                    put("player", user.getName());
+                }
+            };
+            user.teleport(loc);
+            user.sendMessage(Messages.Translate("jumpMessage", Variables));
+        } 
+        catch (Exception ex) {
             // TODO: Add message for player
             ex.printStackTrace();
             return false; // There was an error, return
         }
-
-        user.teleport(loc);
-        
         return false;
     }
 }

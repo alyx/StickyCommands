@@ -11,3 +11,5 @@ commands:
     description: Jump to the block you are looking at
   speed:
     description: Set your walk or fly speed
+  seen:
+    description: Check when a player was last online

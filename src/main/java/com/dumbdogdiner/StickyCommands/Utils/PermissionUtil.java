@@ -28,7 +28,7 @@ public class PermissionUtil {
             Player p = (Player) sender;
 
             // If configured to allow ops to bypass all permission checks
-            if (self.getConfig().getBoolean("General.OpsBypassPermissions") && p.isOp())
+            if (self.getConfig().getBoolean("general.opsBypassPermissions") && p.isOp())
                 return true;
 
             // Otherwise check if they actually have the permission

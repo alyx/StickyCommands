@@ -1,5 +1,8 @@
 package com.dumbdogdiner.StickyCommands.Commands;
 
+import java.util.Map;
+import java.util.TreeMap;
+
 import com.dumbdogdiner.StickyCommands.Utils.Messages;
 import com.dumbdogdiner.StickyCommands.Utils.PermissionUtil;
 import com.dumbdogdiner.StickyCommands.Utils.TranslationUtil;
@@ -19,7 +22,7 @@ public class SpeedCommand implements CommandExecutor {
             return User.PermissionDenied(sender, "stickycommands.speed");
         
         if (!TranslationUtil.isInteger(args[0]) || args.length < 1 || args.length > 1) {
-            sender.sendMessage(Messages.InvalidSyntax);
+            sender.sendMessage(Messages.invalidSyntax);
             return false;
         }
         
@@ -29,25 +32,42 @@ public class SpeedCommand implements CommandExecutor {
         // Minecraft uses floats for the player speed, so just divide by 10.
         Float speed = arg / 10;
         if (speed > 1) {
-            sender.sendMessage(Messages.InvalidSyntax);
+            sender.sendMessage(Messages.invalidSyntax);
             return false;
         }
 
-        if (user.isFlying()) {
-            user.setFlySpeed(speed);
+        try {
+            // Format our message.
+            Map<String, String> Variables = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER) {
+                {
+                    put("player", user.getName());
+                    put("speed", args[0]);
+                }
+            };
+            if (user.isFlying()) {
+                user.sendMessage(Messages.Translate("speedMessage", Variables));
+                user.setFlySpeed(speed);
+            }
+            else {
+                // The default walking speed is actually high than the default fly speed
+                // So we have to add 0.1 to the total, however, if they enter 10
+                // the result is 1.1, which it too high, so lets check if speed is 1.0
+                // if so, leave it, if not, add 0.1
+                if (speed == 1.0) {
+                    user.setWalkSpeed(speed);
+                    user.sendMessage(Messages.Translate("speedMessage", Variables));
+                }
+                else {
+                    user.setWalkSpeed(speed + 0.1F);
+                    user.sendMessage(Messages.Translate("speedMessage", Variables));
+                }
+            }
         }
-        else {
-            // The default walking speed is actually high than the default fly speed
-            // So we have to add 0.1 to the total, however, if they enter 10
-            // the result is 1.1, which it too high, so lets check if speed is 1.0
-            // if so, leave it, if not, add 0.1
-            if (speed == 1.0)
-                user.setWalkSpeed(speed);
-            else
-                user.setWalkSpeed(speed + 0.1F);
+        catch (Exception e) {
+            e.printStackTrace();
+            user.sendMessage(Messages.serverError);
+            return true;
         }
-
-
         return true;
     }
 

@@ -5,9 +5,12 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import com.dumbdogdiner.StickyCommands.Commands.JumpCommand;
+import com.dumbdogdiner.StickyCommands.Commands.SeenCommand;
 import com.dumbdogdiner.StickyCommands.Commands.SpeedCommand;
 import com.dumbdogdiner.StickyCommands.Commands.TopCommand;
+import com.dumbdogdiner.StickyCommands.Listeners.PlayerConnectionListeners;
 import com.dumbdogdiner.StickyCommands.Utils.Configuration;
+import com.dumbdogdiner.StickyCommands.Utils.DatabaseUtil;
 import com.dumbdogdiner.StickyCommands.Utils.Messages;
 
 import org.bukkit.plugin.java.JavaPlugin;
@@ -47,18 +50,25 @@ public class Main extends JavaPlugin {
         // Make sure our messages file exists
         Messages.GetMessages();
 
-/*         // Initialize our database connections.
+        // Initialize our database connections.
         if (!DatabaseUtil.InitializeDatabase())
-            return; */
+            return;
 
         this.getCommand("top").setExecutor(new TopCommand());
         this.getCommand("jump").setExecutor(new JumpCommand());
         this.getCommand("speed").setExecutor(new SpeedCommand());
+        this.getCommand("seen").setExecutor(new SeenCommand());
+
+        getServer().getPluginManager().registerEvents(new PlayerConnectionListeners(), this);
 
         getLogger().info("StickyCommands started successfully!");
     }
 
+    @Override
     public void onDisable() {
-
+        // Save our config values
+        reloadConfig();
+        // Close out or database.
+        DatabaseUtil.Terminate();
     }
 }

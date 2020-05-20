@@ -2,10 +2,6 @@ package com.dumbdogdiner.StickyCommands.Utils;
 
 import java.lang.Character;
 import java.util.Map;
-import java.util.TreeMap;
-import java.util.function.BiFunction;
-import java.text.SimpleDateFormat;
-import java.sql.Timestamp;
 
 public class TranslationUtil {
 
