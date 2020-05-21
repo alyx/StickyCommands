@@ -1,11 +1,15 @@
 package com.dumbdogdiner.StickyCommands.Utils;
 
 import java.util.TreeMap;
+import java.util.concurrent.CompletableFuture;
 
 import com.dumbdogdiner.StickyCommands.Main;
+import com.google.common.io.ByteArrayDataOutput;
+import com.google.common.io.ByteStreams;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.entity.Player;
 
 public class User {
 
@@ -32,5 +36,25 @@ public class User {
             sender.sendMessage("Permission Denied!");
         }
         return true;
+    }
+
+    public static CompletableFuture<String> getServer(String player) {
+        ByteArrayDataOutput out = ByteStreams.newDataOutput();
+        Main.serverName = new CompletableFuture<>();
+
+        try {
+            out.writeUTF("GetServer");
+            out.writeUTF(player);
+            self.getServer().sendPluginMessage(self, "BungeeCord", out.toByteArray());
+        } 
+        catch (Exception e) 
+        {
+            // Ensure if an error happened, any calls to .get() will throw this exception and
+            // the value is unusable.
+            Main.serverName.completeExceptionally(e);
+            e.printStackTrace();
+        }
+
+        return Main.serverName;
     }
 }

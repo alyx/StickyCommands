@@ -3,6 +3,7 @@ package com.dumbdogdiner.StickyCommands.Commands;
 import java.util.Map;
 import java.util.TreeMap;
 
+import com.dumbdogdiner.StickyCommands.Utils.DatabaseUtil;
 import com.dumbdogdiner.StickyCommands.Utils.Messages;
 import com.dumbdogdiner.StickyCommands.Utils.PermissionUtil;
 import com.dumbdogdiner.StickyCommands.Utils.TranslationUtil;
@@ -21,7 +22,12 @@ public class SpeedCommand implements CommandExecutor {
         if (!PermissionUtil.Check(sender, "stickycommands.speed", false))
             return User.PermissionDenied(sender, "stickycommands.speed");
         
-        if (!TranslationUtil.isInteger(args[0]) || args.length < 1 || args.length > 1) {
+        if (args.length < 1 || args.length > 1) {
+            sender.sendMessage(Messages.invalidSyntax);
+            return false;
+        }
+
+        if (!TranslationUtil.isInteger(args[0])) {
             sender.sendMessage(Messages.invalidSyntax);
             return false;
         }
@@ -47,6 +53,7 @@ public class SpeedCommand implements CommandExecutor {
             if (user.isFlying()) {
                 user.sendMessage(Messages.Translate("speedMessage", Variables));
                 user.setFlySpeed(speed);
+                DatabaseUtil.UpdateSpeed(speed, user.getUniqueId().toString(), "FlySpeed");
             }
             else {
                 // The default walking speed is actually high than the default fly speed
@@ -56,10 +63,12 @@ public class SpeedCommand implements CommandExecutor {
                 if (speed == 1.0) {
                     user.setWalkSpeed(speed);
                     user.sendMessage(Messages.Translate("speedMessage", Variables));
+                    DatabaseUtil.UpdateSpeed(speed, user.getUniqueId().toString(), "WalkSpeed");
                 }
                 else {
                     user.setWalkSpeed(speed + 0.1F);
                     user.sendMessage(Messages.Translate("speedMessage", Variables));
+                    DatabaseUtil.UpdateSpeed(speed + 0.1F, user.getUniqueId().toString(), "WalkSpeed");
                 }
             }
         }

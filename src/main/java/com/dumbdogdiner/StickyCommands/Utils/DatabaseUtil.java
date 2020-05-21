@@ -25,11 +25,13 @@ public class DatabaseUtil {
             if (connection != null && !connection.isClosed())
                 return;
 
+            System.out.printf(String.format(
+                    "\njdbc:mysql://%s:%s/%s?autoReconnect=true&failOverReadOnly=false&maxReconnects=%d&useSSL=%s\n",
+            Configuration.dbhost, Configuration.dbport, Configuration.dbname, Configuration.MaxReconnects, Configuration.useSSL), Configuration.dbusername, Configuration.dbpassword);
+
             connection = DriverManager.getConnection(
-                    String.format("jdbc:mysql://%s:%s/%s?autoReconnect=true&failOverReadOnly=false&maxReconnects=%d",
-                            Configuration.dbhost, Configuration.dbport, Configuration.dbname,
-                            Configuration.MaxReconnects),
-                    Configuration.dbusername, Configuration.dbpassword);
+                    String.format("jdbc:mysql://%s:%s/%s?autoReconnect=true&failOverReadOnly=false&maxReconnects=%d&useSSL=%s",
+                            Configuration.dbhost, Configuration.dbport, Configuration.dbname, Configuration.MaxReconnects, Configuration.useSSL), Configuration.dbusername, Configuration.dbpassword);
         }
     }
 
@@ -52,13 +54,14 @@ public class DatabaseUtil {
      * synchronization thread for the database.
      * 
      * @return True if the tables were created successfully and the connection
-     *         completed successfully.
+     *         completed successfully. Otherwise false
      */
     public static boolean InitializeDatabase() {
         try {
             DatabaseUtil.OpenConnection();
-        } catch (SQLException e) {
-            System.out.println(Configuration.dbname); 
+        } 
+        catch (SQLException e) {
+            System.out.println(Configuration.dbname);
             // e.printStackTrace();
             self.getLogger().severe(
                     "Cannot connect to database, ensure your database is setup correctly and restart the server.");
@@ -73,14 +76,17 @@ public class DatabaseUtil {
                     + "UUID VARCHAR(36) NOT NULL,"
                     + "PlayerName VARCHAR(17)," 
                     + "IPAddress VARCHAR(48) NOT NULL," 
-                    + "FirstLogin TIMESTAMP NOT NULL,"
-                    + "LastLogin TIMESTAMP NOT NULL," 
+                    + "FirstLogin TIMESTAMP DEFAULT CURRENT_TIMESTAMP,"
+                    + "LastLogin TIMESTAMP DEFAULT CURRENT_TIMESTAMP," 
                     + "LastServer TEXT NOT NULL," 
                     + "TimesConnected INT NULL,"
+                    + "WalkSpeed FLOAT(2,1) DEFAULT 0.2,"
+                    + "FlySpeed FLOAT(2,1) DEFAULT 0.1,"
                     + "IsOnline BOOLEAN DEFAULT FALSE" 
                     + ")")
                     .execute();
-        } catch (SQLException e) {
+        } 
+        catch (SQLException e) {
             e.printStackTrace();
             self.getLogger()
                     .severe("Cannot create database tables, please ensure your SQL user has the correct permissions.");
@@ -131,7 +137,10 @@ public class DatabaseUtil {
                     InsertUser.setString(i++, IPAddress);
                     InsertUser.setTimestamp(i++, FirstLogin);
                     InsertUser.setTimestamp(i++, LastLogin);
-                    InsertUser.setString(i++, "none");
+                    if (User.getServer(PlayerName).get() == null)
+                        InsertUser.setString(i++, "error");
+                    else
+                        InsertUser.setString(i++, User.getServer(PlayerName).get());
                     InsertUser.setInt(i++, 1);
                     InsertUser.setBoolean(i++, IsOnline);
                     InsertUser.executeUpdate();
@@ -195,21 +204,36 @@ public class DatabaseUtil {
                         }
                     }
 
-                    // Preapre a statement
-                    int i = 1;
-                    PreparedStatement UpdateUser = connection.prepareStatement(String.format(
-                            "UPDATE Users SET LastLogin = ?, PlayerName = ?, IPAddress = ?, LastServer = ?, TimesConnected = ?, IsOnline = ? WHERE UUID = ?"));
-                    UpdateUser.setTimestamp(i++, LastLogin);
-                    UpdateUser.setString(i++, PlayerName);
-                    UpdateUser.setString(i++, IPAddress);
-                    UpdateUser.setString(i++, "none");
                     if (IsJoining)
+                    {
+                        // Preapre a statement
+                        int i = 1;
+                        PreparedStatement UpdateUser = connection.prepareStatement(
+                                "UPDATE Users SET LastLogin = ?, PlayerName = ?, IPAddress = ?, LastServer = ?, TimesConnected = ?, IsOnline = ? WHERE UUID = ?");
+                        UpdateUser.setTimestamp(i++, LastLogin);
+                        UpdateUser.setString(i++, PlayerName);
+                        UpdateUser.setString(i++, IPAddress);
+                        if (User.getServer(PlayerName).get() == null)
+                            UpdateUser.setString(i++, "error");
+                        else
+                            UpdateUser.setString(i++, User.getServer(PlayerName).get());
                         UpdateUser.setInt(i++, ++tc);
-                    else
-                        UpdateUser.setInt(i++, tc);
-                    UpdateUser.setBoolean(i++, IsOnline);
-                    UpdateUser.setString(i++, UUID);
-                    UpdateUser.executeUpdate();
+                        UpdateUser.setBoolean(i++, IsOnline);
+                        UpdateUser.setString(i++, UUID);
+                        UpdateUser.executeUpdate();
+                        return true;
+                    }
+                    
+                    int i = 1;
+                    PreparedStatement UpdateUserOffline = connection.prepareStatement(
+                            "UPDATE Users SET LastLogin = ?, PlayerName = ?, IPAddress = ?, TimesConnected = ?, IsOnline = ? WHERE UUID = ?");
+                    UpdateUserOffline.setTimestamp(i++, LastLogin);
+                    UpdateUserOffline.setString(i++, PlayerName);
+                    UpdateUserOffline.setString(i++, IPAddress);
+                    UpdateUserOffline.setInt(i++, tc);
+                    UpdateUserOffline.setBoolean(i++, IsOnline);
+                    UpdateUserOffline.setString(i++, UUID);
+                    UpdateUserOffline.executeUpdate();
                 } catch (Throwable e) {
                     e.printStackTrace();
                     return false;
@@ -253,6 +277,49 @@ public class DatabaseUtil {
         Main.pool.execute(t);
 
         return (Future<ResultSet>) t;
+    }
+
+    /**
+     * Lookup a user in the database
+     * 
+     * @param Search    The lookup term for the database (Can be IP, Username, or UUID)
+     * @return A result set with the user data, or a null one if the user doesn't exist.
+     */
+    public static Future<Boolean> UpdateSpeed(Float speed, String uuid, String SpeedType) {
+        FutureTask<Boolean> t = new FutureTask<>(new Callable<Boolean>() {
+            @Override
+            public Boolean call() {
+                // This is where you should do your database interaction
+                try {
+                    // Preapre a statement
+                    int i = 1;
+                    if (SpeedType == "WalkSpeed")
+                    {
+                        PreparedStatement UpdateSpeed = connection.prepareStatement(String.format(
+                        "UPDATE Users SET WalkSpeed = ? WHERE UUID = ?"));
+                        UpdateSpeed.setFloat(i++, speed);
+                        UpdateSpeed.setString(i++, uuid);
+                        UpdateSpeed.executeUpdate();
+                    }
+                    else if (SpeedType == "FlySpeed")
+                    {
+                        PreparedStatement UpdateSpeed = connection.prepareStatement(String.format(
+                            "UPDATE Users SET FlySpeed = ? WHERE UUID = ?"));
+                        UpdateSpeed.setFloat(i++, speed);
+                        UpdateSpeed.setString(i++, uuid);
+                        UpdateSpeed.executeUpdate();
+                    }
+                    return true;
+                } catch (Throwable e) {
+                    e.printStackTrace();
+                    return false;
+                }
+            }
+        });
+
+        Main.pool.execute(t);
+
+        return (Future<Boolean>) t;
     }
 
 

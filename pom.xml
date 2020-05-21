@@ -6,7 +6,7 @@
 
     <groupId>com.dummbdogdiner</groupId>
     <artifactId>StickyCommands</artifactId>
-    <version>4.0</version>
+    <version>1.1-BETA</version>
     <packaging>jar</packaging>
 
     <name>StickyCommands</name>

@@ -13,8 +13,8 @@ import org.bukkit.configuration.InvalidConfigurationException;
 
 public class Messages {
     private Main self = Main.getPlugin(Main.class);
-    private File CustomConfigFile;
-    private FileConfiguration CustomConfig;
+    private static File CustomConfigFile;
+    private static FileConfiguration CustomConfig;
     private static Messages localself = null;
 
     // Everything else
@@ -33,7 +33,7 @@ public class Messages {
             self.saveResource(TranslationFile, false);
         }
 
-        this.Reload();
+        Reload();
     }
 
     /**
@@ -50,18 +50,18 @@ public class Messages {
     /**
      * Reload the messages.yml file and update the internal configuration values.
      */
-    public void Reload() {
+    public static void Reload() {
         FileConfiguration fc = new YamlConfiguration();
         try {
             fc.load(CustomConfigFile);
-            this.CustomConfig = fc;
+            CustomConfig = fc;
 
             // Messages
-            Messages.prefix = this.CustomConfig.getString("prefix", "[DDD] ").replace("&", "\u00A7");
-            Messages.networkName = Messages._Translate(this.CustomConfig.getString("networkName", "My Network"), new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER));
-            Messages.website = Messages._Translate(this.CustomConfig.getString("website", "YourWebsiteHere.com"), new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER));
-            Messages.serverError = Messages._Translate(this.CustomConfig.getString("serverError", "The server encountered an error!"), new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER));
-            Messages.invalidSyntax = Messages._Translate( this.CustomConfig.getString("invalidSyntax", "&cInvalid Syntax!"), new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER));
+            Messages.prefix = CustomConfig.getString("prefix", "[DDD] ").replace("&", "\u00A7");
+            Messages.networkName = Messages._Translate(CustomConfig.getString("networkName", "My Network"), new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER));
+            Messages.website = Messages._Translate(CustomConfig.getString("website", "YourWebsiteHere.com"), new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER));
+            Messages.serverError = Messages._Translate(CustomConfig.getString("serverError", "The server encountered an error!"), new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER));
+            Messages.invalidSyntax = Messages._Translate( CustomConfig.getString("invalidSyntax", "&cInvalid Syntax!"), new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER));
         } catch (IOException | InvalidConfigurationException e) {
             e.printStackTrace();
         }
@@ -73,7 +73,7 @@ public class Messages {
      * @return {@link org.bukkit.configuration.file.FileConfiguration}
      */
     public FileConfiguration GetConfig() {
-        return this.CustomConfig;
+        return CustomConfig;
     }
 
     private static String _Translate(String ConfigMessage, Map<String, String> Variables) {

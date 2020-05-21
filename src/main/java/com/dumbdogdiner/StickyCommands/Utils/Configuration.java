@@ -14,6 +14,7 @@ public class Configuration {
     public static String dbpassword = "";
     public static Integer dbport = 3306;
     public static Integer MaxReconnects = 5;
+    public static Boolean useSSL = false;
 
     public static Long QueryUpdateLong;
 
@@ -49,5 +50,6 @@ public class Configuration {
         Configuration.dbusername = config.getString("database.username");
         Configuration.dbpassword = config.getString("database.password");
         Configuration.MaxReconnects = config.getInt("database.maxReconnects");
+        Configuration.useSSL = config.getBoolean("database.useSSL");
     }
 }

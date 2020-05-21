@@ -6,10 +6,12 @@ general:
   translationFile: "messages.en_us.yml"
 
 database:
-  dbhost: localhost
-  dbport: 3306
-  dbname: dbname
-  dbusername: root
-  dbpassword: root
+  host: localhost
+  port: 3306
+  name: dbname
+  username: root
+  password: root
   # Maximum number of times mysql will try to reconnect before giving up.
   maxReconnects: 5
+  # Use SSL?
+  useSSL: false

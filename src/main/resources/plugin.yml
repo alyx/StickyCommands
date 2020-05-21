@@ -13,3 +13,7 @@ commands:
     description: Set your walk or fly speed
   seen:
     description: Check when a player was last online
+  stickycommands:
+    description: Reload the plugin
+  smite:
+    description: Smite a player

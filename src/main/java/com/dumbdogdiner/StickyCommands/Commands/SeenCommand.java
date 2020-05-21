@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.Future;
 
+import com.dumbdogdiner.StickyCommands.Main;
 import com.dumbdogdiner.StickyCommands.Utils.DatabaseUtil;
 import com.dumbdogdiner.StickyCommands.Utils.Messages;
 import com.dumbdogdiner.StickyCommands.Utils.PermissionUtil;
@@ -16,14 +17,18 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 public class SeenCommand implements CommandExecutor {
+    private Main self = Main.getPlugin(Main.class);
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!PermissionUtil.Check(sender, "stickycommands.seen", true))
             return User.PermissionDenied(sender, "stickycommands.seen");
+
+        // Return if there is an error with the database, this command depends on that.
+        if (self.sqlError)
+            return true;
 
         try {
             if (args.length < 1) {
@@ -64,14 +69,13 @@ public class SeenCommand implements CommandExecutor {
                         put("player", result.getString("PlayerName"));
                         put("uuid", result.getString("UUID"));
                         put("ipaddress", result.getString("IPAddress"));
-                        put("firstlogin", TimeUtil.TimeString(result.getTimestamp("FirstLogin")));
-                        put("lastlogin", TimeUtil.TimeString(result.getTimestamp("LastLogin")));
+                        put("firstlogin", TimeUtil.Expires(result.getTimestamp("FirstLogin")));
+                        put("lastlogin", TimeUtil.Expires(result.getTimestamp("LastLogin")));
                         put("timesconnected", Integer.toString(result.getInt("TimesConnected")));
                         put("online", Boolean.toString(result.getBoolean("IsOnline")));
-
+                        put("server", result.getString("LastServer"));
                     }
                 };
-                System.out.println(TimeUtil.DurationString(result.getTimestamp("FirstLogin")));
                 sender.sendMessage(Messages.Translate("seenMessage", Variables));
             }
 
