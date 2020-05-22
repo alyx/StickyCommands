@@ -10,21 +10,27 @@ import java.util.concurrent.TimeoutException;
 
 import com.dumbdogdiner.StickyCommands.Commands.JumpCommand;
 import com.dumbdogdiner.StickyCommands.Commands.SeenCommand;
+import com.dumbdogdiner.StickyCommands.Commands.SellCommand;
 import com.dumbdogdiner.StickyCommands.Commands.SmiteCommand;
 import com.dumbdogdiner.StickyCommands.Commands.SpeedCommand;
 import com.dumbdogdiner.StickyCommands.Commands.StickyCommand;
 import com.dumbdogdiner.StickyCommands.Commands.TopCommand;
+import com.dumbdogdiner.StickyCommands.Commands.WorthCommand;
 import com.dumbdogdiner.StickyCommands.Listeners.PlayerConnectionListeners;
 import com.dumbdogdiner.StickyCommands.Utils.Configuration;
 import com.dumbdogdiner.StickyCommands.Utils.DatabaseUtil;
+import com.dumbdogdiner.StickyCommands.Utils.Item;
 import com.dumbdogdiner.StickyCommands.Utils.Messages;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.PluginMessageListener;
+
+import net.milkbowl.vault.economy.Economy;
 
 public class Main extends JavaPlugin implements PluginMessageListener {
     // For some reason using Futures with the Bukkit Async scheduler doesn't work.
@@ -35,11 +41,16 @@ public class Main extends JavaPlugin implements PluginMessageListener {
 
     public Boolean sqlError = false;
     public static CompletableFuture<String> serverName;
+    private static Economy econ = null;
 
     public void onEnable() {
 
         // Plugin startup logic
         new Configuration(this.getConfig());
+        if (!setupEconomy() ) {
+            getLogger().severe(String.format("[%s] - Disabled economy commands due to no Vault dependency found!", getDescription().getName()));
+            getServer().getPluginManager().disablePlugin(this);
+        }
 
         // Creating config folder, and adding config to it.
         if (!this.getDataFolder().exists()) {
@@ -74,6 +85,15 @@ public class Main extends JavaPlugin implements PluginMessageListener {
         // Make sure our messages file exists
         Messages.GetMessages();
 
+        // Grab the worth values for our items
+        Item.getItems();
+
+        if (this.getConfig().getBoolean("general.allowSelling")) {
+            this.getCommand("worth").setExecutor(new WorthCommand());
+            this.getCommand("sell").setExecutor(new SellCommand());
+            getLogger().info("Worth and selling commands are disabled in this server, skipping commmand registration");
+        }
+
         this.getCommand("top").setExecutor(new TopCommand());
         this.getCommand("jump").setExecutor(new JumpCommand());
         this.getCommand("stickycommands").setExecutor(new StickyCommand());
@@ -107,5 +127,21 @@ public class Main extends JavaPlugin implements PluginMessageListener {
 
             Main.serverName.complete(name);
         }
+    }
+
+    public static Economy getEconomy() {
+        return econ;
+    }
+
+    private boolean setupEconomy() {
+        if (getServer().getPluginManager().getPlugin("Vault") == null) {
+            return false;
+        }
+        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+        if (rsp == null) {
+            return false;
+        }
+        econ = rsp.getProvider();
+        return econ != null;
     }
 }

@@ -322,5 +322,65 @@ public class DatabaseUtil {
         return (Future<Boolean>) t;
     }
 
+    /**
+     * Lookup a user in the database
+     * 
+     * @param Search    The lookup term for the database (Can be IP, Username, or UUID)
+     * @return A result set with the user data, or a null one if the user doesn't exist.
+     */
+    public static Future<Float> GetSpeed(String uuid, String SpeedType) {
+        FutureTask<Float> t = new FutureTask<>(new Callable<Float>() {
+            @Override
+            public Float call() {
+                // This is where you should do your database interaction
+                try {
+                    // Preapre a statement
+                    int i = 1;
+                    if (SpeedType == "WalkSpeed")
+                    {
+                        PreparedStatement UpdateSpeed = connection.prepareStatement(String.format(
+                        "SELECT Walkspeed FROM Users WHERE UUID = ?"));
+                        UpdateSpeed.setString(i++, uuid);
+
+                        ResultSet result = UpdateSpeed.executeQuery();
+                        if (result.wasNull()) {
+                            // Format our message.
+                            return 0.2F;
+                        }
+            
+                        if (result.next()) {
+                            return result.getFloat("WalkSpeed");
+                        }
+                    }
+                    else if (SpeedType == "FlySpeed")
+                    {
+                        PreparedStatement UpdateSpeed = connection.prepareStatement(String.format(
+                        "SELECT FlySpeed FROM Users WHERE UUID = ?"));
+                        UpdateSpeed.setString(i++, uuid);
+
+                        ResultSet result = UpdateSpeed.executeQuery();
+                        if (result.wasNull()) {
+                            // Format our message.
+                            return 0.1F;
+                        }
+            
+                        if (result.next()) {
+                            return result.getFloat("FlySpeed");
+                        }
+                        return 0.1F;
+                    }
+                } catch (Throwable e) {
+                    e.printStackTrace();
+                    return 0.2F;
+                }
+                return 0.2F;
+            }
+        });
+
+        Main.pool.execute(t);
+
+        return (Future<Float>) t;
+    }
+
 
 }

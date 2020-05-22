@@ -17,3 +17,7 @@ commands:
     description: Reload the plugin
   smite:
     description: Smite a player
+  worth:
+    description: Get the worth of an item
+  sell:
+    description: Sell items in your hand, or inventory

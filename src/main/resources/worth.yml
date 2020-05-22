@@ -1,0 +1,213 @@
+worth:
+
+#Daily allowance:
+
+# Items not listed in this file will not be sellable on the server
+# Setting the worth to 0 will sell items for free, delete the item or set to -1 to disable.
+
+# This will set the worth of all logs to '2'
+log: 1.0  
+dye: 1.0
+
+# This will work similar to the above syntax
+wool: 1.0
+  
+# This will only allow selling leaves with datavalue '0' and '1'
+leaves: 
+  '0': 0.5
+  '1': 0.5
+  
+# This will allow the selling of all, but sells '0' slightly cheaper  
+sapling:
+  '3': 0.5
+  '*': 0.6
+
+#Custom items   
+emerald: 100.0
+emeraldore: 300.0
+emeraldblock: 900.0
+quartz: 2.0
+quartzore: 20.0
+quartzblock: 8.0
+
+rawbeef: 2.0
+rawpork: 2.0
+rawchicken: 1.0
+cookedbeef: 2.2
+cookedpork: 2.2
+cookchicken: 1.2
+
+flint: 1.5
+
+diorite: 0.35
+andesite: 0.35
+granite: 0.35
+polisheddiorite: 0.35
+polishedandesite: 0.35
+polishedgranite: 0.35
+
+pumpkin: 1.0
+melon: 1.50
+
+phantommembrane: 100.0
+
+#Default config:
+stonebutton: 1.0
+planks: 1.0
+arrow: 2.0
+diamondpickaxe: 500.0
+rawfish: 10.0
+minecart: 80.0
+leatherchestplate: 40.0
+storageminecart: 80.0
+leaves: 1.0
+feather: 3.0
+goldchestplate: 20.0
+mushroomsoup: 3.0
+bread: 5.0
+stationarywater: 0.1
+workbench: 3.0
+stonehoe: 10.0
+mossycobblestone: 5.0
+diamondhoe: 340.0
+woodensword: 5.0
+torch: 1.0
+grass: 0.5
+poweredminecart: 80.0
+goldenapple: 400.0
+leatherleggings: 40.0
+diamondaxe: 500.0
+slimeball: 20.0
+fence: 2.0
+stonespade: 4.0
+claybrick: 5.0
+noteblock: 25.0
+ironaxe: 65.0
+coalore: 30.0
+clayball: 3.0
+fishingrod: 10.0
+ironhoe: 50.0
+goldrecord: 100.0
+ironpickaxe: 65.0
+irondoor: 90.0
+bucket: 35.0
+redrose: 2.0
+gravel: 1.0
+oakdoor: 4.0
+jungledoor: 4.0
+darkoakdoor: 4.0
+sprucedoor: 4.0
+chainmailhelmet: 510.0
+ironchestplate: 130.0
+diamondblock: 1440.0
+diamondhelmet: 810.0
+goldhelmet: 20.0
+redstonetorchon: 1.0
+ironspade: 25.0
+furnace: 1.0
+ironsword: 40.0
+dispenser: 35.0
+woodenaxe: 2.0
+seeds: 0.5
+painting: 10.0
+woodenplate: 1.0
+redstoneore: 60.0
+diamondspade: 180.0
+waterbucket: 35.0
+water: 0.1
+bedrock: 0.1
+irondoorblock: 90.0
+goldhoe: 60.0
+sand: 0.2
+goldsword: 60.0
+stoneaxe: 4.0
+bookshelf: 70.0
+ironblock: 130.0
+boat: 3.0
+diamondchestplate: 1290.0
+redstonewire: 1.0
+stoneplate: 6.0
+wallsign: 1.0
+cactus: 0.2
+gunpowder: 8.0
+rail: 5.0
+poweredrail: 5.0
+activatorrail: 5.0
+detectorrail: 5.0
+rail: 5.0
+ironore: 12.0
+leatherhelmet: 36.0
+stone: 0.4
+egg: 0.5
+diamondore: 350.0
+woodenhoe: 2.0
+goldleggings: 20.0
+chainmailleggings: 40.0
+yellowflower: 2.0
+ironhelmet: 85.0
+obsidian: 12.0
+dirt: 0.2
+leather: 8.0
+leatherboots: 20.0
+lever: 1.0
+cobblestone: 0.1
+cake: 30.0
+woodenstairs: 1.0
+ironingot: 15.0
+goldore: 30.0
+bed: 22.0
+watch: 6.0
+ironleggings: 115.0
+sign: 1.0
+doublestep: 1.0
+woodenenpickaxe: 2.0
+stonepickaxe: 4.0
+chainmailboots: 40.0
+diamondleggings: 1130.0
+cookedfish: 12.0
+saddle: 200.0
+cobblestonestairs: 0.5
+tnt: 20.0
+glowingredstoneore: 60.0
+apple: 20.0
+woodenspade: 2.0
+goldingot: 40.0
+diode: 22.0
+soil: 0.2
+clay: 12.0
+goldblock: 360.0
+stick: 0.1
+paper: 1.0
+brick: 1.0
+stationarylava: 1.0
+chest: 4.0
+sandstone: 2.0
+goldpickaxe: 60.0
+compass: 60.0
+diamondsword: 330.0
+goldboots: 20.0
+sponge: 100.0
+stonesword: 4.0
+coal: 7.0
+coalblock: 63.0
+goldaxe: 60.0
+diamond: 160.0
+glass: 2.0
+goldspade: 60.0
+lapisblock: 70.0
+lavabucket: 35.0
+ladder: 0.2
+bowl: 0.2
+chainmailchestplate: 40.0
+diamondboots: 650.0
+lapisore: 120.0
+lava: 35.0
+milkbucket: 35.0
+redstone: 1.0
+redstoneblock: 9.0
+greenrecord: 100.0
+glowstonedust: 4.0
+book: 18.0
+bow: 18.0
+ironboots: 70.0
+step: 1.0

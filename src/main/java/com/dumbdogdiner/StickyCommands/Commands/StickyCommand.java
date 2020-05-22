@@ -83,9 +83,16 @@ public class StickyCommand implements CommandExecutor {
                 sender.sendMessage(Messages.serverError);
                 return false;
             }
-            
-
         }
+
+/*         if (args[0].equalsIgnoreCase("config")) {
+            if (args.length < 3)
+                return User.invalidSyntax(sender);
+
+            if (args[1].equalsIgnoreCase("set")) {
+                self.getConfig().set(args[2], args[3]);
+            }
+        } */
         return true;
     }
     

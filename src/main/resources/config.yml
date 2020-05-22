@@ -4,6 +4,8 @@ general:
   opsBypassPermissions: true
   # The translation file you wish to use. (Default: messages.en_us.yml)
   translationFile: "messages.en_us.yml"
+  worthFile: "worth.yml"
+  allowSelling: true
 
 database:
   host: localhost

@@ -26,3 +26,7 @@ reload:
 
 youSmitted: "{PREFIX}&dYou smitted &f{PLAYER}&dat &f{LOCX}, {LOCY}, {LOCZ}!"
 youWereSmitten: "{PREFIX}&dThou hast been smitten!"
+
+cannotsell: "{PREFIX}&cThis item cannot be sold!"
+worthMessage: "{PREFIX}&51 {ITEM} &dis worth &5${SINGLEWORTH} &7(Hand: ${HANDWORTH}, Inventory: ${INVENTWORTH})"
+sellMessage: "{PREFIX}&dYou sold &5{AMOUNT} {ITEM} &dfor &5${WORTH}&d!"

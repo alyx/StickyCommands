@@ -38,6 +38,17 @@ public class User {
         return true;
     }
 
+    /**
+     * Send the player an invalid syntax message
+     * 
+     * @param sender the person who is executing the command
+     * @return always false, for use in the command classes.
+     */
+    public static boolean invalidSyntax(CommandSender sender) {
+        sender.sendMessage(Messages.invalidSyntax);
+        return false;
+    }
+
     public static CompletableFuture<String> getServer(String player) {
         ByteArrayDataOutput out = ByteStreams.newDataOutput();
         Main.serverName = new CompletableFuture<>();
@@ -46,10 +57,9 @@ public class User {
             out.writeUTF("GetServer");
             out.writeUTF(player);
             self.getServer().sendPluginMessage(self, "BungeeCord", out.toByteArray());
-        } 
-        catch (Exception e) 
-        {
-            // Ensure if an error happened, any calls to .get() will throw this exception and
+        } catch (Exception e) {
+            // Ensure if an error happened, any calls to .get() will throw this exception
+            // and
             // the value is unusable.
             Main.serverName.completeExceptionally(e);
             e.printStackTrace();
