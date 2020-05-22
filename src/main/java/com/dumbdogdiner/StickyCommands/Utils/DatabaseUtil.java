@@ -25,10 +25,6 @@ public class DatabaseUtil {
             if (connection != null && !connection.isClosed())
                 return;
 
-            System.out.printf(String.format(
-                    "\njdbc:mysql://%s:%s/%s?autoReconnect=true&failOverReadOnly=false&maxReconnects=%d&useSSL=%s\n",
-            Configuration.dbhost, Configuration.dbport, Configuration.dbname, Configuration.MaxReconnects, Configuration.useSSL), Configuration.dbusername, Configuration.dbpassword);
-
             connection = DriverManager.getConnection(
                     String.format("jdbc:mysql://%s:%s/%s?autoReconnect=true&failOverReadOnly=false&maxReconnects=%d&useSSL=%s",
                             Configuration.dbhost, Configuration.dbport, Configuration.dbname, Configuration.MaxReconnects, Configuration.useSSL), Configuration.dbusername, Configuration.dbpassword);
@@ -61,8 +57,7 @@ public class DatabaseUtil {
             DatabaseUtil.OpenConnection();
         } 
         catch (SQLException e) {
-            System.out.println(Configuration.dbname);
-            // e.printStackTrace();
+            e.printStackTrace();
             self.getLogger().severe(
                     "Cannot connect to database, ensure your database is setup correctly and restart the server.");
             // Just exit and let the user figure it out.

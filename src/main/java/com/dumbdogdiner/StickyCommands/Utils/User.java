@@ -14,6 +14,20 @@ import org.bukkit.entity.Player;
 public class User {
 
     static Main self = Main.getPlugin(Main.class);
+    private final Player player;
+    private boolean afk = false;
+
+    public User(Player player) {
+        this.player = player;
+    }
+
+    public boolean isAfk() {
+        return this.afk;
+    }
+
+    public void setAfk(boolean afk) {
+        this.afk = afk;
+    }
 
     /**
      * Send the player a permission denied message

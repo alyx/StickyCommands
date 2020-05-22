@@ -9,19 +9,15 @@ import com.dumbdogdiner.StickyCommands.Utils.Messages;
 import com.dumbdogdiner.StickyCommands.Utils.PermissionUtil;
 import com.dumbdogdiner.StickyCommands.Utils.User;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public class SellCommand implements CommandExecutor {
-
-    private Main self = Main.getPlugin(Main.class);
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!PermissionUtil.Check(sender, "stickycommands.sell", false))
@@ -30,7 +26,7 @@ public class SellCommand implements CommandExecutor {
         Player player = (Player) sender;
 
         if (args.length < 1)
-            User.invalidSyntax(sender);
+            return User.invalidSyntax(sender);
 
         ItemStack is = player.getInventory().getItemInMainHand();
         ItemStack[] invent = player.getInventory().getContents();
@@ -74,8 +70,9 @@ public class SellCommand implements CommandExecutor {
                     player.getInventory().getItemInMainHand().setAmount(0);
                     return true;
                 }
-                if ((args[0].equalsIgnoreCase("inventory") || args[0].equalsIgnoreCase("inv") || args[0].equalsIgnoreCase("invent")) 
-                    || args.length > 1 && args[0].equalsIgnoreCase("all") && args[1].equalsIgnoreCase("hand")) {
+                if ((args[0].equalsIgnoreCase("inventory") || args[0].equalsIgnoreCase("inv")
+                        || args[0].equalsIgnoreCase("invent"))
+                        || args.length > 1 && args[0].equalsIgnoreCase("all") && args[1].equalsIgnoreCase("hand")) {
                     if (!PermissionUtil.Check(sender, "stickycommands.sell.inventory", false))
                         return User.PermissionDenied(sender, "stickycommands.sell.inventory");
                     Map<String, String> Variables = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER) {
@@ -121,14 +118,3 @@ public class SellCommand implements CommandExecutor {
         return true;
     }
 }
-
-/*
- * if (isd == 0.0) { try { sender.sendMessage(Messages.Translate("cannotsell",
- * Variables)); return false; } catch (InvalidConfigurationException e) {
- * sender.sendMessage(Messages.serverError); e.printStackTrace(); return false;
- * } }
- * 
- * try { sender.sendMessage(Messages.Translate("worthMessage", Variables));
- * return true; } catch (InvalidConfigurationException e) {
- * sender.sendMessage(Messages.serverError); e.printStackTrace(); } return true;
- */

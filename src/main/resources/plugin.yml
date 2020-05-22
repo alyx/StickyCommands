@@ -1,8 +1,9 @@
 name: ${project.name}
 version: ${project.version}
 main: com.dumbdogdiner.StickyCommands.Main
-authors: [NotZachery]
 load: STARTUP
+authors: [NotZachery]
+softdepend: [Vault]
 api-version: 1.14
 commands:
   top:
@@ -21,3 +22,5 @@ commands:
     description: Get the worth of an item
   sell:
     description: Sell items in your hand, or inventory
+  afk:
+    description: Set yourself to AFK

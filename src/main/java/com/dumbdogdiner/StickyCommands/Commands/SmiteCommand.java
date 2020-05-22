@@ -3,8 +3,6 @@ package com.dumbdogdiner.StickyCommands.Commands;
 import java.util.Map;
 import java.util.TreeMap;
 
-import com.dumbdogdiner.StickyCommands.Main;
-import com.dumbdogdiner.StickyCommands.Utils.DatabaseUtil;
 import com.dumbdogdiner.StickyCommands.Utils.Messages;
 import com.dumbdogdiner.StickyCommands.Utils.PermissionUtil;
 import com.dumbdogdiner.StickyCommands.Utils.TranslationUtil;
@@ -18,7 +16,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.LightningStrike;
 import org.bukkit.entity.Player;
-import org.bukkit.permissions.Permissible;
 
 public class SmiteCommand implements CommandExecutor {
 

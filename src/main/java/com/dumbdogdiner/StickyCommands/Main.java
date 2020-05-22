@@ -1,13 +1,13 @@
 package com.dumbdogdiner.StickyCommands; // package owo
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
+import com.dumbdogdiner.StickyCommands.Commands.AFKComand;
 import com.dumbdogdiner.StickyCommands.Commands.JumpCommand;
 import com.dumbdogdiner.StickyCommands.Commands.SeenCommand;
 import com.dumbdogdiner.StickyCommands.Commands.SellCommand;
@@ -17,14 +17,15 @@ import com.dumbdogdiner.StickyCommands.Commands.StickyCommand;
 import com.dumbdogdiner.StickyCommands.Commands.TopCommand;
 import com.dumbdogdiner.StickyCommands.Commands.WorthCommand;
 import com.dumbdogdiner.StickyCommands.Listeners.PlayerConnectionListeners;
+import com.dumbdogdiner.StickyCommands.Listeners.PlayerMovementListener;
 import com.dumbdogdiner.StickyCommands.Utils.Configuration;
 import com.dumbdogdiner.StickyCommands.Utils.DatabaseUtil;
 import com.dumbdogdiner.StickyCommands.Utils.Item;
 import com.dumbdogdiner.StickyCommands.Utils.Messages;
+import com.dumbdogdiner.StickyCommands.Utils.User;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -38,6 +39,7 @@ public class Main extends JavaPlugin implements PluginMessageListener {
     // pool of
     // our own control to get whatever we want done.
     public static ExecutorService pool = Executors.newFixedThreadPool(3);
+    public static HashMap<UUID, User> USERS = new HashMap<UUID, User>();
 
     public Boolean sqlError = false;
     public static CompletableFuture<String> serverName;
@@ -49,7 +51,6 @@ public class Main extends JavaPlugin implements PluginMessageListener {
         new Configuration(this.getConfig());
         if (!setupEconomy() ) {
             getLogger().severe(String.format("[%s] - Disabled economy commands due to no Vault dependency found!", getDescription().getName()));
-            getServer().getPluginManager().disablePlugin(this);
         }
 
         // Creating config folder, and adding config to it.
@@ -94,10 +95,13 @@ public class Main extends JavaPlugin implements PluginMessageListener {
             getLogger().info("Worth and selling commands are disabled in this server, skipping commmand registration");
         }
 
+        getServer().getPluginManager().registerEvents(new PlayerMovementListener(), this);
+
         this.getCommand("top").setExecutor(new TopCommand());
         this.getCommand("jump").setExecutor(new JumpCommand());
         this.getCommand("stickycommands").setExecutor(new StickyCommand());
         this.getCommand("smite").setExecutor(new SmiteCommand());
+        this.getCommand("afk").setExecutor(new AFKComand());
         this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
         this.getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", this);
 

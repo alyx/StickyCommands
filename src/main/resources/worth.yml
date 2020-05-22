@@ -1,26 +1,13 @@
-worth:
-
-#Daily allowance:
-
 # Items not listed in this file will not be sellable on the server
-# Setting the worth to 0 will sell items for free, delete the item or set to -1 to disable.
-
+# Setting the worth to 0 will disallow the ability to sell the item, delete the item or set to -1 to disable.
 # This will set the worth of all logs to '2'
 log: 1.0  
 dye: 1.0
 
 # This will work similar to the above syntax
 wool: 1.0
-  
-# This will only allow selling leaves with datavalue '0' and '1'
-leaves: 
-  '0': 0.5
-  '1': 0.5
-  
-# This will allow the selling of all, but sells '0' slightly cheaper  
-sapling:
-  '3': 0.5
-  '*': 0.6
+leaves: 0.5
+sapling: 0.5
 
 #Custom items   
 emerald: 100.0
@@ -101,7 +88,7 @@ chainmailhelmet: 510.0
 ironchestplate: 130.0
 diamondblock: 1440.0
 diamondhelmet: 810.0
-goldhelmet: 20.0
+goldenhelmet: 20.0
 redstonetorchon: 1.0
 ironspade: 25.0
 furnace: 1.0
@@ -117,9 +104,9 @@ waterbucket: 35.0
 water: 0.1
 bedrock: 0.1
 irondoorblock: 90.0
-goldhoe: 60.0
+goldenhoe: 60.0
 sand: 0.2
-goldsword: 60.0
+goldensword: 60.0
 stoneaxe: 4.0
 bookshelf: 70.0
 ironblock: 130.0
@@ -141,7 +128,7 @@ stone: 0.4
 egg: 0.5
 diamondore: 350.0
 woodenhoe: 2.0
-goldleggings: 20.0
+goldenleggings: 20.0
 chainmailleggings: 40.0
 yellowflower: 2.0
 ironhelmet: 85.0
@@ -182,18 +169,18 @@ brick: 1.0
 stationarylava: 1.0
 chest: 4.0
 sandstone: 2.0
-goldpickaxe: 60.0
+goldenpickaxe: 60.0
 compass: 60.0
 diamondsword: 330.0
-goldboots: 20.0
+goldenboots: 20.0
 sponge: 100.0
 stonesword: 4.0
 coal: 7.0
 coalblock: 63.0
-goldaxe: 60.0
+goldenaxe: 60.0
 diamond: 160.0
 glass: 2.0
-goldspade: 60.0
+goldenshovel: 60.0
 lapisblock: 70.0
 lavabucket: 35.0
 ladder: 0.2
