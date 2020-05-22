@@ -13,3 +13,4 @@ Light-weight essentials replacement for DumbDogDiner
 | /worth | Gives the worth of the item that your're holding | stickycommands.worth |
 | /top | Takes you to the top! | stickycommands.top |
 | /jump | Takes you to the block that you're lookint at | stickycommands.jump |
+| /afk | Puts you in AFK mode | stickycommands.afk |
