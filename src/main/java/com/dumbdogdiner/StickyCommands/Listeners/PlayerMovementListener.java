@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import com.dumbdogdiner.StickyCommands.Main;
+import com.dumbdogdiner.StickyCommands.Utils.DebugUtil;
 import com.dumbdogdiner.StickyCommands.Utils.Messages;
 import com.dumbdogdiner.StickyCommands.Utils.User;
 
@@ -34,8 +35,11 @@ public class PlayerMovementListener implements Listener {
                         put("player", player.getName());
                     }
                 };
+                DebugUtil.sendDebug("Setting AFK mode to false for " + player.getName(), this.getClass(), DebugUtil.getLineNumber());
                 u.setAfk(false);
-                Bukkit.broadcastMessage(Messages.Translate("notAfkMessage", Variables));
+                for (Player p : Bukkit.getOnlinePlayers()) {
+                    p.sendMessage(Messages.Translate("notAfkMessage", Variables));
+                }
             }
         }
     }

@@ -6,6 +6,7 @@ general:
   translationFile: "messages.en_us.yml"
   worthFile: "worth.yml"
   allowSelling: true
+  debug: false
 
 database:
   host: localhost

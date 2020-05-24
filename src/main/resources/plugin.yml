@@ -24,3 +24,5 @@ commands:
     description: Sell items in your hand, or inventory
   afk:
     description: Set yourself to AFK
+  hat:
+    description: Have a hat!

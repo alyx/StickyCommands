@@ -8,6 +8,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import com.dumbdogdiner.StickyCommands.Commands.AFKComand;
+import com.dumbdogdiner.StickyCommands.Commands.HatCommand;
 import com.dumbdogdiner.StickyCommands.Commands.JumpCommand;
 import com.dumbdogdiner.StickyCommands.Commands.SeenCommand;
 import com.dumbdogdiner.StickyCommands.Commands.SellCommand;
@@ -20,12 +21,14 @@ import com.dumbdogdiner.StickyCommands.Listeners.PlayerConnectionListeners;
 import com.dumbdogdiner.StickyCommands.Listeners.PlayerMovementListener;
 import com.dumbdogdiner.StickyCommands.Utils.Configuration;
 import com.dumbdogdiner.StickyCommands.Utils.DatabaseUtil;
+import com.dumbdogdiner.StickyCommands.Utils.DebugUtil;
 import com.dumbdogdiner.StickyCommands.Utils.Item;
 import com.dumbdogdiner.StickyCommands.Utils.Messages;
 import com.dumbdogdiner.StickyCommands.Utils.User;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -70,38 +73,47 @@ public class Main extends JavaPlugin implements PluginMessageListener {
             // having errors.
             // return;
         }
+        DebugUtil.sendDebug("Config successfully loaded", this.getClass(), DebugUtil.getLineNumber());
 
         // Initialize our database connections.
         if (!DatabaseUtil.InitializeDatabase())
             getLogger().severe("Database failed to connect! Disabling seen and speed commands and login events");
-
-        // return;
-
         else {
+            DebugUtil.sendDebug("Database connected successfully, registering /seen and /speed commands and connection listeners", this.getClass(), DebugUtil.getLineNumber());
             this.getCommand("seen").setExecutor(new SeenCommand());
             this.getCommand("speed").setExecutor(new SpeedCommand());
             getServer().getPluginManager().registerEvents(new PlayerConnectionListeners(), this);
         }
 
+        DebugUtil.sendDebug("Grabbing messages", this.getClass(), DebugUtil.getLineNumber());
         // Make sure our messages file exists
         Messages.GetMessages();
 
+        DebugUtil.sendDebug("Grabbing item worth values", this.getClass(), DebugUtil.getLineNumber());
         // Grab the worth values for our items
         Item.getItems();
 
         if (this.getConfig().getBoolean("general.allowSelling")) {
+            DebugUtil.sendDebug("Attempting to disabled /sell and /worth", this.getClass(), DebugUtil.getLineNumber());
             this.getCommand("worth").setExecutor(new WorthCommand());
             this.getCommand("sell").setExecutor(new SellCommand());
             getLogger().info("Worth and selling commands are disabled in this server, skipping commmand registration");
         }
 
+        DebugUtil.sendDebug("Attempting to register PlayerMovementListener", this.getClass(), DebugUtil.getLineNumber());
         getServer().getPluginManager().registerEvents(new PlayerMovementListener(), this);
 
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            USERS.put(p.getUniqueId(), new User(p));
+        }
+
+        DebugUtil.sendDebug("Attempting to register commands", this.getClass(), DebugUtil.getLineNumber());
         this.getCommand("top").setExecutor(new TopCommand());
         this.getCommand("jump").setExecutor(new JumpCommand());
         this.getCommand("stickycommands").setExecutor(new StickyCommand());
         this.getCommand("smite").setExecutor(new SmiteCommand());
         this.getCommand("afk").setExecutor(new AFKComand());
+        this.getCommand("hat").setExecutor(new HatCommand());
         this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
         this.getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", this);
 

@@ -32,3 +32,8 @@ worthMessage: "{PREFIX}&51 {ITEM} &dis worth &5${SINGLEWORTH} &7(Hand: ${HANDWOR
 sellMessage: "{PREFIX}&dYou sold &5{AMOUNT} {ITEM} &dfor &5${WORTH}&d!"
 afkMessage: "&7&o* {PLAYER} is now AFK!"
 notAfkMessage: "&7&o* {PLAYER} is no longer AFK!"
+
+hat:
+  noHat: "{PREFIX}&dYou do not have a hat!"
+  newHat: "{PREFIX}&dEnjoy your new hat!"
+  removedHat: "{PREFIX}&dYour hat has been removed!"

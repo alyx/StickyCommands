@@ -10,6 +10,7 @@ import com.dumbdogdiner.StickyCommands.Utils.Messages;
 import com.dumbdogdiner.StickyCommands.Utils.PermissionUtil;
 import com.dumbdogdiner.StickyCommands.Utils.User;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -83,14 +84,15 @@ public class StickyCommand implements CommandExecutor {
             }
         }
 
-/*         if (args[0].equalsIgnoreCase("config")) {
+        if (args[0].equalsIgnoreCase("config")) {
             if (args.length < 3)
                 return User.invalidSyntax(sender);
 
-            if (args[1].equalsIgnoreCase("set")) {
-                self.getConfig().set(args[2], args[3]);
+            if (args[1].equalsIgnoreCase("debug")) {
+                self.getConfig().set("debug", Boolean.parseBoolean(args[2]));
+                sender.sendMessage(Messages.prefix + ChatColor.GREEN + "Set debug mode to " + Boolean.parseBoolean(args[2]));
             }
-        } */
+        }
         return true;
     }
     

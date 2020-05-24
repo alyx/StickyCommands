@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import com.dumbdogdiner.StickyCommands.Main;
+import com.dumbdogdiner.StickyCommands.Utils.DebugUtil;
 import com.dumbdogdiner.StickyCommands.Utils.Messages;
 import com.dumbdogdiner.StickyCommands.Utils.PermissionUtil;
 import com.dumbdogdiner.StickyCommands.Utils.User;
@@ -23,7 +24,7 @@ public class AFKComand implements CommandExecutor {
 
         if (args.length > 0)
             return User.invalidSyntax(sender);
-            
+
         try {
             Player player = (Player) sender;
             User u = Main.USERS.get(player.getUniqueId());
@@ -31,11 +32,17 @@ public class AFKComand implements CommandExecutor {
 
             if (u.isAfk()) {
                 u.setAfk(false);
-                Bukkit.broadcastMessage(Messages.Translate("notAfkMessage", Variables));
+                DebugUtil.sendDebug("Setting AFK mode to false for " + player.getName(), this.getClass(), DebugUtil.getLineNumber());
+                for (Player p : Bukkit.getOnlinePlayers()) {
+                    p.sendMessage(Messages.Translate("notAfkMessage", Variables));
+                }
             } 
             else {
-                Bukkit.broadcastMessage(Messages.Translate("afkMessage", Variables));
                 u.setAfk(true);
+                DebugUtil.sendDebug("Setting AFK mode to true for " + player.getName(), this.getClass(), DebugUtil.getLineNumber());
+                for (Player p : Bukkit.getOnlinePlayers()) {
+                    p.sendMessage(Messages.Translate("afkMessage", Variables));
+                }
             }
 
         } 
