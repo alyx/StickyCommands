@@ -15,6 +15,7 @@ import com.dumbdogdiner.StickyCommands.Utils.TranslationUtil;
 import com.dumbdogdiner.StickyCommands.Utils.User;
 
 import org.apache.commons.lang.WordUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -29,6 +30,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 
 public class ItemCommand implements CommandExecutor, TabCompleter {
 
@@ -130,6 +132,13 @@ public class ItemCommand implements CommandExecutor, TabCompleter {
                     boolean bool = Boolean.valueOf(metaCheck[1]);
                     if(bool) isMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
                     continue;
+                case "owner":
+                    if(metaCheck.length < 2) continue;
+                    if(!is.getType().equals(Material.PLAYER_HEAD)) continue;
+                    SkullMeta isSkullMeta = (SkullMeta) isMeta;
+                    if(Bukkit.getOfflinePlayer(metaCheck[1]) == null) continue;
+                    isSkullMeta.setOwner(metaCheck[1]);
+                    isMeta = (ItemMeta) isSkullMeta;
             }
         }
 
