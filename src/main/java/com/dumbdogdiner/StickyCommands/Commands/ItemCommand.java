@@ -1,7 +1,6 @@
 package com.dumbdogdiner.StickyCommands.Commands;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,8 +25,7 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.player.PlayerInteractAtEntityEvent;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -97,10 +95,11 @@ public class ItemCommand implements CommandExecutor, TabCompleter {
             switch(metaCheck[0]) {
                 case "name":
                     if(metaCheck.length < 2) continue;
-                    String itemName = metaCheck[0].replace("_", " ");
+                    String itemName = metaCheck[1].replace("_", " ");
                     itemName = ChatColor.translateAlternateColorCodes('&', itemName);
 
                     isMeta.setDisplayName(itemName);
+                    continue;
                 case "enchant":
                 case "enchantment":
                     if(metaCheck.length < 3) continue;
@@ -115,17 +114,22 @@ public class ItemCommand implements CommandExecutor, TabCompleter {
                     }
 
                     enchMap.put(enchObj, enchLevel);
+                    continue;
                 case "lore":
                     if(metaCheck.length < 2) continue;
                     String[] lore = metaCheck[1].split(",");
                     ArrayList<String> itemLore = new ArrayList<>();
                     for(String loreString : lore) {
-                        loreString = loreString.replace("_", " ");
+                        loreString = ChatColor.translateAlternateColorCodes('&', loreString.replace("_", " ")); 
                         itemLore.add(loreString);
                     }
-
                     isMeta.setLore(itemLore);
-
+                    continue;
+                case "hideflags":
+                    if(metaCheck.length < 2) continue;
+                    boolean bool = Boolean.valueOf(metaCheck[1]);
+                    if(bool) isMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+                    continue;
             }
         }
 
