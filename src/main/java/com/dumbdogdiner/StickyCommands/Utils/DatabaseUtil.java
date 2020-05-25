@@ -281,7 +281,8 @@ public class DatabaseUtil {
                     InsertUser.setString(i++, Search);
                     DebugUtil.sendDebug("Returning lookup ResultSet", this.getClass(), DebugUtil.getLineNumber());
                     return InsertUser.executeQuery();
-                } catch (Throwable e) {
+                } 
+                catch (Throwable e) {
                     e.printStackTrace();
                     return null;
                 }
@@ -317,7 +318,8 @@ public class DatabaseUtil {
                         DebugUtil.sendDebug("Attempting to execute update...", this.getClass(), DebugUtil.getLineNumber());
                         UpdateSpeed.executeUpdate();
                         DebugUtil.sendDebug("UpdateSpeed was successfull", this.getClass(), DebugUtil.getLineNumber());
-                    } else if (SpeedType == "FlySpeed") {
+                    } 
+                    else if (SpeedType == "FlySpeed") {
                         DebugUtil.sendDebug("SpeedType is FlySpeed, preparing statement", this.getClass(), DebugUtil.getLineNumber());
                         PreparedStatement UpdateSpeed = connection
                         .prepareStatement(String.format("UPDATE Users SET FlySpeed = ? WHERE UUID = ?"));
@@ -372,7 +374,8 @@ public class DatabaseUtil {
                             DebugUtil.sendDebug("WalkSpeed was not null, returning result...", this.getClass(), DebugUtil.getLineNumber());
                             return result.getFloat("WalkSpeed");
                         }
-                    } else if (SpeedType == "FlySpeed") {
+                    } 
+                    else if (SpeedType == "FlySpeed") {
                         DebugUtil.sendDebug("SpeedType is FlySpeed, preparing statement", this.getClass(), DebugUtil.getLineNumber());
                         PreparedStatement UpdateSpeed = connection
                                 .prepareStatement(String.format("SELECT FlySpeed FROM Users WHERE UUID = ?"));
@@ -391,7 +394,8 @@ public class DatabaseUtil {
                         }
                         return 0.1F;
                     }
-                } catch (Throwable e) {
+                } 
+                catch (Throwable e) {
                     e.printStackTrace();
                     return 0.2F;
                 }

@@ -61,12 +61,13 @@ public class ItemCommand implements CommandExecutor, TabCompleter {
         //lmao I love this
         // Java is dumb, and our int MUST be final to go into this hashmap....
         final String javaisfuckingdumb = String.valueOf(arg);
+        final String ihatejava = is.getType().toString().replace("_", " ");
         // So we need to create a hasmap for the config nodes.
         Map<String, String> Variables = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER) {
             {
                 // Lets add our nodes to replace...
                 put("player", player.getName());
-                put("item", WordUtils.capitalizeFully(is.getType().toString().replace("_", " ")));
+                put("item", WordUtils.capitalizeFully(ihatejava));
                 put("amount", String.valueOf(javaisfuckingdumb)); // bro, really? This has to be final, fucking dumb language
             }
         };

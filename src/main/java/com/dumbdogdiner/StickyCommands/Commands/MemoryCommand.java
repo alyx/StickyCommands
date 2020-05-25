@@ -29,8 +29,7 @@ public class MemoryCommand implements CommandExecutor {
         long maxmem = Runtime.getRuntime().maxMemory() / 1024 / 1024;
         long totalmem = Runtime.getRuntime().totalMemory() / 1024 / 1024;
         long freemem = Runtime.getRuntime().freeMemory() / 1024 / 1024;
-        long usedmem = Runtime.getRuntime().totalMemory() / 1024 / 1024
-                - Runtime.getRuntime().freeMemory() / 1024 / 1024;
+        long usedmem = Runtime.getRuntime().totalMemory() / 1024 / 1024 - Runtime.getRuntime().freeMemory() / 1024 / 1024;
 
         Map<String, String> Variables = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER) {
             {

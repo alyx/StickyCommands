@@ -68,7 +68,7 @@ public class SeenCommand implements CommandExecutor {
                     {
                         put("player", result.getString("PlayerName"));
                         put("uuid", result.getString("UUID"));
-                        put("ipaddress", result.getString("IPAddress"));
+                        put("ipaddress", PermissionUtil.Check(sender, "stickycommands.seen.ip", true) ? result.getString("IPAddress") : "REDACTED");
                         put("firstlogin", TimeUtil.Expires(result.getTimestamp("FirstLogin")));
                         put("lastlogin", TimeUtil.Expires(result.getTimestamp("LastLogin")));
                         put("timesconnected", Integer.toString(result.getInt("TimesConnected")));
