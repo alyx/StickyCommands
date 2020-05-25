@@ -6,7 +6,7 @@
 
     <groupId>com.dummbdogdiner</groupId>
     <artifactId>StickyCommands</artifactId>
-    <version>1.1-BETA</version>
+    <version>1.3-BETA</version>
     <packaging>jar</packaging>
 
     <name>StickyCommands</name>
@@ -71,10 +71,12 @@
     <dependencies>
         <dependency>
             <groupId>org.spigotmc</groupId>
-            <artifactId>spigot-api</artifactId>
-            <version>1.14.4-R0.1-SNAPSHOT</version>
-            <scope>provided</scope>
+            <artifactId>spigot</artifactId>
+            <version>1.15.2-R0.1-SNAPSHOT</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/libs/spigot-1.15.2.jar</systemPath>
         </dependency>
+
         <dependency>
             <groupId>com.github.MilkBowl</groupId>
             <artifactId>VaultAPI</artifactId>

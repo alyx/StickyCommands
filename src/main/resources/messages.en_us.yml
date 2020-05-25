@@ -37,3 +37,5 @@ hat:
   noHat: "{PREFIX}&dYou do not have a hat!"
   newHat: "{PREFIX}&dEnjoy your new hat!"
   removedHat: "{PREFIX}&dYour hat has been removed!"
+itemMessage: "{PREFIX}&dGave you &5{AMOUNT} {ITEM}&d!"
+memoryMessage: "{PREFIX}&dServer performance \n&8&l>> &dWorld: &f{WORLD}\n&8&l>> &dMax/Total Memory (MB): &f{MAXMEM}&d/&f{TOTALMEM}\n&8&l>> &dUsed/Free Memory (MB): &f{USEDMEM}&d/&f{FREEMEM}\n&8&l>> &dTPS: &f{TPS}\n&8&l>> &dEntities: &f{ENTITIES}\n&8&l>> &dLoaded Chunks: &f{CHUNKS}"

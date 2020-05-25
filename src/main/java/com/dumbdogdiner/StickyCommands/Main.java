@@ -9,7 +9,9 @@ import java.util.concurrent.Executors;
 
 import com.dumbdogdiner.StickyCommands.Commands.AFKComand;
 import com.dumbdogdiner.StickyCommands.Commands.HatCommand;
+import com.dumbdogdiner.StickyCommands.Commands.ItemCommand;
 import com.dumbdogdiner.StickyCommands.Commands.JumpCommand;
+import com.dumbdogdiner.StickyCommands.Commands.MemoryCommand;
 import com.dumbdogdiner.StickyCommands.Commands.SeenCommand;
 import com.dumbdogdiner.StickyCommands.Commands.SellCommand;
 import com.dumbdogdiner.StickyCommands.Commands.SmiteCommand;
@@ -33,6 +35,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.PluginMessageListener;
+import org.bukkit.scheduler.BukkitScheduler;
 
 import net.milkbowl.vault.economy.Economy;
 
@@ -114,6 +117,9 @@ public class Main extends JavaPlugin implements PluginMessageListener {
         this.getCommand("smite").setExecutor(new SmiteCommand());
         this.getCommand("afk").setExecutor(new AFKComand());
         this.getCommand("hat").setExecutor(new HatCommand());
+        this.getCommand("item").setExecutor(new ItemCommand());
+        this.getCommand("item").setTabCompleter(new ItemCommand());
+        this.getCommand("memory").setExecutor(new MemoryCommand());
         this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
         this.getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", this);
 

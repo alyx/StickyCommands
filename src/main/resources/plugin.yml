@@ -26,3 +26,9 @@ commands:
     description: Set yourself to AFK
   hat:
     description: Have a hat!
+  item:
+    description: Give yourself items!
+    aliases: [i,give]
+  memory:
+    description: check server memory!
+    aliases: [lag,elag,egc,mem,emem,memory,ememory,uptime,euptime,tps,etps,entities,eentities]
