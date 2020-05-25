@@ -56,20 +56,7 @@ public class ItemCommand implements CommandExecutor, TabCompleter {
 
         ItemStack is = new ItemStack(mat, arg); // uuw lmao thanks. Sometimes i'm retarded
 
-        String itemName = null;
-        if (args.length > 2) {
-            String[] metaAction = args[2].split(":");
-            if (metaAction[0].equalsIgnoreCase("name"))
-                itemName = ChatColor.translateAlternateColorCodes('&', metaAction[1].replace("_", ""));
-        }
-
-        ItemMeta isMeta = is.getItemMeta();
-        if (itemName != null)
-            isMeta.setDisplayName(itemName);
-
-        is.setItemMeta(isMeta);
-
-        is.addEnchantments(getEnchants(args));
+        is = applyMetaTags(is, args);
 
         //lmao I love this
         // Java is dumb, and our int MUST be final to go into this hashmap....
@@ -98,27 +85,52 @@ public class ItemCommand implements CommandExecutor, TabCompleter {
         return false;
     }
 
-    HashMap<Enchantment, Integer> getEnchants(String... commandArgument) {
+    ItemStack applyMetaTags(ItemStack is, String... commandArgument) {
+        ItemMeta isMeta = is.getItemMeta();
         HashMap<Enchantment, Integer> enchMap = new HashMap<>();
+
         for(String arg : commandArgument) {
             String[] metaCheck = arg.split(":");
             if(metaCheck.length < 1) continue;
-            if(metaCheck[0].equalsIgnoreCase("enchantment")) {
-                if(metaCheck.length < 3) continue;
-                String enchString = metaCheck[1];
-                Enchantment enchObj = Enchantment.getByKey(NamespacedKey.minecraft(enchString)); // I hate this, but it should work uuw
-                if(enchObj == null) continue;
 
-                int enchLevel = 1;
-                if(metaCheck[2] != null) {
-                    if(!TranslationUtil.isInteger(metaCheck[2])) continue;
-                    enchLevel = Integer.parseInt(metaCheck[2]);
-                }
+            switch(metaCheck[0]) {
+                case "name":
+                    if(metaCheck.length < 2) continue;
+                    String itemName = metaCheck[0].replace("_", " ");
+                    itemName = ChatColor.translateAlternateColorCodes('&', itemName);
 
-                enchMap.put(enchObj, enchLevel);
+                    isMeta.setDisplayName(itemName);
+                case "enchant":
+                case "enchantment":
+                    if(metaCheck.length < 3) continue;
+                    String enchString = metaCheck[1];
+                    Enchantment enchObj = Enchantment.getByKey(NamespacedKey.minecraft(enchString));
+                    if(enchObj == null) continue;
+
+                    int enchLevel = 1;
+                    if(metaCheck[2] != null) {
+                        if(!TranslationUtil.isInteger(metaCheck[2])) continue;
+                        enchLevel = Integer.parseInt(metaCheck[2]);
+                    }
+
+                    enchMap.put(enchObj, enchLevel);
+                case "lore":
+                    if(metaCheck.length < 2) continue;
+                    String[] lore = metaCheck[1].split(",");
+                    ArrayList<String> itemLore = new ArrayList<>();
+                    for(String loreString : lore) {
+                        loreString = loreString.replace("_", " ");
+                        itemLore.add(loreString);
+                    }
+
+                    isMeta.setLore(itemLore);
+
             }
         }
-        return enchMap;
+
+        is.setItemMeta(isMeta);
+        is.addUnsafeEnchantments(enchMap);
+        return is;
     }
 
     @Override
