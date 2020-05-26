@@ -1,6 +1,7 @@
 package com.dumbdogdiner.StickyCommands.Commands;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +34,14 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
 public class ItemCommand implements CommandExecutor, TabCompleter {
+
+    String[] availableModifiers = {
+        "name:",
+        "lore:",
+        "enchantment:",
+        "hideflags:",
+        "owner:",
+    };
 
     // Syntax /item <item> [amount]
     @Override
@@ -154,8 +163,28 @@ public class ItemCommand implements CommandExecutor, TabCompleter {
         if (command.getName().equalsIgnoreCase("item")) {
 
             if (args.length == 1) {
-                options = Stream.of(Material.values()).map(Material::name).collect(Collectors.toList());
+                if(!args[0].equals("")) {
+                    for(Material mat : Material.values()) {
+                        if(mat.toString().toLowerCase().startsWith(args[0].toLowerCase())) {
+                            options.add(mat.toString().toLowerCase());
+                        }
+                    }
+                } else {
+                    options = Stream.of(Material.values()).map(name -> name.toString().toLowerCase()).collect(Collectors.toList());
+                }
                 // thx spigotmc.org :)
+            } else {
+                if(args.length > 1) {
+                    if(!args[args.length - 1].equals("")) {
+                        for(String s : availableModifiers) {
+                            if(s.toLowerCase().startsWith(args[args.length - 1].toLowerCase())) {
+                                options.add(s);
+                            }
+                        }
+                    } else {
+                        options = Arrays.asList(availableModifiers);
+                    }
+                }
             }
         }
 
