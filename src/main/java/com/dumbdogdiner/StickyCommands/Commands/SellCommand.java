@@ -47,7 +47,7 @@ public class SellCommand implements CommandExecutor {
         
         // Defaults to false (?) - check required
         // If the item was marked as not sellable, set the price to 0.0 to prevent selling.
-        isd = (!isCompound.getBoolean("notsellable")) ? 0.0 : isd;
+        isd = (isCompound.getBoolean("notsellable")) ? 0.0 : isd;
         
         // ----- Check NBT Data END -----
         
