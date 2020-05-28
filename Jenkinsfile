@@ -8,15 +8,18 @@ node('docker-cli') {
   docker.image('jcxldn/jenkins-containers:jdk11-mvn-ubuntu').inside {
 
     stage('Setup') {
-      checkout scm
+      def scmVars = checkout scm
+      env.GIT_BRANCH = scmVars.GIT_BRANCH
+      env.GIT_URL = scmVars.GIT_URL
+      env.GIT_COMMIT = scmVars.GIT_COMMIT
       
-      // Download BuildTools and required dependencies.
-      sh 'mkdir -p libs && cd libs && apt-get update && apt-get install git wget -y && wget -O BuildTools.jar https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar'
-      
-    }
-    
-    stage('Setup (BuildTools)') {
-      sh 'cd libs && java -jar BuildTools.jar --rev 1.15.2'
+      withCredentials([usernamePassword(credentialsId: '83a5a4e6-f6ff-4b2c-9d87-b9fb30c1d9d1', passwordVariable: 'GHPKG_PASS', usernameVariable: 'GHPKG_USER')]) {
+	    sh """
+	      set +x
+	      mkdir -p ~/.m2
+	      echo "<settings xmlns='http://maven.apache.org/SETTINGS/1.0.0' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd'><servers><server><id>github</id><username>$GHPKG_USER</username><password>$GHPKG_PASS</password></server></servers></settings>" > ~/.m2/settings.xml
+	    """
+      }
     }
 
     stage('Build') {

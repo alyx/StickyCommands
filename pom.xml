@@ -54,6 +54,11 @@
     </build>
 
     <repositories>
+    	<!-- Requires Authentication!  -->
+        <repository>
+          <id>github</id>
+          <url>https://maven.pkg.github.com/DumbDogDiner/BuildToolsPackages</url>
+        </repository>
         <repository>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
@@ -69,19 +74,17 @@
     </repositories>
 
     <dependencies>
-        <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot</artifactId>
-            <version>1.15.2-R0.1-SNAPSHOT</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/libs/spigot-1.15.2.jar</systemPath>
-        </dependency>
-
-        <dependency>
-            <groupId>com.github.MilkBowl</groupId>
-            <artifactId>VaultAPI</artifactId>
-            <version>1.7</version>
-            <scope>provided</scope>
-        </dependency>
+      <dependency>
+        <groupId>com.dumbdogdiner.buildtools</groupId>
+        <artifactId>spigot</artifactId>
+        <version>1.15.2</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.github.MilkBowl</groupId>
+        <artifactId>VaultAPI</artifactId>
+        <version>1.7</version>
+        <scope>provided</scope>
+      </dependency>
     </dependencies>
 </project>
