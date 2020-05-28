@@ -17,3 +17,19 @@ Light-weight essentials replacement for DumbDogDiner
 | /jump | Takes you to the block that you're lookint at | stickycommands.jump |
 | /afk | Puts you in AFK mode | stickycommands.afk |
 | /mem | Outputs server performance statistics | stickycommands.memory |
+
+# Building
+
+You need to have a `~/.m2/settings.xml` with your credentials for GitHub, or a token with `read:packages` to use our Spigot repository.
+
+```xml
+<settings>
+  <servers>
+    <server>
+      <id>github</id>
+      <username>github username</username>
+      <password>password / token</password>
+    </server>
+  </servers>
+</settings>
+```
