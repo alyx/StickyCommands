@@ -6,6 +6,14 @@ authors: [NotZachery]
 softdepend: [Vault]
 api-version: 1.14
 commands:
+  whip:
+    description: Whip a player
+    aliases: [slap]
+  boop:
+    description: boop :3
+  kill:
+    description: Kill someone or suicide, you choose
+    aliases: [suicide]
   top:
     description: Teleport to the highest block above you
   jump:

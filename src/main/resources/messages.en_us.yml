@@ -39,3 +39,12 @@ hat:
   removedHat: "{PREFIX}&dYour hat has been removed!"
 itemMessage: "{PREFIX}&dGave you &5{AMOUNT} {ITEM}&d!"
 memoryMessage: "{PREFIX}&dServer performance \n&8&l>> &dWorld: &f{WORLD}\n&8&l>> &dMax/Total Memory (MB): &f{MAXMEM}&d/&f{TOTALMEM}\n&8&l>> &dUsed/Free Memory (MB): &f{USEDMEM}&d/&f{FREEMEM}\n&8&l>> &dTPS: &f{TPS}\n&8&l>> &dEntities: &f{ENTITIES}\n&8&l>> &dLoaded Chunks: &f{CHUNKS}"
+
+kill:
+  beenKilled: "{PREFIX}&dThou hast been slain!"
+  killed: "{PREFIX}&dYou slayed {PLAYER}"
+  suicide: "{PREFIX}&dYou magically died!"
+
+whip:
+  youWhipped: "{PREFIX}&dYou whipped &5{PLAYER}&d for &5{DAMAGE}&dhp &5{AMOUNT}&d times!"
+  wereWhipped: "{PREFIX}&dOWWW!! That hurts!!!"

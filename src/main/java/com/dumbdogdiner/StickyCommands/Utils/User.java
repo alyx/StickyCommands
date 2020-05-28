@@ -1,5 +1,6 @@
 package com.dumbdogdiner.StickyCommands.Utils;
 
+import java.util.Random;
 import java.util.TreeMap;
 import java.util.concurrent.CompletableFuture;
 
@@ -7,9 +8,18 @@ import com.dumbdogdiner.StickyCommands.Main;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Sound;
+import org.bukkit.SoundCategory;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
+
+import net.minecraft.server.v1_15_R1.PacketPlayOutAnimation;
+import net.minecraft.server.v1_15_R1.TileEntityShulkerBox.AnimationPhase;
 
 public class User {
 
@@ -53,6 +63,27 @@ public class User {
     }
 
     /**
+     * Send the invalid player message
+     * 
+     * @param player        the player to lookup
+     * @return always true, for use in the command classes.
+     */
+    public static boolean invalidPlayer(CommandSender sender, String player) {
+        try {
+            sender.sendMessage(
+                    Messages.Translate("playerDoesNotExist", new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER) {
+                        {
+                            put("player", player);
+                        }
+                    }));
+        } catch (InvalidConfigurationException ex) {
+            ex.printStackTrace();
+            sender.sendMessage(Messages.serverError);
+        }
+        return true;
+    }
+
+    /**
      * Send the player an invalid syntax message
      * 
      * @param sender the person who is executing the command
@@ -80,5 +111,34 @@ public class User {
         }
 
         return Main.serverName;
+    }
+
+    public static void whipPlayer(CraftPlayer player, int times, double damage) {
+        Random rand = new Random();
+        PacketPlayOutAnimation animation = new PacketPlayOutAnimation(player.getHandle(), 1);
+        
+        int task = Bukkit.getScheduler().scheduleSyncRepeatingTask(self, new Runnable() {
+            @Override
+            public void run() {
+                player.getHandle().playerConnection.sendPacket(animation);
+                Float f = rand.nextFloat() * (4.0F - 3.0F) + 1.0F;
+                Vector direction = new Vector();
+                direction.setX(0.0D + Math.random() - Math.random());
+                direction.setY(Math.random());
+                direction.setZ(0.0D + Math.random() - Math.random());
+                Vector v = direction.multiply(f).setY(0.4F);
+                player.damage(damage);
+                player.setVelocity(v);
+                player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_ATTACK_KNOCKBACK, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                
+            }
+        }, 0L, 10L);
+
+        Bukkit.getScheduler().runTaskLater(self, new Runnable() {
+            @Override
+            public void run() {
+                Bukkit.getScheduler().cancelTask(task);
+            }
+        }, times * 10);
     }
 }

@@ -8,9 +8,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import com.dumbdogdiner.StickyCommands.Commands.AFKComand;
+import com.dumbdogdiner.StickyCommands.Commands.BoopCommand;
 import com.dumbdogdiner.StickyCommands.Commands.HatCommand;
 import com.dumbdogdiner.StickyCommands.Commands.ItemCommand;
 import com.dumbdogdiner.StickyCommands.Commands.JumpCommand;
+import com.dumbdogdiner.StickyCommands.Commands.KillCommand;
 import com.dumbdogdiner.StickyCommands.Commands.MemoryCommand;
 import com.dumbdogdiner.StickyCommands.Commands.SeenCommand;
 import com.dumbdogdiner.StickyCommands.Commands.SellCommand;
@@ -18,6 +20,7 @@ import com.dumbdogdiner.StickyCommands.Commands.SmiteCommand;
 import com.dumbdogdiner.StickyCommands.Commands.SpeedCommand;
 import com.dumbdogdiner.StickyCommands.Commands.StickyCommand;
 import com.dumbdogdiner.StickyCommands.Commands.TopCommand;
+import com.dumbdogdiner.StickyCommands.Commands.WhipCommand;
 import com.dumbdogdiner.StickyCommands.Commands.WorthCommand;
 import com.dumbdogdiner.StickyCommands.Listeners.PlayerConnectionListeners;
 import com.dumbdogdiner.StickyCommands.Listeners.PlayerMovementListener;
@@ -119,6 +122,9 @@ public class Main extends JavaPlugin implements PluginMessageListener {
         this.getCommand("item").setExecutor(new ItemCommand());
         this.getCommand("item").setTabCompleter(new ItemCommand());
         this.getCommand("memory").setExecutor(new MemoryCommand());
+        this.getCommand("boop").setExecutor(new BoopCommand());
+        this.getCommand("whip").setExecutor(new WhipCommand());
+        this.getCommand("kill").setExecutor(new KillCommand());
         this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
         this.getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", this);
 

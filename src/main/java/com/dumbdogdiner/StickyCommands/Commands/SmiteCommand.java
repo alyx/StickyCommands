@@ -54,8 +54,8 @@ public class SmiteCommand implements CommandExecutor {
                     put("playerNick", player.getDisplayName());
                     put("sender", sender.getName());
                     put("locx", Double.toString(Math.round(loc.getX())));
-                    put("locy", Double.toString(Math.round(loc.getX())));
-                    put("locz", Double.toString(Math.round(loc.getX())));
+                    put("locy", Double.toString(Math.round(loc.getY())));
+                    put("locz", Double.toString(Math.round(loc.getZ())));
                 }
             };
             sender.sendMessage(Messages.Translate("youSmitted", Variables));

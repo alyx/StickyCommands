@@ -36,7 +36,7 @@ public class SellCommand implements CommandExecutor {
         for (ItemStack s : invent) {
             if (s != null) {
                 if (s.getType() == is.getType())
-                    isa = isa + s.getAmount();
+                    isa =  + s.getAmount();
             }
         }
         final int javaisdumb = isa;
@@ -88,9 +88,15 @@ public class SellCommand implements CommandExecutor {
                     consumeItem(player, javaisdumb, is.getType());
                     return true;
                 }
-                if (args[0].equalsIgnoreCase("all")) {
-                    sender.sendMessage(Messages.prefix + ChatColor.RED + "Sorry, this hasn't been added yet!");
-                    return false;
+                if (args.length == 1 && args[0].equalsIgnoreCase("all")) {
+                    sender.sendMessage(ChatColor.RED + "Sorry! This hasn't been added yet!");
+/*                     double d = 0;
+                    for (ItemStack s : invent) {
+                        if (s != null) {
+                            d = d + Item.getItem(s.getType().toString().replace("_", "").toLowerCase());
+                        }
+                    } */
+                    return true;
                 }
             }
 

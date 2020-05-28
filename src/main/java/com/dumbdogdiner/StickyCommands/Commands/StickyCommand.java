@@ -10,10 +10,12 @@ import com.dumbdogdiner.StickyCommands.Utils.Messages;
 import com.dumbdogdiner.StickyCommands.Utils.PermissionUtil;
 import com.dumbdogdiner.StickyCommands.Utils.User;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.plugin.Plugin;
 
 public class StickyCommand implements CommandExecutor {
 
@@ -89,10 +91,22 @@ public class StickyCommand implements CommandExecutor {
                 return User.invalidSyntax(sender);
 
             if (args[1].equalsIgnoreCase("debug")) {
-                self.getConfig().set("debug", Boolean.parseBoolean(args[2]));
+                self.getConfig().set("general.debug", Boolean.parseBoolean(args[2]));
                 sender.sendMessage(Messages.prefix + ChatColor.GREEN + "Set debug mode to " + Boolean.parseBoolean(args[2]));
             }
         }
+/* 
+        if (args[0].equalsIgnoreCase("jar")) {
+            if (args.length < 2)
+                return User.invalidSyntax(sender);
+
+            if (args[1].equalsIgnoreCase("reload")) {
+                Plugin plugin = Bukkit.getServer().getPluginManager().getPlugin("StickyCommands");
+                plugin.getPluginLoader().disablePlugin(plugin);
+                plugin.getPluginLoader().enablePlugin(plugin);
+                
+            }
+        } */
         return true;
     }
     
