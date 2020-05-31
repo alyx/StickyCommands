@@ -48,3 +48,7 @@ kill:
 whip:
   youWhipped: "{PREFIX}&dYou whipped &5{PLAYER}&d for &5{DAMAGE}&dhp &5{AMOUNT}&d times!"
   wereWhipped: "{PREFIX}&dOWWW!! That hurts!!!"
+
+powertool:
+  cleared: "{PREFIX}&dCleared your powertool!"
+  assigned: "{PREFIX}&dPowertool created with command &5\"{COMMAND}\""
