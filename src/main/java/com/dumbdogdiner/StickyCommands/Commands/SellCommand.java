@@ -9,11 +9,14 @@ import com.dumbdogdiner.StickyCommands.Utils.Messages;
 import com.dumbdogdiner.StickyCommands.Utils.PermissionUtil;
 import com.dumbdogdiner.StickyCommands.Utils.User;
 
+import net.minecraft.server.v1_15_R1.NBTTagCompound;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.craftbukkit.v1_15_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -31,7 +34,23 @@ public class SellCommand implements CommandExecutor {
         ItemStack is = player.getInventory().getItemInMainHand();
         ItemStack[] invent = player.getInventory().getContents();
         String iss = is.getType().toString().replace("_", " ").toLowerCase();
-        double isd = Item.getItem(is.getType().toString().replace("_", "").toLowerCase());
+        // If the item does not exist in worth.yml. Do not allow selling. Defaults to 0 (not sellable).
+        double isd = Item.getItem(is.getType().toString().replace("_", "").toLowerCase()); 
+        
+        // ----- Check NBT Data -----
+        
+        // Create a *Minecraft Server* ItemStack from the Bukkit one.
+        net.minecraft.server.v1_15_R1.ItemStack nmsis = CraftItemStack.asNMSCopy(is);
+        
+        // Create an NBTTagCompound to access raw NBT data.
+        NBTTagCompound isCompound = (nmsis.hasTag()) ? nmsis.getTag() : new NBTTagCompound();
+        
+        // Defaults to false (?) - check required
+        // If the item was marked as not sellable, set the price to 0.0 to prevent selling.
+        isd = (isCompound.getBoolean("notsellable")) ? 0.0 : isd;
+        
+        // ----- Check NBT Data END -----
+        
         int isa = 0;
         for (ItemStack s : invent) {
             if (s != null) {
@@ -39,7 +58,9 @@ public class SellCommand implements CommandExecutor {
                     isa =  + s.getAmount();
             }
         }
-        final int javaisdumb = isa;
+        // "Fucking Java" - DDD Staff 2020
+        final int isaFinal = isa;
+        final double isdFinal = isd;
         try {
             Map<String, String> var = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER) {
                 {
@@ -61,7 +82,7 @@ public class SellCommand implements CommandExecutor {
                         {
                             put("player", player.getName());
                             put("amount", String.valueOf(is.getAmount()));
-                            put("worth", String.valueOf(is.getAmount() * isd));
+                            put("worth", String.valueOf(is.getAmount() * isdFinal));
                             put("item", iss);
                         }
                     };
@@ -78,14 +99,14 @@ public class SellCommand implements CommandExecutor {
                     Map<String, String> Variables = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER) {
                         {
                             put("player", player.getName());
-                            put("amount", String.valueOf(javaisdumb));
-                            put("worth", String.valueOf(isd * javaisdumb));
+                            put("amount", String.valueOf(isaFinal));
+                            put("worth", String.valueOf(isdFinal * isaFinal));
                             put("item", iss);
                         }
                     };
-                    Main.getEconomy().depositPlayer(player, isd * javaisdumb);
+                    Main.getEconomy().depositPlayer(player, isd * isaFinal);
                     player.sendMessage(Messages.Translate("sellMessage", Variables));
-                    consumeItem(player, javaisdumb, is.getType());
+                    consumeItem(player, isaFinal, is.getType());
                     return true;
                 }
                 if (args.length == 1 && args[0].equalsIgnoreCase("all")) {
