@@ -21,6 +21,8 @@ public class PlayerMovementListener implements Listener {
     public void onMove(PlayerMoveEvent event) throws InvalidConfigurationException {
         Player player = event.getPlayer();
         User u = Main.USERS.get(player.getUniqueId());
+        if (u == null)
+            Main.USERS.put(player.getUniqueId(), new User(player));
 
         Location from = event.getFrom();
         Location to = event.getTo();

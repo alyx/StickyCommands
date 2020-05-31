@@ -280,6 +280,7 @@ public class DatabaseUtil {
                     InsertUser.setString(i++, Search);
                     InsertUser.setString(i++, Search);
                     DebugUtil.sendDebug("Returning lookup ResultSet", this.getClass(), DebugUtil.getLineNumber());
+                    
                     return InsertUser.executeQuery();
                 } 
                 catch (Throwable e) {

@@ -8,18 +8,23 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import com.dumbdogdiner.StickyCommands.Commands.AFKComand;
+import com.dumbdogdiner.StickyCommands.Commands.BoopCommand;
 import com.dumbdogdiner.StickyCommands.Commands.HatCommand;
 import com.dumbdogdiner.StickyCommands.Commands.ItemCommand;
 import com.dumbdogdiner.StickyCommands.Commands.JumpCommand;
+import com.dumbdogdiner.StickyCommands.Commands.KillCommand;
 import com.dumbdogdiner.StickyCommands.Commands.MemoryCommand;
+import com.dumbdogdiner.StickyCommands.Commands.PowertoolCommand;
 import com.dumbdogdiner.StickyCommands.Commands.SeenCommand;
 import com.dumbdogdiner.StickyCommands.Commands.SellCommand;
 import com.dumbdogdiner.StickyCommands.Commands.SmiteCommand;
 import com.dumbdogdiner.StickyCommands.Commands.SpeedCommand;
 import com.dumbdogdiner.StickyCommands.Commands.StickyCommand;
 import com.dumbdogdiner.StickyCommands.Commands.TopCommand;
+import com.dumbdogdiner.StickyCommands.Commands.WhipCommand;
 import com.dumbdogdiner.StickyCommands.Commands.WorthCommand;
 import com.dumbdogdiner.StickyCommands.Listeners.PlayerConnectionListeners;
+import com.dumbdogdiner.StickyCommands.Listeners.PlayerInteractionListener;
 import com.dumbdogdiner.StickyCommands.Listeners.PlayerMovementListener;
 import com.dumbdogdiner.StickyCommands.Utils.Configuration;
 import com.dumbdogdiner.StickyCommands.Utils.DatabaseUtil;
@@ -102,8 +107,9 @@ public class Main extends JavaPlugin implements PluginMessageListener {
             getLogger().info("Worth and selling commands are disabled in this server, skipping commmand registration");
         }
 
-        DebugUtil.sendDebug("Attempting to register PlayerMovementListener", this.getClass(), DebugUtil.getLineNumber());
+        DebugUtil.sendDebug("Attempting to register listeners", this.getClass(), DebugUtil.getLineNumber());
         getServer().getPluginManager().registerEvents(new PlayerMovementListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerInteractionListener(), this);
 
         for (Player p : Bukkit.getOnlinePlayers()) {
             USERS.put(p.getUniqueId(), new User(p));
@@ -119,6 +125,10 @@ public class Main extends JavaPlugin implements PluginMessageListener {
         this.getCommand("item").setExecutor(new ItemCommand());
         this.getCommand("item").setTabCompleter(new ItemCommand());
         this.getCommand("memory").setExecutor(new MemoryCommand());
+        this.getCommand("boop").setExecutor(new BoopCommand());
+        this.getCommand("whip").setExecutor(new WhipCommand());
+        this.getCommand("kill").setExecutor(new KillCommand());
+        this.getCommand("powertool").setExecutor(new PowertoolCommand());
         this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
         this.getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", this);
 

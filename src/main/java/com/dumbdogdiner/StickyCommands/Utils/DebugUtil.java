@@ -47,7 +47,7 @@ public class DebugUtil {
      * @param line The line number
     */
     public static void sendDebug(String message, Class<?> javaClass, Integer line) {
-        if (self.getConfig().getBoolean("debug") == true) {
+        if (self.getConfig().getBoolean("general.debug") == true) {
             System.out.println("["+javaClass.getSimpleName()+": "+line+"] " + message);
         }
     }
