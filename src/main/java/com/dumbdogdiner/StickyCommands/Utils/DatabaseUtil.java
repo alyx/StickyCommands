@@ -118,6 +118,7 @@ public class DatabaseUtil {
                         UpdateUser(UUID, PlayerName, IPAddress, LastLogin, true, true);
                         return true;
                     }
+                    CheckUser.close();
 
                     // Preapre a statement
                     DebugUtil.sendDebug("Preparing a statement...", this.getClass(), DebugUtil.getLineNumber());
@@ -138,6 +139,7 @@ public class DatabaseUtil {
                     DebugUtil.sendDebug("Attempting to execute update...", this.getClass(), DebugUtil.getLineNumber());
                     InsertUser.executeUpdate();
                     DebugUtil.sendDebug("Update was successful!", this.getClass(), DebugUtil.getLineNumber());
+                    InsertUser.close();
                 } catch (Throwable e) {
                     e.printStackTrace();
                     return false;
@@ -181,20 +183,20 @@ public class DatabaseUtil {
                     ResultSet results = CheckUser.executeQuery();
                     if (!results.next()) {
                         DebugUtil.sendDebug("User has joined before, but is not in the database, inserting user...",
-                                this.getClass(), DebugUtil.getLineNumber());
+                        this.getClass(), DebugUtil.getLineNumber());
                         Timestamp FirstLogin = TimeUtil.TimestampNow();
                         InsertUser(UUID, PlayerName, IPAddress, FirstLogin, LastLogin, true);
                         return true;
                     }
-
+                    
                     DebugUtil.sendDebug("Preparing statment for getting TimesConnected", this.getClass(),
-                            DebugUtil.getLineNumber());
+                    DebugUtil.getLineNumber());
                     PreparedStatement gtc = connection
-                            .prepareStatement(String.format("SELECT TimesConnected FROM Users WHERE UUID = ?"));
+                    .prepareStatement(String.format("SELECT TimesConnected FROM Users WHERE UUID = ?"));
                     gtc.setString(1, UUID);
-
+                    
                     DebugUtil.sendDebug("Executing TimesConnected query...", this.getClass(),
-                            DebugUtil.getLineNumber());
+                    DebugUtil.getLineNumber());
                     ResultSet gtc2 = gtc.executeQuery();
                     int tc = 1;
                     if (gtc2.next()) {
@@ -204,7 +206,8 @@ public class DatabaseUtil {
                             tc = 0;
                         }
                     }
-
+                    CheckUser.close();
+                    gtc.close();
                     if (IsJoining) {
                         DebugUtil.sendDebug("User is joining, attempting to communicate with bungeecord",
                                 this.getClass(), DebugUtil.getLineNumber());
@@ -228,6 +231,7 @@ public class DatabaseUtil {
                                 DebugUtil.getLineNumber());
                         UpdateUser.executeUpdate();
                         DebugUtil.sendDebug("UpdateUser was successful", this.getClass(), DebugUtil.getLineNumber());
+                        UpdateUser.close();
                         return true;
                     }
 
@@ -245,6 +249,7 @@ public class DatabaseUtil {
                     DebugUtil.sendDebug("Attemping to execute update...", this.getClass(), DebugUtil.getLineNumber());
                     DebugUtil.sendDebug("UpdateUserOffline was successful", this.getClass(), DebugUtil.getLineNumber());
                     UpdateUserOffline.executeUpdate();
+                    UpdateUserOffline.close();
                 } catch (Throwable e) {
                     e.printStackTrace();
                     return false;
@@ -280,8 +285,9 @@ public class DatabaseUtil {
                     InsertUser.setString(i++, Search);
                     InsertUser.setString(i++, Search);
                     DebugUtil.sendDebug("Returning lookup ResultSet", this.getClass(), DebugUtil.getLineNumber());
-                    
-                    return InsertUser.executeQuery();
+                    ResultSet result = InsertUser.executeQuery();
+                    InsertUser.close();
+                    return result;
                 } 
                 catch (Throwable e) {
                     e.printStackTrace();
@@ -318,6 +324,7 @@ public class DatabaseUtil {
                         UpdateSpeed.setString(i++, uuid);
                         DebugUtil.sendDebug("Attempting to execute update...", this.getClass(), DebugUtil.getLineNumber());
                         UpdateSpeed.executeUpdate();
+                        UpdateSpeed.close();
                         DebugUtil.sendDebug("UpdateSpeed was successfull", this.getClass(), DebugUtil.getLineNumber());
                     } 
                     else if (SpeedType == "FlySpeed") {
@@ -328,6 +335,7 @@ public class DatabaseUtil {
                         UpdateSpeed.setString(i++, uuid);
                         DebugUtil.sendDebug("Attempting to execute update...", this.getClass(), DebugUtil.getLineNumber());
                         UpdateSpeed.executeUpdate();
+                        UpdateSpeed.close();
                         DebugUtil.sendDebug("UpdateSpeed was successfull", this.getClass(), DebugUtil.getLineNumber());
                     }
                     return true;
@@ -375,6 +383,7 @@ public class DatabaseUtil {
                             DebugUtil.sendDebug("WalkSpeed was not null, returning result...", this.getClass(), DebugUtil.getLineNumber());
                             return result.getFloat("WalkSpeed");
                         }
+                        UpdateSpeed.close();
                     } 
                     else if (SpeedType == "FlySpeed") {
                         DebugUtil.sendDebug("SpeedType is FlySpeed, preparing statement", this.getClass(), DebugUtil.getLineNumber());
@@ -393,6 +402,7 @@ public class DatabaseUtil {
                             DebugUtil.sendDebug("FlySpeed was not null, returning result...", this.getClass(), DebugUtil.getLineNumber());
                             return result.getFloat("FlySpeed");
                         }
+                        UpdateSpeed.close();
                         return 0.1F;
                     }
                 } 

@@ -27,7 +27,6 @@ public class WhipCommand implements CommandExecutor {
         if (args.length < 1)
             return User.invalidSyntax(sender);
 
-        CraftPlayer player = (CraftPlayer) sender;
         CraftPlayer target = (CraftPlayer) Bukkit.getPlayer(args[0]);
 
         if (target == null)
