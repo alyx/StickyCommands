@@ -28,14 +28,14 @@ public class SpeedCommand implements CommandExecutor {
             return false;
         }
 
-        if (!TranslationUtil.isInteger(args[0])) {
+        if (!(args[0].matches("\\d*\\.?\\d+"))) {
             sender.sendMessage(Messages.invalidSyntax);
             return false;
         }
         
         Player user = (Player) sender;
         // hhhhh, this needs to be a float so it divides correctly......
-        float arg = Integer.parseInt(args[0]);
+        Float arg = Float.parseFloat(args[0]);
         // Minecraft uses floats for the player speed, so just divide by 10.
         Float speed = arg / 10;
         DebugUtil.sendDebug(speed.toString() + " < Speed for " + sender.getName(), this.getClass(), DebugUtil.getLineNumber());
