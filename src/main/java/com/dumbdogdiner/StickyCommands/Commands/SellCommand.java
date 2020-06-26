@@ -9,14 +9,14 @@ import com.dumbdogdiner.StickyCommands.Utils.Messages;
 import com.dumbdogdiner.StickyCommands.Utils.PermissionUtil;
 import com.dumbdogdiner.StickyCommands.Utils.User;
 
-import net.minecraft.server.v1_15_R1.NBTTagCompound;
+import net.minecraft.server.v1_16_R1.NBTTagCompound;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.v1_15_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_16_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -40,7 +40,7 @@ public class SellCommand implements CommandExecutor {
         // ----- Check NBT Data -----
         
         // Create a *Minecraft Server* ItemStack from the Bukkit one.
-        net.minecraft.server.v1_15_R1.ItemStack nmsis = CraftItemStack.asNMSCopy(is);
+        net.minecraft.server.v1_16_R1.ItemStack nmsis = CraftItemStack.asNMSCopy(is);
         
         // Create an NBTTagCompound to access raw NBT data.
         NBTTagCompound isCompound = (nmsis.hasTag()) ? nmsis.getTag() : new NBTTagCompound();

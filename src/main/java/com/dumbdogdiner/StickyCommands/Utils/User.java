@@ -13,13 +13,13 @@ import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_16_R1.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import net.minecraft.server.v1_15_R1.PacketPlayOutAnimation;
-import net.minecraft.server.v1_15_R1.TileEntityShulkerBox.AnimationPhase;
+import net.minecraft.server.v1_16_R1.PacketPlayOutAnimation;
+import net.minecraft.server.v1_16_R1.TileEntityShulkerBox.AnimationPhase;
 
 public class User {
 
