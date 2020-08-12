@@ -14,6 +14,9 @@ public class Item {
     private static File CustomConfigFile;
     private static FileConfiguration CustomConfig;
     private static Item localself = null;
+    private static String[] modifierPool = {
+        "white", "orange", "magenta", "lightblue", "yellow", "lime", "pink", "gray", "lightgray", "cyan", "purple", "blue", "brown", "green", "red", "black", "oak", "spruce", "birch", "jungle", "acacia", "darkoak"
+    };
 
     // Initialized by our GetMessages() function.
     protected Item() {
@@ -60,10 +63,22 @@ public class Item {
     public static double getItem(String item) {
         getItems();
         double worth = Item.CustomConfig.getDouble(item);
-        if (worth == 0)
-            return 0;
+        if (worth == 0) {
+            return GeneralizeItem(item);
+        }
 
         return worth;
+    }
+
+    private static double GeneralizeItem(String item) {
+        for(String s : modifierPool) {
+            if(item.startsWith(s)) {
+                String it = item.replace(s, "");
+                return Item.CustomConfig.getDouble(it);
+            }
+        }
+
+        return 0;
     }
 
     /**
