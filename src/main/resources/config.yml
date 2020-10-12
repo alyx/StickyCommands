@@ -1,12 +1,18 @@
-general:
-  # Allow anyone who has been /op'ed to bypass all permission checks
-  # (effectively making them have the same control as console)
-  opsBypassPermissions: true
-  # The translation file you wish to use. (Default: messages.en_us.yml)
-  translationFile: "messages.en_us.yml"
-  worthFile: "worth.yml"
-  allowSelling: true
-  debug: false
+# Allow anyone who has been /op'ed to bypass all permission checks
+# (effectively making them have the same control as console)
+ops-bypass-permissions: true
+
+# The translation file you wish to use. (Default: messages.en_us.yml)
+translation-file: "messages.en_us.yml"
+
+worth-file: "worth.yml"
+allow-selling: true
+
+# Print debug statements to the console
+debug: false
+
+#The name of the server StickyCommands is running on
+server: "lobby"
 
 database:
   host: localhost
@@ -14,7 +20,8 @@ database:
   name: dbname
   username: root
   password: root
+  table-prefix: stickycommands_
   # Maximum number of times mysql will try to reconnect before giving up.
-  maxReconnects: 5
+  max-reconnects: 5
   # Use SSL?
-  useSSL: false
+  use-ssl: false

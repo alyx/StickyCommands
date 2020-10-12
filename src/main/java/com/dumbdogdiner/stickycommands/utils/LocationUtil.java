@@ -11,7 +11,6 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 
-// This is some black magic fuckery shit from essentials, it Just Works™
 public class LocationUtil {
 
     // The player can stand inside these materials
@@ -129,9 +128,10 @@ public class LocationUtil {
         return getSafeDestination(loc);
     }
 
-    public static Location getSafeDestination(final Location loc) throws Exception {
+    public static Location getSafeDestination(final Location loc) /* throws Exception */ {
         if (loc == null || loc.getWorld() == null) {
             // TODO: throw an exception
+            return null;
         }
         final World world = loc.getWorld();
         int x = loc.getBlockX();
@@ -178,6 +178,7 @@ public class LocationUtil {
                 y = world.getHighestBlockYAt(x, z);
                 if (x - 48 > loc.getBlockX()) {
                     // TODO: Throw exception
+                    return null;
                 }
             }
         }
