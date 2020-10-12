@@ -1,45 +1,7 @@
-name: ${project.name}
-version: ${project.version}
+name: StickyCommands
+version: 2.0.0
 main: com.dumbdogdiner.stickycommands.Main
 load: STARTUP
 authors: [NotZachery]
 softdepend: [Vault]
-api-version: 1.16.1
-commands:
-  whip:
-    description: Whip a player
-    aliases: [slap]
-  powertool:
-    description: Assign a tool a magical power!
-    aliases: [pt]
-  boop:
-    description: boop :3
-  kill:
-    description: Kill someone or suicide, you choose
-    aliases: [suicide,slay]
-  top:
-    description: Teleport to the highest block above you
-  jump:
-    description: Jump to the block you are looking at
-  speed:
-    description: Set your walk or fly speed
-  seen:
-    description: Check when a player was last online
-  stickycommands:
-    description: Reload the plugin
-  smite:
-    description: Smite a player
-  worth:
-    description: Get the worth of an item
-  sell:
-    description: Sell items in your hand, or inventory
-  afk:
-    description: Set yourself to AFK
-  hat:
-    description: Have a hat!
-  item:
-    description: Give yourself items!
-    aliases: [i,give]
-  memory:
-    description: check server memory!
-    aliases: [lag,elag,egc,mem,emem,memory,ememory,uptime,euptime,tps,etps,entities,eentities]
+api-version: 1.16
