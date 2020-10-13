@@ -18,7 +18,7 @@ import com.dumbdogdiner.stickycommands.commands.Top;
 import com.dumbdogdiner.stickycommands.commands.Worth;
 import com.dumbdogdiner.stickycommands.listeners.PlayerInteractionListener;
 import com.dumbdogdiner.stickycommands.listeners.PlayerJoinListener;
-import com.dumbdogdiner.stickycommands.listeners.PlayerMoveListener;
+import com.dumbdogdiner.stickycommands.listeners.AfkEventListener;
 import com.dumbdogdiner.stickycommands.utils.Database;
 import com.dumbdogdiner.stickycommands.utils.Item;
 import com.dumbdogdiner.stickyapi.StickyAPI;
@@ -164,7 +164,7 @@ public class Main extends JavaPlugin {
     boolean registerEvents() {
         getServer().getPluginManager().registerEvents(new PlayerInteractionListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
-        getServer().getPluginManager().registerEvents(new PlayerMoveListener(), this);
+        getServer().getPluginManager().registerEvents(new AfkEventListener(), this);
         return true;
     }
 
