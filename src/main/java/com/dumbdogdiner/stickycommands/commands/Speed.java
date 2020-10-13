@@ -46,9 +46,9 @@ public class Speed extends AsyncCommand {
             return ExitCode.EXIT_INVALID_SYNTAX;
 
         if (((Player)sender).isFlying()) {
-            setSpeed(user, SpeedType.FLY, speed);
+            user.setSpeed(SpeedType.FLY, speed);
         } else {
-            setSpeed(user, SpeedType.WALK, speed);
+            user.setSpeed(SpeedType.WALK, speed);
         }
         variables.put("speed", a.get("speed"));
         sender.sendMessage(locale.translate("speed-message", variables));
@@ -87,18 +87,5 @@ public class Speed extends AsyncCommand {
             });
         }
         return null;
-    }
-
-
-    void setSpeed(User user, SpeedType type, Float speed) {
-        user.setSpeed(type, speed < 1.9F 
-        ? (speed > 0F
-            ? (type == SpeedType.FLY
-                    ? speed
-                    : speed + 0.1F > 1F
-                        ? speed
-                        : speed + 0.1F)
-            : 0.1F) 
-        : 1F);
     }
 }

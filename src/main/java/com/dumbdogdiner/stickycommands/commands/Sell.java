@@ -1,5 +1,6 @@
 package com.dumbdogdiner.stickycommands.commands;
 
+import java.util.List;
 import java.util.TreeMap;
 
 import com.dumbdogdiner.stickycommands.Main;
@@ -112,6 +113,11 @@ public class Sell extends AsyncCommand {
     @Override
     public void onError(CommandSender sender, String label, String[] args) {
         sender.sendMessage(locale.translate("server-error", variables));
+    }
+
+    @Override
+    public List<String> tabComplete(CommandSender sender, String alias, String[] args) {
+        return null;
     }
     
     public boolean consumeItem(Player player, int count, Material mat) {

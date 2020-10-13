@@ -56,6 +56,15 @@ public class User implements Cacheable {
     }
 
     public void setSpeed(SpeedType type, Float speed) {
+        speed = speed < 1.9F 
+                ? (speed > 0F
+                    ? (type == SpeedType.FLY
+                            ? speed
+                            : speed + 0.1F > 1F
+                                ? speed
+                                : speed + 0.1F)
+                    : 0.1F) 
+                : 1F;
         switch(type) {
             case FLY:
                 Bukkit.getPlayer(this.uniqueId).setFlySpeed(speed);
