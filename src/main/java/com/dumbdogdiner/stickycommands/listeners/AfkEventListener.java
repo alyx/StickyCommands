@@ -6,7 +6,9 @@ import com.dumbdogdiner.stickycommands.Main;
 import com.dumbdogdiner.stickycommands.User;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -18,22 +20,33 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
+import org.bukkit.event.player.PlayerToggleSprintEvent;
 
 public class AfkEventListener implements Listener {
     TreeMap<String, String> variables = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
-
+    
     @EventHandler(priority = EventPriority.MONITOR)
     public void onMove(PlayerMoveEvent event) {
+        User user = Main.getInstance().getOnlineUser(event.getPlayer().getUniqueId());
+        // Let's make sure this is only a 3 block buffer!
+        if (user.getBlockBuffer().size() > 3)
+        user.getBlockBuffer().remove(user.getBlockBuffer().iterator().next()); // Remove the first entry
+        
         var player = event.getPlayer();
-
+        
         var from = event.getFrom();
         var to = event.getTo();
-
-        var x = Math.floor(from.getX());
-        var z = Math.floor(from.getZ());
-        var y = Math.floor(from.getY());
-
-        if (Math.floor(to.getX()) != x || Math.floor(to.getZ()) != z || Math.floor(to.getY()) != y) {
+        var hasMoved = (Math.floor(to.getX()) != Math.floor(from.getX()) || Math.floor(to.getY()) != Math.floor(from.getY()) || Math.floor(to.getZ()) != Math.floor(from.getZ()));
+        
+        if (hasMoved) {
+            user.getBlockBuffer().add(event.getFrom().getBlock().getType());
+        }
+        
+        if (hasMoved
+        && (player.getWorld().getBlockAt(event.getTo()).getType() != Material.WATER) 
+        && (!player.isSwimming() || !player.isInsideVehicle() || !player.isGliding()) 
+        && (!user.getBlockBuffer().contains(Material.WATER))
+        && (!nearbyContainsPlayer(player, 1, 1, 1))) {
             checkAfk(player, event);
         }
     }
@@ -45,6 +58,11 @@ public class AfkEventListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onToggleSneak(PlayerToggleSneakEvent event) {
+        checkAfk(event.getPlayer(), event);
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onToggleSprint(PlayerToggleSprintEvent event) {
         checkAfk(event.getPlayer(), event);
     }
 
@@ -67,11 +85,19 @@ public class AfkEventListener implements Listener {
         var user = Main.getInstance().getOnlineUser(player.getUniqueId());
         if (user.isAfk()) {
             variables.put("player", player.getName());
-            System.out.println(variables.size());
             user.setAfk(false);
             for (var p : Bukkit.getOnlinePlayers()) {
                 p.sendMessage(Main.getInstance().getLocaleProvider().translate("not-afk-message", variables));
             }
         }
+    }
+
+    boolean nearbyContainsPlayer(Player player, Integer x, Integer y, Integer z) {
+        for (Entity entity : player.getWorld().getNearbyEntities(player.getLocation(), x, y, z)) {
+            // We need to check if something like a sheep or villager moved the player! So we can just use LivingEntity
+            if (entity instanceof LivingEntity && !(entity.equals(player)))
+                return true;
+        }
+        return false;
     }
 }

@@ -1,10 +1,12 @@
 package com.dumbdogdiner.stickycommands;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 import com.dumbdogdiner.stickyapi.common.cache.Cacheable;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,6 +33,12 @@ public class User implements Cacheable {
     @Getter
     @Setter
     private boolean afk;
+
+   // I spent an hour trying to come up with a good solution to this weird problem where if you are being pushed by water, and on the corner water block, your from block is considered air and not water...
+   // So, we need to keep a buffer of the last 3 blocks the player stood in, and if it contains water, we'll consider it as the water pushing them, since there's no event for
+   // checking if a player is being pushed by water!
+    @Getter
+    private ArrayList<Material> blockBuffer = new ArrayList<Material>();
 
     public User(String username, UUID uniqueId) {
         this.name = username;
