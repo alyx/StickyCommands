@@ -30,7 +30,7 @@ public class AfkEventListener implements Listener {
         User user = Main.getInstance().getOnlineUser(event.getPlayer().getUniqueId());
         // Let's make sure this is only a 3 block buffer!
         if (user.getBlockBuffer().size() > 3)
-        user.getBlockBuffer().remove(user.getBlockBuffer().iterator().next()); // Remove the first entry
+            user.getBlockBuffer().remove(user.getBlockBuffer().iterator().next()); // Remove the first entry
         
         var player = event.getPlayer();
         
@@ -39,16 +39,16 @@ public class AfkEventListener implements Listener {
         var hasMoved = (Math.floor(to.getX()) != Math.floor(from.getX()) || Math.floor(to.getY()) != Math.floor(from.getY()) || Math.floor(to.getZ()) != Math.floor(from.getZ()));
         
         if (hasMoved) {
+            // Always add to our block buffer
             user.getBlockBuffer().add(event.getFrom().getBlock().getType());
-        }
-        
-        if (hasMoved
-        && (player.getWorld().getBlockAt(event.getTo()).getType() != Material.WATER) 
-        && (!player.isSwimming() || !player.isInsideVehicle() || !player.isGliding()) 
-        && (!user.getBlockBuffer().contains(Material.WATER))
-        && (!nearbyContainsPlayer(player, 1, 1, 1))) {
-            checkAfk(player, event);
-        }
+            if ((player.getWorld().getBlockAt(event.getTo()).getType() != Material.WATER) 
+                && (!player.isSwimming() || !player.isInsideVehicle() || !player.isGliding())
+                && !user.getBlockBuffer().contains(Material.WATER)
+                && (!nearbyContainsPlayer(player, 1, 1, 1))) {
+                    // Reset their AFK status
+                    checkAfk(player, event);
+            }
+        }        
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -83,11 +83,13 @@ public class AfkEventListener implements Listener {
 
     private void checkAfk(Player player, PlayerEvent event) {
         var user = Main.getInstance().getOnlineUser(player.getUniqueId());
+        user.setAfkTime(0);
         if (user.isAfk()) {
             variables.put("player", player.getName());
+            // Reset their AFK time
             user.setAfk(false);
             for (var p : Bukkit.getOnlinePlayers()) {
-                p.sendMessage(Main.getInstance().getLocaleProvider().translate("not-afk-message", variables));
+                p.sendMessage(Main.getInstance().getLocaleProvider().translate("afk.not-afk", variables));
             }
         }
     }

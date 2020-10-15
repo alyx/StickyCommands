@@ -8,6 +8,9 @@ translation-file: "messages.en_us.yml"
 worth-file: "worth.yml"
 allow-selling: true
 
+# Amount of time before being put into AFK mode (in seconds)
+afk-timeout: 300
+
 # Print debug statements to the console
 debug: false
 

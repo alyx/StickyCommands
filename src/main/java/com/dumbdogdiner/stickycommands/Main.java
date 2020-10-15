@@ -3,6 +3,7 @@ package com.dumbdogdiner.stickycommands; // package owo
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -18,6 +19,7 @@ import com.dumbdogdiner.stickycommands.commands.Top;
 import com.dumbdogdiner.stickycommands.commands.Worth;
 import com.dumbdogdiner.stickycommands.listeners.PlayerInteractionListener;
 import com.dumbdogdiner.stickycommands.listeners.PlayerJoinListener;
+import com.dumbdogdiner.stickycommands.runnables.AfkTimeRunnable;
 import com.dumbdogdiner.stickycommands.listeners.AfkEventListener;
 import com.dumbdogdiner.stickycommands.utils.Database;
 import com.dumbdogdiner.stickycommands.utils.Item;
@@ -37,6 +39,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import lombok.Getter;
+import net.luckperms.api.LuckPerms;
 import net.milkbowl.vault.economy.Economy;
 
 public class Main extends JavaPlugin {
@@ -47,17 +50,34 @@ public class Main extends JavaPlugin {
     @Getter
     static Main instance;
 
+    @Getter
+    protected Boolean enabled = false;
+
     /**
      * Thread pool for the execution of asynchronous tasks.
      */
     @Getter
-    ExecutorService pool = Executors.newFixedThreadPool(3);
+    protected ExecutorService pool = Executors.newFixedThreadPool(3);
 
     /**
      * Cache of all online users.
      */
     @Getter
-    Cache<User> onlineUserCache = new Cache<>(User.class);
+    protected Cache<User> onlineUserCache = new Cache<>(User.class);
+
+
+    /**
+     * AFK TimerTask that tracks how long a player has been AFK
+     */
+    @Getter
+    protected Timer afkRunnable = new Timer();
+    
+
+    /**
+     * The server's uptime in seconds
+     */
+    @Getter
+    protected Long upTime = TimeUtil.getUnixTime();
 
     /**
      * The current vault economy instance.
@@ -68,61 +88,70 @@ public class Main extends JavaPlugin {
     @Getter
     LocaleProvider localeProvider;
 
+    @Getter
+    LuckPerms luckPerms;
+
     /**
      * The database connected
      */
     @Getter
     Database database;
 
-    @Getter
-    final Long upTime = TimeUtil.getUnixTime();
-
-    List<Command> commandList = new ArrayList<Command>();
-
+    
     @Override
     public void onLoad() {
+        enabled = true;
         instance = this;
         // Set our thread pool
         StickyAPI.setPool(pool);
         new Item();
     }
-
+    
     @Override
     public void onEnable() {
         if (!StartupUtil.setupConfig(this))
-            return;
-
+        return;
+        
         this.localeProvider = StartupUtil.setupLocale(this, this.localeProvider);
         if (this.localeProvider == null)
-            return;
-
+        return;
+        
         if (!setupEconomy())
-            getLogger().severe("Disabled economy commands due to no Vault dependency found!");
-
+        getLogger().severe("Disabled economy commands due to no Vault dependency found!");
+        
+        if (!setupLuckPerms())
+        getLogger().severe("Disabled economy commands due to no LuckPerms dependency found!");
+        
+        
+        
         // this.database = new Database();
         // database.createMissingTables();
-
+        
         // Register currently online users - in case of a reload.
         // (stop reloading spigot, please.)
         for (Player player : Bukkit.getOnlinePlayers()) {
             this.onlineUserCache.put(User.fromPlayer(player));
         }
-
+        
         if (!registerEvents())
-            return;
-
+        return;
+        
         if (!registerCommands())
-            return;
-
+        return;
+        
+        afkRunnable.scheduleAtFixedRate(new AfkTimeRunnable(), 0x3E8L, 0x3E8L); // We must run this every ONE second!
+        
         getLogger().info("StickyCommands started successfully!");
     }
-
+    
     @Override
     public void onDisable() {
         saveConfig(); // Save our config
         // database.terminate(); // Terminate our database connection
+        afkRunnable.cancel(); // Stop our AFK runnable
+        enabled = false;
     }
-
+    
     /**
      * Setup the vault economy instance.
      */
@@ -137,17 +166,30 @@ public class Main extends JavaPlugin {
         economy = rsp.getProvider();
         return economy != null;
     }
-
+    
+    /**
+     * Setup the luckperms instance.
+     */
+    private boolean setupLuckPerms() {
+        RegisteredServiceProvider<LuckPerms> provider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
+        if (provider != null) {
+            luckPerms = provider.getProvider();
+            return true;
+        }
+        return false;
+    }
+    
     /**
      * Register all the commands!
      */
     boolean registerCommands() {
+        List<Command> commandList = new ArrayList<Command>();
         // Register economy based commands only if the economy provider is not null.
         if (economy != null) {
             commandList.add(new Sell(this));
             commandList.add(new Worth(this));
         }
-
+        
         commandList.add(new Kill(this));
         commandList.add(new Jump(this));
         commandList.add(new Memory(this));

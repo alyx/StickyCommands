@@ -33,7 +33,11 @@ public class User implements Cacheable {
     @Getter
     @Setter
     private boolean afk;
-
+    
+    @Getter
+    @Setter
+    private Integer afkTime = 0;
+    
    // I spent an hour trying to come up with a good solution to this weird problem where if you are being pushed by water, and on the corner water block, your from block is considered air and not water...
    // So, we need to keep a buffer of the last 3 blocks the player stood in, and if it contains water, we'll consider it as the water pushing them, since there's no event for
    // checking if a player is being pushed by water!

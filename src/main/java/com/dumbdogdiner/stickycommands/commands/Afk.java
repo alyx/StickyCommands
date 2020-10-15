@@ -37,15 +37,16 @@ public class Afk extends AsyncCommand {
         
         if (user.isAfk()) {
             user.setAfk(false);
+            user.setAfkTime(0);
             for (Player p : Bukkit.getOnlinePlayers()) {
-                p.sendMessage(Main.getInstance().getLocaleProvider().translate("not-afk-message", variables));
+                p.sendMessage(Main.getInstance().getLocaleProvider().translate("afk.not-afk", variables));
             }
             return ExitCode.EXIT_SUCCESS;
         }
         user.setAfk(true);
         // Bukkit is literally fucking retarded, and I can't use broadcastMessage because that magically doesn't work now! Who knew....
         for (Player p : Bukkit.getOnlinePlayers()) {
-            p.sendMessage(Main.getInstance().getLocaleProvider().translate("afk-message", variables));
+            p.sendMessage(Main.getInstance().getLocaleProvider().translate("afk.afk", variables));
         }
         
         return ExitCode.EXIT_SUCCESS;
