@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "com.dumbdogdiner"
-version = "2.3.2"
+version = "2.4.0"
 
 repositories {
     mavenCentral()
@@ -23,6 +23,7 @@ dependencies {
     // java deps
     compileOnly "org.projectlombok:lombok:1.18.12"
     annotationProcessor 'org.projectlombok:lombok:1.18.12'
+    implementation 'org.jetbrains:annotations:18.0.0'
 
     // spigot
     compileOnly "org.spigotmc:spigot-api:1.16.2-R0.1-SNAPSHOT"

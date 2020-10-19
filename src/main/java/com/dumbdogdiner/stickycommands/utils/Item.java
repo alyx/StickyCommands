@@ -2,15 +2,20 @@ package com.dumbdogdiner.stickycommands.utils;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.util.TreeMap;
 
 import com.dumbdogdiner.stickycommands.Main;
 import com.dumbdogdiner.stickyapi.common.configuration.InvalidConfigurationException;
 import com.dumbdogdiner.stickyapi.common.configuration.file.FileConfiguration;
 import com.dumbdogdiner.stickyapi.common.configuration.file.YamlConfiguration;
+import com.dumbdogdiner.stickyapi.common.util.Debugger;
 import com.dumbdogdiner.stickyapi.common.util.StringUtil;
 
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.MaterialData;
@@ -20,6 +25,8 @@ import lombok.Getter;
 
 public class Item {
     Main self = Main.getInstance();
+    @Getter
+    static DecimalFormat decimalFormat = new DecimalFormat("0.00"); // We don't want something like 25.3333333333, instead we want 25.33
     static File configFile;
     static FileConfiguration config;
     private static String[] modifierPool = {
@@ -80,14 +87,14 @@ public class Item {
             for (final var s : modifierPool) {
                 if (name.startsWith(s)) {
                     final var it = name.replace(s, "");
-                    return config.getDouble(it);
+                    return Double.valueOf(decimalFormat.format(config.getDouble(it)));
                 }
             }
         }
         if (!isSellable(is))
             return 0.0;
 
-        return worth;
+        return Double.valueOf(decimalFormat.format(worth));
     }
 
     /**
@@ -117,7 +124,7 @@ public class Item {
                 }
             }
         }
-        if (!isSellable())
+        if (!sellable())
             return 0.0;
 
         return worth;
@@ -127,7 +134,7 @@ public class Item {
      * Check if an item has "notsellable" in nbt data
      * @return True if the item can be sold
      */
-    public boolean isSellable() {
+    public boolean sellable() {
         final var meta = this.getItemMeta();
         final var dataStore = meta.getPersistentDataContainer();
         return !dataStore.has(new NamespacedKey(Main.getInstance(), "notsellable"), PersistentDataType.STRING);
@@ -141,4 +148,42 @@ public class Item {
         }
         return false;
     } 
+
+    public void sell(Player player, Boolean sellInventory, TreeMap<String, String> variables, Integer amount) {
+        Debugger debug = new Debugger(getClass());
+        debug.print("selling item " + getName());
+        var database = Main.getInstance().getDatabase();
+        debug.print("database variable declared");
+        if (!sellInventory) {
+            debug.print("Not selling inventory...");
+            Main.getInstance().getEconomy().depositPlayer(player, getWorth() * amount);
+            debug.print("Depositted " + getWorth() * amount + " in " + player.getName() + "'s account");
+            player.getInventory().getItemInMainHand().setAmount(0);
+            debug.print("removed items");
+        } else {
+            Main.getInstance().getEconomy().depositPlayer(player, getWorth() * amount);
+            debug.print("Depositted " + getWorth() * amount + " in " + player.getName() + "'s account");
+            debug.print("removing items...");
+            consumeItem(player, amount, getType());
+        }
+        database.logSell(player.getUniqueId(), this, amount, Double.valueOf(decimalFormat.format(getWorth() * amount)));
+    }
+
+        
+    public boolean consumeItem(Player player, int count, Material mat) {
+        Debugger debug = new Debugger(getClass());
+        ItemStack[] item = player.getInventory().getContents();
+        debug.print("Removing " + count + "items of type " + mat.toString() + " from " + player.getName() +"'s inventory'");
+        for (ItemStack s : item) {
+            if (s != null) {
+                if (s.getType() == mat) {
+                    debug.print("found slot with item, removing");
+                    s.setAmount(0);
+                }
+            }
+        }
+
+        player.updateInventory();
+        return true;
+    }
 }

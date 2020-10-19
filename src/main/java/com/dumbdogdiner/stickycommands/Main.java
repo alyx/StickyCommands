@@ -27,6 +27,7 @@ import com.dumbdogdiner.stickyapi.StickyAPI;
 import com.dumbdogdiner.stickyapi.bukkit.util.StartupUtil;
 import com.dumbdogdiner.stickyapi.common.cache.Cache;
 import com.dumbdogdiner.stickyapi.common.translation.LocaleProvider;
+import com.dumbdogdiner.stickyapi.common.util.Debugger;
 import com.dumbdogdiner.stickyapi.common.util.ReflectionUtil;
 import com.dumbdogdiner.stickyapi.common.util.TimeUtil;
 
@@ -115,8 +116,8 @@ public class Main extends JavaPlugin {
         if (!setupEconomy())
             getLogger().severe("Disabled economy commands due to no Vault dependency found!");
         
-        // this.database = new Database();
-        // database.createMissingTables();
+        this.database = new Database();
+        database.createMissingTables();
         
         // Register currently online users - in case of a reload.
         // (stop reloading spigot, please.)
@@ -137,8 +138,8 @@ public class Main extends JavaPlugin {
     
     @Override
     public void onDisable() {
-        saveConfig(); // Save our config
-        // database.terminate(); // Terminate our database connection
+        reloadConfig(); // Save our config
+        database.terminate(); // Terminate our database connection
         afkRunnable.cancel(); // Stop our AFK runnable
         enabled = false;
     }

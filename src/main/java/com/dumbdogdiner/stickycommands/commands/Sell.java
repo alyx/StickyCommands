@@ -72,26 +72,25 @@ public class Sell extends AsyncCommand {
         variables.put("inventory_worth", Double.toString(worth * inventoryAmount));
         
         if (worth > 0.0) {
-            // a cleaner future way to do this would be to implement a default argument case, and do all of this in a switch statement. I will see if this is possible later.
-            if (!a.exists("sellMode") || a.get("sellMode").equalsIgnoreCase("hand")) {
-                variables.put("amount", String.valueOf(item.getAmount()));
-                variables.put("worth", String.valueOf(item.getWorth() * item.getAmount()));
-                Main.getInstance().getEconomy().depositPlayer(player, worth * item.getAmount());
-                player.getInventory().getItemInMainHand().setAmount(0);
-                player.sendMessage(locale.translate("sell-message", variables));
-                return ExitCode.EXIT_SUCCESS;
-            }
+            switch (a.get("sellMode") == null ? "" : a.get("sellMode").toLowerCase()) {
+                case "hand":
+                case "":
+                    variables.put("amount", String.valueOf(item.getAmount()));
+                    variables.put("worth", String.valueOf(item.getWorth() * item.getAmount()));
+                    player.sendMessage(locale.translate("sell-message", variables));
+                    item.sell(player, false, variables, item.getAmount());
+                    return ExitCode.EXIT_SUCCESS;
 
-            switch (a.get("sellMode").toLowerCase()) {
+
                 case "inventory":
                 case "invent":
                 case "inv":
-                    Main.getInstance().getEconomy().depositPlayer(player, worth * inventoryAmount);
                     variables.put("amount", String.valueOf(inventoryAmount));
-                    variables.put("worth", String.valueOf(item.getWorth() * inventoryAmount));
+                    variables.put("worth", Item.getDecimalFormat().format(item.getWorth() * inventoryAmount));
                     player.sendMessage(locale.translate("sell-message", variables));
-                    consumeItem(player, inventoryAmount, item.getType());
+                    item.sell(player, true, variables, inventoryAmount);
                     return ExitCode.EXIT_SUCCESS;
+
                 default:
                     return ExitCode.EXIT_INVALID_SYNTAX;
             }
@@ -123,20 +122,5 @@ public class Sell extends AsyncCommand {
     @Override
     public List<String> tabComplete(CommandSender sender, String alias, String[] args) {
         return null;
-    }
-    
-    public boolean consumeItem(Player player, int count, Material mat) {
-        ItemStack[] item = player.getInventory().getContents();
-
-        for (ItemStack s : item) {
-            if (s != null) {
-                if (s.getType() == mat) {
-                    s.setAmount(0);
-                }
-            }
-        }
-
-        player.updateInventory();
-        return true;
     }
 }
