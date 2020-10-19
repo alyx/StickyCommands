@@ -57,7 +57,7 @@ public class Sell extends AsyncCommand {
         double percentage = 100.00;
         if(item.hasDurability()) {
             double maxDur = item.getAsItemStack().getType().getMaxDurability();
-            double currDur = maxDur - item.getAsItemStack().getDurability(); 
+            double currDur = maxDur - item.getAsItemStack().getDurability(); //TODO Change to use Damagables
             percentage = Math.round((currDur / maxDur) * 100.00) / 100.00;
 
             if((currDur / maxDur) < 0.4) {
@@ -71,7 +71,8 @@ public class Sell extends AsyncCommand {
         variables.put("hand_worth", Double.toString(worth * item.getAmount()));
         variables.put("inventory_worth", Double.toString(worth * inventoryAmount));
         
-        if (worth != 0.0) {
+        if (worth > 0.0) {
+            // a cleaner future way to do this would be to implement a default argument case, and do all of this in a switch statement. I will see if this is possible later.
             if (!a.exists("sellMode") || a.get("sellMode").equalsIgnoreCase("hand")) {
                 variables.put("amount", String.valueOf(item.getAmount()));
                 variables.put("worth", String.valueOf(item.getWorth() * item.getAmount()));
@@ -90,14 +91,18 @@ public class Sell extends AsyncCommand {
                     variables.put("worth", String.valueOf(item.getWorth() * inventoryAmount));
                     player.sendMessage(locale.translate("sell-message", variables));
                     consumeItem(player, inventoryAmount, item.getType());
-                    return ExitCode.EXIT_SUCCESS;                    
+                    return ExitCode.EXIT_SUCCESS;
+                default:
+                    return ExitCode.EXIT_INVALID_SYNTAX;
             }
+        } else if(worth == 0.0) {
             sender.sendMessage(locale.translate("cannot-sell", variables));
             return ExitCode.EXIT_SUCCESS;
+        } else {
+            sender.sendMessage(locale.translate("bad-worth", variables)); // todo: set a locale for this
+            return ExitCode.EXIT_ERROR;
         }
-        
-        sender.sendMessage(locale.translate("cannot-sell", variables));
-        return ExitCode.EXIT_SUCCESS;
+        // SHOULD NOT REACH HERE
     }
 
     @Override

@@ -95,13 +95,13 @@ public class Memory extends AsyncCommand {
         var bar = "";
         for (var i = 0.0; i < size; i++) {
             if (i < barCount && size - i > 5)
-                bar += "▍";
+                bar += "\u0258";
             else {
                 if (size - i == 5) {
                     bar += usage + "%";
                     break;
                 }
-                bar += " ";
+                bar += " "; // single space
             }
         }
         return bar;

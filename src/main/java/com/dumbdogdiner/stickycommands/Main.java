@@ -213,7 +213,7 @@ public class Main extends JavaPlugin {
     /**
      * Get an online user
      * 
-     * @param UUID the UUID of the user to lookup
+     * @param uuid the UUID of the user to lookup
      * @return The user if found, otherwise null
      */
     public User getOnlineUser(UUID uuid) {
