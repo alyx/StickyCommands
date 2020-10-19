@@ -21,6 +21,7 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.event.player.PlayerToggleSprintEvent;
+import org.jetbrains.annotations.NotNull;
 
 public class AfkEventListener implements Listener {
     TreeMap<String, String> variables = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
@@ -82,7 +83,8 @@ public class AfkEventListener implements Listener {
     }
 
     private void checkAfk(Player player, PlayerEvent event) {
-        var user = Main.getInstance().getOnlineUser(player.getUniqueId());
+        @NotNull
+        User user = Main.getInstance().getOnlineUser(player.getUniqueId());
         user.setAfkTime(0);
         if (user.isAfk()) {
             variables.put("player", player.getName());

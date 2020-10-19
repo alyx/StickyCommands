@@ -109,11 +109,16 @@ public class Database {
         // Ensure Our tables are created.
         try {
             this.connection.prepareStatement("CREATE TABLE IF NOT EXISTS " + withPrefix("users") + "("
-                    + "uuid VARCHAR(36) NOT NULL PRIMARY KEY," + "player_name VARCHAR(17),"
-                    + "ip_address VARCHAR(48) NOT NULL," + "first_login TIMESTAMP DEFAULT CURRENT_TIMESTAMP,"
+                    + "uuid VARCHAR(36) NOT NULL PRIMARY KEY,"
+                    + "player_name VARCHAR(17),"
+                    + "ip_address VARCHAR(48) NOT NULL,"
+                    + "first_login TIMESTAMP DEFAULT CURRENT_TIMESTAMP,"
                     + "last_server TEXT NOT NULL,"
-                    + "times_connected INT NULL," + "walk_speed FLOAT(2,1) DEFAULT 0.2,"
-                    + "fly_speed FLOAT(2,1) DEFAULT 0.1," + "is_online BOOLEAN DEFAULT FALSE" + ")").execute();
+                    + "times_connected INT NULL,"
+                    + "walk_speed FLOAT(2,1) DEFAULT 0.2,"
+                    + "fly_speed FLOAT(2,1) DEFAULT 0.1,"
+                    + "is_online BOOLEAN DEFAULT FALSE" 
+                    + ")").execute();
         } catch (SQLException e) {
             e.printStackTrace();
             Main.getInstance().getLogger()

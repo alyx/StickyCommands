@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "com.dumbdogdiner"
-version = "2.3.1"
+version = "2.3.2"
 
 repositories {
     mavenCentral()
@@ -29,7 +29,6 @@ dependencies {
     compileOnly "com.destroystokyo.paper:paper-api:1.16.2-R0.1-SNAPSHOT"
 
     // plugin-specific deps
-    compileOnly 'net.luckperms:api:5.1'
     compileOnly "com.github.MilkBowl:VaultAPI:1.7"
     compileOnly "me.clip:placeholderapi:2.10.6"
     implementation "com.github.dumbdogdiner:stickyapi:1.2.0"

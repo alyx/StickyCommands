@@ -39,7 +39,6 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import lombok.Getter;
-import net.luckperms.api.LuckPerms;
 import net.milkbowl.vault.economy.Economy;
 
 public class Main extends JavaPlugin {
@@ -88,9 +87,6 @@ public class Main extends JavaPlugin {
     @Getter
     LocaleProvider localeProvider;
 
-    @Getter
-    LuckPerms luckPerms;
-
     /**
      * The database connected
      */
@@ -117,12 +113,7 @@ public class Main extends JavaPlugin {
         return;
         
         if (!setupEconomy())
-        getLogger().severe("Disabled economy commands due to no Vault dependency found!");
-        
-        if (!setupLuckPerms())
-        getLogger().severe("Disabled economy commands due to no LuckPerms dependency found!");
-        
-        
+            getLogger().severe("Disabled economy commands due to no Vault dependency found!");
         
         // this.database = new Database();
         // database.createMissingTables();
@@ -165,18 +156,6 @@ public class Main extends JavaPlugin {
         }
         economy = rsp.getProvider();
         return economy != null;
-    }
-    
-    /**
-     * Setup the luckperms instance.
-     */
-    private boolean setupLuckPerms() {
-        RegisteredServiceProvider<LuckPerms> provider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
-        if (provider != null) {
-            luckPerms = provider.getProvider();
-            return true;
-        }
-        return false;
     }
     
     /**

@@ -13,8 +13,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-import net.md_5.bungee.api.chat.TextComponent;
-
 public class Afk extends AsyncCommand {
 
     private static LocaleProvider locale = Main.getInstance().getLocaleProvider();

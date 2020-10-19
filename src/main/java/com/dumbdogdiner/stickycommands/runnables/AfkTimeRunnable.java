@@ -1,12 +1,9 @@
 package com.dumbdogdiner.stickycommands.runnables;
 
-import java.sql.Timestamp;
 import java.util.TimerTask;
 import java.util.TreeMap;
 
-import com.dumbdogdiner.stickyapi.common.util.Debugger;
 import com.dumbdogdiner.stickyapi.common.util.NumberUtil;
-import com.dumbdogdiner.stickyapi.common.util.TimeUtil;
 import com.dumbdogdiner.stickycommands.Main;
 import com.dumbdogdiner.stickycommands.User;
 
