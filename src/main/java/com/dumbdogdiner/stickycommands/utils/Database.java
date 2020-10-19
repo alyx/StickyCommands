@@ -118,6 +118,7 @@ public class Database {
             this.connection.prepareStatement("CREATE TABLE IF NOT EXISTS " + withPrefix("users") + "("
                     + "uuid VARCHAR(36) NOT NULL PRIMARY KEY," + "player_name VARCHAR(17),"
                     + "ip_address VARCHAR(48) NOT NULL," + "first_login TIMESTAMP DEFAULT CURRENT_TIMESTAMP,"
+                    + "last_login TIMESTAMP,"
                     + "last_server TEXT NOT NULL," + "times_connected INT NULL," + "walk_speed FLOAT(2,1) DEFAULT 0.2,"
                     + "fly_speed FLOAT(2,1) DEFAULT 0.1," + "is_online BOOLEAN DEFAULT FALSE" + ")").execute();
 
@@ -157,18 +158,11 @@ public class Database {
             @Override
             public Boolean call() throws Exception {
                 try {
+                    var killMe = (type == 1 ? "fly_speed" : "walk_speed");
                     PreparedStatement updateSpeed = connection
-                            .prepareStatement("UPDATE " + withPrefix("users") + " SET ? = ? WHERE uuid = ?");
-                    switch (type) {
-                        case 0:
-                            updateSpeed.setString(1, "walk_speed");
-                        case 1:
-                            updateSpeed.setString(1, "fly_speed");
-                        default:
-                            updateSpeed.setString(1, "walk_speed");
-                    }
-                    updateSpeed.setFloat(2, speed);
-                    updateSpeed.setString(3, uuid.toString());
+                            .prepareStatement("UPDATE " + withPrefix("users") + " SET " + killMe + " = ? WHERE uuid = ?");
+                    updateSpeed.setFloat(1, speed);
+                    updateSpeed.setString(2, uuid.toString());
                     updateSpeed.executeUpdate();
                 } catch (SQLException e) {
                     e.printStackTrace();
@@ -179,6 +173,25 @@ public class Database {
         });
         Main.getInstance().getPool().execute(t);
         return true;
+    }
+
+    /**
+     * Get the speed for a user of a certain speed type from the database
+     * @param uuid The UUID of the player
+     * @param type The speed type
+     * @return {@link java.lang.Float}
+     */
+    public Float getSpeed(UUID uuid, SpeedType type) {
+        try {
+            var speed = (type == SpeedType.FLY ? "fly_speed" : "walk_speed");
+            PreparedStatement updateSpeed = connection.prepareStatement("SELECT " + speed + " FROM " + withPrefix("users") + " WHERE uuid = ?");
+            updateSpeed.setString(1, uuid.toString());
+            updateSpeed.executeQuery();
+            return updateSpeed.getResultSet().getFloat(speed);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return (type == SpeedType.FLY ? 1.0F : 1.1F);
+        }
     }
 
     /**
@@ -217,5 +230,146 @@ public class Database {
         return true;
     }
 
+     /**
+     * Insert a user into the database.
+     * 
+     * @param uuid       UUID of the minecraft user
+     * @param playerName Name of the minecraft player
+     * @param ipAddress  IP address of the minecraft player
+     * @param firstLogin The first time they logged in (as a timestamp)
+     * @param lastLogin  The last time they logged in (as a timestamp)
+     * @param isOnline   Is the user online
+     * @return True if the user was created successfully
+     */
+    public Boolean insertUser(String uuid, String playerName, String ipAddress, Timestamp firstLogin, Timestamp lastLogin, Boolean isOnline) {
+        FutureTask<Boolean> t = new FutureTask<>(new Callable<Boolean>() {
+            @Override
+            public Boolean call() {
+                try {
+                    // Make sure we're not duping data, if they already exist go ahead and update
+                    // them
+                    // This happens because we insert every time they join for the first time, but
+                    // if the playerdata is removed on the world
+                    // or the spigot plugin is setup in multiple servers using the same database, it
+                    // would add them a second time
+                    // lets not do that....
+                    PreparedStatement checkUser = connection.prepareStatement("SELECT uuid FROM " + withPrefix("users"));
+                    ResultSet results = checkUser.executeQuery();
+                    if (results.next() && !results.wasNull()) {
+                        updateUser(uuid, playerName, ipAddress, lastLogin, true, isOnline);
+                        return true;
+                    }
+                    checkUser.close();
+
+                    // Preapre a statement
+                    int i = 1;
+                    PreparedStatement insertUser = connection.prepareStatement(String.format(
+                            "INSERT INTO " + withPrefix("users") + " (UUID, player_name, ip_address, first_login, last_login, last_server, times_connected, is_online) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"));
+                    insertUser.setString(i++, uuid);
+                    insertUser.setString(i++, playerName);
+                    insertUser.setString(i++, ipAddress);
+                    insertUser.setTimestamp(i++, firstLogin);
+                    insertUser.setTimestamp(i++, lastLogin);
+                    insertUser.setString(i++, Main.getInstance().getConfig().getString("server", "#"));
+                    insertUser.setInt(i++, 1);
+                    insertUser.setBoolean(i++, isOnline);
+                    insertUser.executeUpdate();
+                    insertUser.close();
+                } catch (Throwable e) {
+                    e.printStackTrace();
+                    return false;
+                }
+                return true;
+            }
+        });
+
+        Main.getInstance().getPool().execute(t);
+
+        return true;
+    }
+
+    /**
+     * Update a user record
+     * 
+     * @param uuid       Users current UUID
+     * @param playerName Users current player name
+     * @param ipAddress  Users current IP address
+     * @param lastLogin  The timestamp of the last time a user logged in
+     * @param isOnline   Is the user online
+     * @param isJoining  Will update the times connected if true, other wise false
+     * @return True if the update was successful.
+     */
+    public Boolean updateUser(String uuid, String playerName, String ipAddress, Timestamp lastLogin, Boolean isOnline, Boolean isJoining)
+    // (Timestamp last_login, String player_name, String ip_address, String UUID)
+    {
+        FutureTask<Boolean> t = new FutureTask<>(new Callable<Boolean>() {
+            @Override
+            public Boolean call() {
+                try {
+                    // This is a fail-safe just incase the table was dropped or the player joined
+                    // the server BEFORE the plugin was added...
+                    // This will ensure they get added to the database no matter what.
+                    PreparedStatement checkUser = connection
+                            .prepareStatement(String.format("SELECT uuid FROM " + withPrefix("users")));
+                    ResultSet results = checkUser.executeQuery();
+                    if (!results.next()) {
+                        Timestamp first_login = TimeUtil.now();
+                        insertUser(uuid, playerName, ipAddress, first_login, lastLogin, true);
+                        return true;
+                    }
+                    
+                    PreparedStatement gtc = connection
+                    .prepareStatement(String.format("SELECT times_connected FROM " + withPrefix("users") + " WHERE uuid = ?"));
+                    gtc.setString(1, uuid);
+                    
+                    ResultSet gtc2 = gtc.executeQuery();
+                    int tc = 1;
+                    if (gtc2.next()) {
+                        if (!gtc2.wasNull()) {
+                            tc = gtc2.getInt("times_connected");
+                        } else {
+                            tc = 0;
+                        }
+                    }
+                    checkUser.close();
+                    gtc.close();
+                    if (isJoining) {
+                        // Preapre a statement
+                        int i = 1;
+                        PreparedStatement updateUser = connection.prepareStatement(
+                                "UPDATE " + withPrefix("users") + " SET last_login = ?, player_name = ?, ip_address = ?, last_server = ?, times_connected = ?, is_online = ? WHERE uuid = ?");
+                        updateUser.setTimestamp(i++, lastLogin);
+                        updateUser.setString(i++, playerName);
+                        updateUser.setString(i++, ipAddress);
+                        updateUser.setString(i++, Main.getInstance().getConfig().getString("server", "#"));
+                        updateUser.setInt(i++, isJoining ? ++tc : tc);
+                        updateUser.setBoolean(i++, isOnline);
+                        updateUser.setString(i++, uuid);
+                        updateUser.executeUpdate();
+                        updateUser.close();
+                        return true;
+                    }
+
+                    int i = 1;
+                    PreparedStatement updateUserOffline = connection.prepareStatement(
+                            "UPDATE " + withPrefix("users") + " SET last_login = ?, player_name = ?, ip_address = ?, is_online = ? WHERE uuid = ?");
+                    updateUserOffline.setTimestamp(i++, lastLogin);
+                    updateUserOffline.setString(i++, playerName);
+                    updateUserOffline.setString(i++, ipAddress);
+                    updateUserOffline.setBoolean(i++, isOnline);
+                    updateUserOffline.setString(i++, uuid);
+                    updateUserOffline.executeUpdate();
+                    updateUserOffline.close();
+                } catch (Throwable e) {
+                    e.printStackTrace();
+                    return false;
+                }
+                return true;
+            }
+        });
+
+        Main.getInstance().getPool().execute(t);
+        return true;
+    }
 
 }
