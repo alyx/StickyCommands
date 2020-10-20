@@ -196,6 +196,17 @@ public class Sell extends AsyncCommand {
 
     @Override
     public List<String> tabComplete(CommandSender sender, String alias, String[] args) {
+        if (args.length < 2) {
+            return Arrays.asList(new String[] {
+                "hand",
+                "inventory",
+            });
+        }
+        else if (args.length == 2) {
+            return Arrays.asList(new String[] {
+                "confirm"
+            });
+        }
         return null;
     }
 }
