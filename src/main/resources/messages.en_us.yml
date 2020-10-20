@@ -33,6 +33,7 @@ sell:
   bad-worth: "{prefix}&f1 {item} is worth a negative amount (${single_worth}) and thusly cannot be sold (Please ask a developer)"
   worth-message: "{prefix}&f1 {item} &bis worth &f${single_worth} &7(Hand: ${hand_worth}, Inventory: ${inventory_worth})"
   sell-message: "{prefix}&bYou sold &f{AMOUNT} {ITEM} &bfor &f${WORTH}&b!"
+  must-confirm: "{prefix}&cPlease confirm your sale by typing /sell [inventory] confirm!"
   log:
     log-message: "{prefix}&bRecent sale logs"
     log: "&8&l» &7({date|datetime:\"MM/dd/yy HH:mm:ss\"}) &f{player} &bsold &f{amount} {item} &bfor &f${price}\n"

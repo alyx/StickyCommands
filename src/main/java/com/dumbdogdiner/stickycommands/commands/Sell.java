@@ -41,6 +41,7 @@ public class Sell extends AsyncCommand {
 
         Arguments a = new Arguments(args);
         a.optionalString("sellMode");
+        a.optionalString("confirm");
 
         var player = (Player) sender;
         variables.put("player", player.getName());
@@ -90,19 +91,30 @@ public class Sell extends AsyncCommand {
         if (worth > 0.0) {
             switch (a.get("sellMode") == null ? "" : a.get("sellMode").toLowerCase()) {
                 case "hand":
+                case "confirm":
                 case "":
-                    variables.put("amount", String.valueOf(item.getAmount()));
-                    variables.put("worth", String.valueOf(item.getWorth() * item.getAmount()));
-                    player.sendMessage(locale.translate("sell.sell-message", variables));
-                    item.sell(player, false, variables, item.getAmount());
+                    // I don't like this, but it works so whatever...
+                    // TODO: discomfuckulate this shit
+                    if (a.exists("confirm") ? a.get("confirm").equalsIgnoreCase("confirm") : a.exists("sellMode") ? a.get("sellMode").equalsIgnoreCase("confirm") : false) {
+                        variables.put("amount", String.valueOf(item.getAmount()));
+                        variables.put("worth", String.valueOf(item.getWorth() * item.getAmount()));
+                        player.sendMessage(locale.translate("sell.sell-message", variables));
+                        item.sell(player, false, variables, item.getAmount());
+                        return ExitCode.EXIT_SUCCESS;
+                    }
+                    sender.sendMessage(locale.translate("sell.must-confirm", variables));
                     return ExitCode.EXIT_SUCCESS;
                 case "inventory":
                 case "invent":
                 case "inv":
-                    variables.put("amount", String.valueOf(inventoryAmount));
-                    variables.put("worth", Item.getDecimalFormat().format(item.getWorth() * inventoryAmount));
-                    player.sendMessage(locale.translate("sell.sell-message", variables));
-                    item.sell(player, true, variables, inventoryAmount);
+                    if (a.exists("confirm") && a.get("confirm").equalsIgnoreCase("confirm")) {
+                        variables.put("amount", String.valueOf(inventoryAmount));
+                        variables.put("worth", Item.getDecimalFormat().format(item.getWorth() * inventoryAmount));
+                        player.sendMessage(locale.translate("sell.sell-message", variables));
+                        item.sell(player, true, variables, inventoryAmount);
+                        return ExitCode.EXIT_SUCCESS;
+                    }
+                    sender.sendMessage(locale.translate("sell.must-confirm", variables));
                     return ExitCode.EXIT_SUCCESS;
                 default:
                     return ExitCode.EXIT_INVALID_SYNTAX;
