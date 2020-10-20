@@ -28,10 +28,17 @@ reload:
 you-smitted: "{prefix}&bYou smitted &f{PLAYER}&bat &f{LOCX}, {LOCY}, {LOCZ}!"
 you-were-smitten: "{prefix}&bThou hast been smitten!"
 
-cannot-sell: "{prefix}&cThis item cannot be sold!"
-bad-worth: "{prefix}&f1 {item} is worth a negative amount (${single_worth}) and thusly cannot be sold (Please ask a developer)"
-worth-message: "{prefix}&f1 {item} &bis worth &f${single_worth} &7(Hand: ${hand_worth}, Inventory: ${inventory_worth})"
-sell-message: "{prefix}&bYou sold &f{AMOUNT} {ITEM} &bfor &f${WORTH}&b!"
+sell:
+  cannot-sell: "{prefix}&cThis item cannot be sold!"
+  bad-worth: "{prefix}&f1 {item} is worth a negative amount (${single_worth}) and thusly cannot be sold (Please ask a developer)"
+  worth-message: "{prefix}&f1 {item} &bis worth &f${single_worth} &7(Hand: ${hand_worth}, Inventory: ${inventory_worth})"
+  sell-message: "{prefix}&bYou sold &f{AMOUNT} {ITEM} &bfor &f${WORTH}&b!"
+  log:
+    log-message: "{prefix}&bRecent sale logs"
+    log: "&8&l» &7({date|datetime:\"MM/dd/yy HH:mm:ss\"}) &f{player} &bsold &f{amount} {item} &bfor &f${price}\n"
+    no-sales: "{prefix}&bThere have been no sales!"
+    paginator: "{prefix}&bpage &f{current}&b/&f{total}"
+
 afk:
   not-afk: "&7&o* {PLAYER} is no longer AFK!"
   afk: "&7&o* {PLAYER} is now AFK!"

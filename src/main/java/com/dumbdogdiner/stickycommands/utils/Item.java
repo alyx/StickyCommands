@@ -48,6 +48,7 @@ public class Item {
     private String name;
     @Getter
     private ItemStack asItemStack;
+
     public Item() {
         final var worthFile = self.getConfig().getString("worth-file", "worth.yml");
         configFile = new File(self.getDataFolder(), worthFile);
@@ -166,7 +167,7 @@ public class Item {
             debug.print("removing items...");
             consumeItem(player, amount, getType());
         }
-        database.logSell(player.getUniqueId(), this, amount, Double.valueOf(decimalFormat.format(getWorth() * amount)));
+        database.logSell(player.getUniqueId(), player.getName(), this, amount, Double.valueOf(decimalFormat.format(getWorth() * amount)));
     }
 
         

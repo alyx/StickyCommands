@@ -6,6 +6,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -14,10 +17,12 @@ import java.util.concurrent.FutureTask;
 import com.dumbdogdiner.stickyapi.common.util.Debugger;
 import com.dumbdogdiner.stickyapi.common.util.TimeUtil;
 import com.dumbdogdiner.stickycommands.Main;
+import com.dumbdogdiner.stickycommands.Sale;
 import com.dumbdogdiner.stickycommands.SpeedType;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -123,9 +128,14 @@ public class Database {
                     + "fly_speed FLOAT(2,1) DEFAULT 0.1," + "is_online BOOLEAN DEFAULT FALSE" + ")").execute();
 
             this.connection.prepareStatement("CREATE TABLE IF NOT EXISTS " + withPrefix("sales") + "("
-                    + "id INT AUTO_INCREMENT NOT NULL PRIMARY KEY," + "uuid VARCHAR(36) NOT NULL,"
-                    + "amount INT NOT NULL," + "item VARCHAR(256) NOT NULL," + "item_worth DOUBLE NOT NULL,"
-                    + "new_balance DOUBLE NOT NULL," + "time_sold TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP" + ")")
+                    + "id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,"
+                    + "uuid VARCHAR(36) NOT NULL,"
+                    + "player_name VARCHAR(17) NOT NULL,"
+                    + "amount INT NOT NULL," 
+                    + "item VARCHAR(256) NOT NULL," 
+                    + "item_worth DOUBLE NOT NULL,"
+                    + "new_balance DOUBLE NOT NULL," 
+                    + "time_sold TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP" + ")")
                     .execute();
 
         } catch (SQLException e) {
@@ -141,7 +151,7 @@ public class Database {
     /**
      * Format a table name to include the table prefix.
      */
-    private String withPrefix(String tableName) {
+    public String withPrefix(String tableName) {
         return this.tablePrefix + tableName;
     }
 
@@ -153,7 +163,7 @@ public class Database {
      * @param type  the speed type (0 = walk, 1 = fly)
      * @return
      */
-    public Boolean setSpeed(UUID uuid, Float speed, int type) {
+    public Boolean setSpeed(@NotNull UUID uuid, @NotNull Float speed, @NotNull int type) {
         FutureTask<Boolean> t = new FutureTask<>(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
@@ -181,7 +191,7 @@ public class Database {
      * @param type The speed type
      * @return {@link java.lang.Float}
      */
-    public Float getSpeed(UUID uuid, SpeedType type) {
+    public Float getSpeed(@NotNull UUID uuid, @NotNull SpeedType type) {
         try {
             var speed = (type == SpeedType.FLY ? "fly_speed" : "walk_speed");
             PreparedStatement updateSpeed = connection.prepareStatement("SELECT " + speed + " FROM " + withPrefix("users") + " WHERE uuid = ?");
@@ -190,7 +200,47 @@ public class Database {
             return updateSpeed.getResultSet().getFloat(speed);
         } catch (SQLException e) {
             e.printStackTrace();
-            return (type == SpeedType.FLY ? 1.0F : 1.1F);
+            return (type == SpeedType.FLY ? 0.1F : 0.2F);
+        }
+    }
+
+    /**
+     * Get a {@link java.util.List} of {@link com.dumbdogdiner.stickycommands.Sale}
+     * @return {@link java.util.List}
+     */
+    public List<Sale> getSaleLog() {
+        try {
+            PreparedStatement getSale = connection.prepareStatement("SELECT * FROM " + withPrefix("sales") + " ORDER BY id DESC");
+            ResultSet rs = getSale.executeQuery();
+            ArrayList<Sale> sales = new ArrayList<Sale>();
+            while (rs.next()) {
+                sales.add(new Sale(rs));
+            }
+            return sales;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * Get a {@link java.util.List} of {@link com.dumbdogdiner.stickycommands.Sale} for a certain player
+     * @param uuid The uuid of the player
+     * @return {@link java.util.List}
+     */
+    public List<Sale> getSaleLog(@NotNull UUID uuid) {
+        try {
+            PreparedStatement getSale = connection.prepareStatement("SELECT * FROM " + withPrefix("sales") + "WHERE uuid = ? ORDER BY id DESC");
+            getSale.setString(1, uuid.toString());
+            ResultSet rs = getSale.executeQuery();
+            ArrayList<Sale> sales = new ArrayList<Sale>();
+            while (rs.next()) {
+                sales.add(new Sale(rs));
+            }
+            return sales;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 
@@ -202,22 +252,20 @@ public class Database {
      * @param worth The worth of the item being sold
      * @return {@link java.lang.Boolean}
      */
-    public Boolean logSell(UUID uuid, Item item, Integer amount, Double worth) {
+    public Boolean logSell(@NotNull UUID uuid, String name, @NotNull Item item, @NotNull Integer amount, @NotNull Double worth) {
         Debugger debug = new Debugger(getClass());
         debug.print("Logging sale for " + uuid.toString());
-        debug.print(item.getName());
-        debug.print(amount);
-        debug.print(worth);
         FutureTask<Boolean> t = new FutureTask<>(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
                 try {
-                    PreparedStatement updateSpeed = connection.prepareStatement("INSERT INTO " + withPrefix("sales") + " (uuid, amount, item, item_worth, new_balance) VALUES (?, ?, ?, ?, ?)");
+                    PreparedStatement updateSpeed = connection.prepareStatement("INSERT INTO " + withPrefix("sales") + " (uuid, player_name, amount, item, item_worth, new_balance) VALUES (?, ?, ?, ?, ?, ?)");
                     updateSpeed.setString(1, uuid.toString());
-                    updateSpeed.setInt(2, amount);
-                    updateSpeed.setString(3, item.getType().toString());
-                    updateSpeed.setDouble(4, worth);
-                    updateSpeed.setDouble(5, Double.valueOf(Item.getDecimalFormat().format(Main.getInstance().getEconomy().getBalance(Bukkit.getOfflinePlayer(uuid)))));
+                    updateSpeed.setString(2, name);
+                    updateSpeed.setInt(3, amount);
+                    updateSpeed.setString(4, item.getType().toString());
+                    updateSpeed.setDouble(5, worth);
+                    updateSpeed.setDouble(6, Double.valueOf(Item.getDecimalFormat().format(Main.getInstance().getEconomy().getBalance(Bukkit.getOfflinePlayer(uuid)))));
                     updateSpeed.executeUpdate();
                 } catch (SQLException e) {
                     e.printStackTrace();
@@ -241,7 +289,7 @@ public class Database {
      * @param isOnline   Is the user online
      * @return True if the user was created successfully
      */
-    public Boolean insertUser(String uuid, String playerName, String ipAddress, Timestamp firstLogin, Timestamp lastLogin, Boolean isOnline) {
+    public Boolean insertUser(@NotNull String uuid, @NotNull String playerName, @NotNull String ipAddress, @NotNull Timestamp firstLogin, @NotNull Timestamp lastLogin, @NotNull Boolean isOnline) {
         FutureTask<Boolean> t = new FutureTask<>(new Callable<Boolean>() {
             @Override
             public Boolean call() {
@@ -299,7 +347,7 @@ public class Database {
      * @param isJoining  Will update the times connected if true, other wise false
      * @return True if the update was successful.
      */
-    public Boolean updateUser(String uuid, String playerName, String ipAddress, Timestamp lastLogin, Boolean isOnline, Boolean isJoining)
+    public Boolean updateUser(@NotNull String uuid, @NotNull String playerName, @NotNull String ipAddress, @NotNull Timestamp lastLogin, @NotNull Boolean isOnline, @NotNull Boolean isJoining)
     // (Timestamp last_login, String player_name, String ip_address, String UUID)
     {
         FutureTask<Boolean> t = new FutureTask<>(new Callable<Boolean>() {

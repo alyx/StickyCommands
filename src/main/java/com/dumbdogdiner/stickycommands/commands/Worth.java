@@ -39,14 +39,13 @@ public class Worth extends AsyncCommand {
             variables.put("item", item.getName());
 
             if (item.getAsItemStack().getType() == Material.AIR) {
-                sender.sendMessage(locale.translate("cannot-sell", variables));
+                sender.sendMessage(locale.translate("sell.cannot-sell", variables));
                 return ExitCode.EXIT_SUCCESS;
             }
             
             var worth = item.getWorth();
             double percentage = 100.00;
             if(item.hasDurability()) {
-                System.out.println("hi");
                 double maxDur = item.getAsItemStack().getType().getMaxDurability();
                 double currDur = maxDur - item.getAsItemStack().getDurability(); 
                 percentage = Math.round((currDur / maxDur) * 100.00) / 100.00;
@@ -69,11 +68,11 @@ public class Worth extends AsyncCommand {
             variables.put("inventory_worth", Double.toString(worth * itemAmount));
             
             if (worth != 0.0) {
-                sender.sendMessage(locale.translate("worth-message", variables));
+                sender.sendMessage(locale.translate("sell.worth-message", variables));
                 return ExitCode.EXIT_SUCCESS;
             }
             
-            sender.sendMessage(locale.translate("cannot-sell", variables));
+            sender.sendMessage(locale.translate("sell.cannot-sell", variables));
         } catch (Exception e) {
             e.printStackTrace();
             return ExitCode.EXIT_ERROR;
