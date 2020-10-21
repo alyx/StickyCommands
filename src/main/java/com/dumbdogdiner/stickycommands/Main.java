@@ -14,6 +14,7 @@ import com.dumbdogdiner.stickycommands.commands.Kill;
 import com.dumbdogdiner.stickycommands.commands.Memory;
 import com.dumbdogdiner.stickycommands.commands.PlayerTime;
 import com.dumbdogdiner.stickycommands.commands.PowerTool;
+import com.dumbdogdiner.stickycommands.commands.Seen;
 import com.dumbdogdiner.stickycommands.commands.Sell;
 import com.dumbdogdiner.stickycommands.commands.Speed;
 import com.dumbdogdiner.stickycommands.commands.Top;
@@ -178,6 +179,7 @@ public class Main extends JavaPlugin {
         commandList.add(new Afk(this));
         commandList.add(new Speed(this));
         commandList.add(new PlayerTime(this));
+        commandList.add(new Seen(this));
 
         CommandMap cmap = ReflectionUtil.getProtectedValue(Bukkit.getServer(), "commandMap");
         cmap.registerAll(this.getName().toLowerCase(), commandList);

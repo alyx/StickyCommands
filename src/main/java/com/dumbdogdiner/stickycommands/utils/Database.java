@@ -9,6 +9,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.TreeMap;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -205,6 +206,37 @@ public class Database {
     }
 
     /**
+     * Get the variables for the /seen command for a specific player
+     * @param username The username of the player
+     * @return {@link java.util.TreeMap}
+     */
+    public TreeMap<String, String> getUserData(@NotNull String username) {
+        try {
+            PreparedStatement getUserData = connection.prepareStatement("SELECT * FROM " + withPrefix("users") + " WHERE player_name = ? ORDER BY last_login DESC LIMIT 1");
+            getUserData.setString(1, username.toString());
+            ResultSet result = getUserData.executeQuery();
+            if (!result.next())
+                return null;
+
+            return new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER) {{
+                put("data_player", result.getString("player_name"));
+                put("data_player_uuid", result.getString("uuid"));
+                put("ipaddress", result.getString("ip_address"));
+                put("firstlogin", (result.getTimestamp("first_login")).toString());
+                put("lastlogin", (result.getTimestamp("last_login")).toString());
+                put("timesconnected", Integer.toString(result.getInt("times_connected")));
+                put("online", Boolean.toString(result.getBoolean("is_online")));
+                put("server", result.getString("last_server"));
+                put("fly_speed", String.valueOf(result.getFloat("fly_speed")));
+                put("walk_speed", String.valueOf(result.getFloat("walk_speed")));
+            }};
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
      * Get a {@link java.util.List} of {@link com.dumbdogdiner.stickycommands.Sale}
      * @param page The page to select (Each page is 8 rows)
      * @return {@link java.util.List}
@@ -328,7 +360,8 @@ public class Database {
                     // or the spigot plugin is setup in multiple servers using the same database, it
                     // would add them a second time
                     // lets not do that....
-                    PreparedStatement checkUser = connection.prepareStatement("SELECT uuid FROM " + withPrefix("users"));
+                    PreparedStatement checkUser = connection.prepareStatement("SELECT uuid FROM " + withPrefix("users") + " WHERE uuid = ?");
+                    checkUser.setString(1, uuid.toString());
                     ResultSet results = checkUser.executeQuery();
                     if (results.next() && !results.wasNull()) {
                         updateUser(uuid, playerName, ipAddress, lastLogin, true, isOnline);
@@ -385,14 +418,14 @@ public class Database {
                     // the server BEFORE the plugin was added...
                     // This will ensure they get added to the database no matter what.
                     PreparedStatement checkUser = connection
-                            .prepareStatement(String.format("SELECT uuid FROM " + withPrefix("users")));
+                            .prepareStatement(String.format("SELECT * FROM " + withPrefix("users") + " WHERE uuid = ?"));
+                        checkUser.setString(1, uuid.toString());
                     ResultSet results = checkUser.executeQuery();
                     if (!results.next()) {
                         Timestamp first_login = TimeUtil.now();
                         insertUser(uuid, playerName, ipAddress, first_login, lastLogin, true);
                         return true;
                     }
-                    
                     PreparedStatement gtc = connection
                     .prepareStatement(String.format("SELECT times_connected FROM " + withPrefix("users") + " WHERE uuid = ?"));
                     gtc.setString(1, uuid);
