@@ -14,7 +14,6 @@ import com.dumbdogdiner.stickyapi.bukkit.command.AsyncCommand;
 import com.dumbdogdiner.stickyapi.bukkit.command.ExitCode;
 import com.dumbdogdiner.stickyapi.common.translation.LocaleProvider;
 import com.dumbdogdiner.stickyapi.common.util.NumberUtil;
-import com.dumbdogdiner.stickyapi.common.util.Paginator;
 
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -29,8 +28,8 @@ public class Sell extends AsyncCommand {
 
     public Sell(Plugin owner) {
         super("sell", owner);
-        setDescription("Check the worth of an item.");
-        setPermission("stickycommands.worth");
+        setDescription("Sell an item.");
+        setPermission("stickycommands.sell");
         variables.put("syntax", "/worth");
     }
 
@@ -46,13 +45,15 @@ public class Sell extends AsyncCommand {
         var player = (Player) sender;
         variables.put("player", player.getName());
         variables.put("uuid", player.getUniqueId().toString());
-        // Find a better way to do this.
+        // TODO: Find a better way to do this.
         if (a.get("sellMode") != null && a.get("sellMode").equalsIgnoreCase("log")) {
             if (!sender.hasPermission("stickycommands.sell.log"))
                 return ExitCode.EXIT_PERMISSION_DENIED;
-            return handleLog(player, new Arguments(Arrays.copyOfRange(args, 1, args.length))); // We no longer need the first
-            // argument, just everything
-            // after it!
+            return handleLog(player, new Arguments(Arrays.copyOfRange(args, 1, args.length))); // We no longer need the
+                                                                                               // first
+                                                                                               // argument, just
+                                                                                               // everything
+                                                                                               // after it!
         }
 
         var item = new Item(player.getInventory().getItemInMainHand());
@@ -95,7 +96,8 @@ public class Sell extends AsyncCommand {
                 case "":
                     // I don't like this, but it works so whatever...
                     // TODO: discomfuckulate this shit
-                    if (a.exists("confirm") ? a.get("confirm").equalsIgnoreCase("confirm") : a.exists("sellMode") ? a.get("sellMode").equalsIgnoreCase("confirm") : false) {
+                    if (a.exists("confirm") ? a.get("confirm").equalsIgnoreCase("confirm")
+                            : a.exists("sellMode") ? a.get("sellMode").equalsIgnoreCase("confirm") : false) {
                         variables.put("amount", String.valueOf(item.getAmount()));
                         variables.put("worth", String.valueOf(item.getWorth() * item.getAmount()));
                         player.sendMessage(locale.translate("sell.sell-message", variables));
@@ -123,7 +125,7 @@ public class Sell extends AsyncCommand {
             sender.sendMessage(locale.translate("sell.cannot-sell", variables));
             return ExitCode.EXIT_SUCCESS;
         } else {
-            sender.sendMessage(locale.translate("sell.bad-worth", variables)); // todo: set a locale for this
+            sender.sendMessage(locale.translate("sell.bad-worth", variables));
             return ExitCode.EXIT_ERROR;
         }
         // SHOULD NOT REACH HERE
@@ -139,16 +141,17 @@ public class Sell extends AsyncCommand {
             return ExitCode.EXIT_INVALID_SYNTAX;
 
         // I hate and love this.
-        Integer page = a.get("page") == null ? 1 : (NumberUtil.isNumeric(a.get("page")) ? Integer.parseInt(a.get("page")) : 1);
-
+        Integer page = a.get("page") == null ? 1
+                : (NumberUtil.isNumeric(a.get("page")) ? Integer.parseInt(a.get("page")) : 1);
         Database database = Main.getInstance().getDatabase();
+        var salesList = database.getSaleLog(page);
 
-        var salesList = database.getSaleLog();
         ArrayList<String> sales = new ArrayList<String>();
         for (Sale sale : salesList) {
+            variables.put("log_player", sale.getUsername());
             variables.put("saleid", sale.getOrderId().toString());
             variables.put("item", sale.getItem().getName());
-            variables.put("item_actual_name", sale.getItem().getType().toString());
+            variables.put("item_enum", sale.getItem().getType().toString());
             variables.put("amount", sale.getAmount().toString());
             variables.put("price", sale.getPrice().toString());
             variables.put("new_balance", sale.getNewBalance().toString());
@@ -157,8 +160,8 @@ public class Sell extends AsyncCommand {
             sales.add(locale.translate("sell.log.log", variables));
         }
 
-        Paginator<String> pages = new Paginator<String>(sales, 8);
-        if (pages.getTotalPages() < 1 || page > pages.getTotalPages()) {
+        Integer totalPages = database.getSaleLogSize() / 8;
+        if (sales.size() < 1 || page > totalPages) {
             sender.sendMessage(locale.translate("sell.log.no-sales", variables));
             return ExitCode.EXIT_SUCCESS;
         }
@@ -166,11 +169,11 @@ public class Sell extends AsyncCommand {
         // Let's send this is one giant message, just incase it manages to
         // get cut off by other messages!
         var logMessage = "";
-        for (String log : pages.getPage(page))
+        for (String log : sales)
             logMessage += log;
 
-        variables.put("current", String.valueOf(pages.getCurrent()));
-        variables.put("total", String.valueOf(pages.getTotalPages()));
+        variables.put("current", String.valueOf(page));
+        variables.put("total", String.valueOf(totalPages));
 
         sender.sendMessage(locale.translate("sell.log.log-message", variables));
         sender.sendMessage(logMessage);
@@ -197,15 +200,10 @@ public class Sell extends AsyncCommand {
     @Override
     public List<String> tabComplete(CommandSender sender, String alias, String[] args) {
         if (args.length < 2) {
-            return Arrays.asList(new String[] {
-                "hand",
-                "inventory",
-            });
-        }
-        else if (args.length == 2) {
-            return Arrays.asList(new String[] {
-                "confirm"
-            });
+            return Arrays.asList(new String[] { "hand", "inventory",
+                    (sender.hasPermission("stickycommands.sell.log") ? "log" : "") });
+        } else if (args.length == 2) {
+            return Arrays.asList(new String[] { "confirm" });
         }
         return null;
     }

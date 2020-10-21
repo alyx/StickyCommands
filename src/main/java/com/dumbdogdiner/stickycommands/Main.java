@@ -27,7 +27,6 @@ import com.dumbdogdiner.stickyapi.StickyAPI;
 import com.dumbdogdiner.stickyapi.bukkit.util.StartupUtil;
 import com.dumbdogdiner.stickyapi.common.cache.Cache;
 import com.dumbdogdiner.stickyapi.common.translation.LocaleProvider;
-import com.dumbdogdiner.stickyapi.common.util.Debugger;
 import com.dumbdogdiner.stickyapi.common.util.ReflectionUtil;
 import com.dumbdogdiner.stickyapi.common.util.TimeUtil;
 
@@ -135,7 +134,7 @@ public class Main extends JavaPlugin {
         
         getLogger().info("StickyCommands started successfully!");
     }
-    
+
     @Override
     public void onDisable() {
         reloadConfig(); // Save our config

@@ -3,7 +3,8 @@
 # Anything between curley brackets is replaced with the values of the named variables.
 
 # Global variables, you can use these in any message in this file.
-prefix: "&b&lStickyCommands &8&l» "
+newline: "&8&l» "
+prefix: "&b&lStickyCommands {newline}"
 network-name: "&bDumb Dog Diner"
 website: "dumbdogdiner.com"
 
@@ -16,7 +17,7 @@ player-has-not-joined: "{prefix}&cError! The player {PLAYER} has not joined befo
 must-be-player: "{prefix}&cYou must be a player to execute this command!"
 
 # The config supports new lines (\n), it can be used on any node
-seen-message: "{prefix}&bPlayer: {PLAYER}\n{prefix}&bUUID: {UUID}\n{prefix}&bIP: {IPADDRESS}\n{prefix}&bFirst Login: {FIRSTLOGIN}\n{prefix}&bLast Login: {LASTLOGIN}\n{prefix}&bOnline: {ONLINE}\n{prefix}&bLast Server: {SERVER}\n{prefix}&bTimesConnected: {TIMESCONNECTED}"
+seen-message: "{prefix}&bPlayer: {PLAYER}\n{newline}&bUUID: {UUID}\n{newline}&bIP: {IPADDRESS}\n{newline}&bFirst Login: {FIRSTLOGIN}\n{newline}&bLast Login: {LASTLOGIN}\n{newline}&bOnline: {ONLINE}\n{newline}&bLast Server: {SERVER}\n{newline}&bTimes Connected: {TIMESCONNECTED}"
 top-message: "{prefix}&bWoosh! You're at the top!"
 jump-message: "{prefix}&bWEEEEE!!!"
 speed-message: "{prefix}&bYour speed has been set to &f{SPEED}&b!"
@@ -30,13 +31,13 @@ you-were-smitten: "{prefix}&bThou hast been smitten!"
 
 sell:
   cannot-sell: "{prefix}&cThis item cannot be sold!"
-  bad-worth: "{prefix}&f1 {item} is worth a negative amount (${single_worth}) and thusly cannot be sold (Please ask a developer)"
+  bad-worth: "{prefix}&f1 {item} &cis worth a negative amount &f(${single_worth}) &cand thusly cannot be sold &4(Please ask a developer)"
   worth-message: "{prefix}&f1 {item} &bis worth &f${single_worth} &7(Hand: ${hand_worth}, Inventory: ${inventory_worth})"
   sell-message: "{prefix}&bYou sold &f{AMOUNT} {ITEM} &bfor &f${WORTH}&b!"
-  must-confirm: "{prefix}&cPlease confirm your sale by typing /sell [inventory] confirm!"
+  must-confirm: "{prefix}&cPlease confirm your sale by typing /sell [inventory/hand] confirm!"
   log:
     log-message: "{prefix}&bRecent sale logs"
-    log: "&8&l» &7({date|datetime:\"MM/dd/yy HH:mm:ss\"}) &f{player} &bsold &f{amount} {item} &bfor &f${price}\n"
+    log: "{newline}&7({date|datetime:\"MM/dd/yy HH:mm:ss\"}) &f{log_player} &bsold &f{amount} {item} &bfor &f${price}\n"
     no-sales: "{prefix}&bThere have been no sales!"
     paginator: "{prefix}&bpage &f{current}&b/&f{total}"
 
@@ -51,7 +52,7 @@ hat:
   new-hat: "{prefix}&bEnjoy your new hat!"
   remove-hat: "{prefix}&bYour hat has been removed!"
 item-message: "{prefix}&bGave you &f{AMOUNT} {ITEM}&b!"
-memory-message: "{prefix}&bServer performance \n&8&l» &bWorld: &f{world}\n&8&l» &bEntities: &f{entities}\n&8&l» &bLoaded Chunks: &f{loaded_chunks}\n&8&l» &bTPS: &f{tps_1m}, {tps_5m}, {tps_15m} (1m, 5m, 15m)\n&8&l» &bMemory: {memory_bar}\n&8&l» &bUptime: &f{uptime|duration}"
+memory-message: "{prefix}&bServer performance \n{newline}&bWorld: &f{world}\n{newline}&bEntities: &f{entities}\n{newline}&bLoaded Chunks: &f{loaded_chunks}\n{newline}&bTPS: &f{tps_1m}, {tps_5m}, {tps_15m} (1m, 5m, 15m)\n{newline}&bMemory: {memory_bar}\n{newline}&bUptime: &f{uptime|duration}"
 
 kill:
   you-were-killed: "{prefix}&bThou hast been slain!"

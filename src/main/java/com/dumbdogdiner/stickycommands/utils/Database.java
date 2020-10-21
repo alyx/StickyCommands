@@ -206,17 +206,44 @@ public class Database {
 
     /**
      * Get a {@link java.util.List} of {@link com.dumbdogdiner.stickycommands.Sale}
+     * @param page The page to select (Each page is 8 rows)
      * @return {@link java.util.List}
      */
-    public List<Sale> getSaleLog() {
+    public List<Sale> getSaleLog(Integer page) {
         try {
-            PreparedStatement getSale = connection.prepareStatement("SELECT * FROM " + withPrefix("sales") + " ORDER BY id DESC");
-            ResultSet rs = getSale.executeQuery();
+            // I can't select `DESC id` before I do my `BETWEEN` query...
+            // So, we just select everything at the bottom first!
+            // This ensures that all latest sales are at the top of the list
+            final var TOTAL = getSaleLogSize();
+            final var MAX = TOTAL - (page == 1 ? 0 : (page * 8)); // If the page is 1, we don't want to subtract 8...
+            final var MIN = MAX - 7;
+
+            PreparedStatement getSales = connection.prepareStatement("SELECT * FROM " + withPrefix("sales") + " WHERE id BETWEEN ? AND ? ORDER BY id DESC");
+            getSales.setInt(1, MIN);
+            getSales.setInt(2, MAX);
+            ResultSet rs = getSales.executeQuery();
             ArrayList<Sale> sales = new ArrayList<Sale>();
             while (rs.next()) {
                 sales.add(new Sale(rs));
             }
             return sales;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return Arrays.asList();
+        }
+    }
+
+    /**
+     * Get total row count from the sales table
+     * @return {@link java.lang.Integer}
+     */
+    public Integer getSaleLogSize() {
+        try {
+            PreparedStatement getSales = connection.prepareStatement("SELECT COUNT(id) FROM " + withPrefix("sales"));
+            ResultSet rs = getSales.executeQuery();
+            if (rs.next())
+                return rs.getInt("COUNT(id)");
+            return 0;
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
@@ -230,9 +257,9 @@ public class Database {
      */
     public List<Sale> getSaleLog(@NotNull UUID uuid) {
         try {
-            PreparedStatement getSale = connection.prepareStatement("SELECT * FROM " + withPrefix("sales") + "WHERE uuid = ? ORDER BY id DESC");
-            getSale.setString(1, uuid.toString());
-            ResultSet rs = getSale.executeQuery();
+            PreparedStatement getSales = connection.prepareStatement("SELECT * FROM " + withPrefix("sales") + "WHERE uuid = ? ORDER BY id DESC");
+            getSales.setString(1, uuid.toString());
+            ResultSet rs = getSales.executeQuery();
             ArrayList<Sale> sales = new ArrayList<Sale>();
             while (rs.next()) {
                 sales.add(new Sale(rs));
@@ -265,7 +292,7 @@ public class Database {
                     updateSpeed.setInt(3, amount);
                     updateSpeed.setString(4, item.getType().toString());
                     updateSpeed.setDouble(5, worth);
-                    updateSpeed.setDouble(6, Double.valueOf(Item.getDecimalFormat().format(Main.getInstance().getEconomy().getBalance(Bukkit.getOfflinePlayer(uuid)))));
+                    updateSpeed.setDouble(6, 6423.24);
                     updateSpeed.executeUpdate();
                 } catch (SQLException e) {
                     e.printStackTrace();
