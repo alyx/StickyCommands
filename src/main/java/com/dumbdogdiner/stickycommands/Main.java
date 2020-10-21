@@ -103,6 +103,8 @@ public class Main extends JavaPlugin {
         // Set our thread pool
         StickyAPI.setPool(pool);
         new Item();
+        onlineUserCache.setMaxSize(1000);
+        onlineUserCache.setMaxMemoryUsage(2048);
     }
     
     @Override
