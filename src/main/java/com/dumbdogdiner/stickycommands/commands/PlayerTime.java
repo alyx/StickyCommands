@@ -55,9 +55,13 @@ public class PlayerTime extends AsyncCommand {
             return ExitCode.EXIT_SUCCESS;
 
         } else if (NumberUtil.isNumeric(time)) {
-            if (Long.parseLong(time) > 24000L || Long.parseLong(time) < 0L) 
+            try {
+                if (Long.parseLong(time) > 24000L || Long.parseLong(time) < 0L) 
+                    return ExitCode.EXIT_INVALID_SYNTAX;
+                return setPlayerTime(player, Long.parseLong(time), a);
+            } catch (NumberFormatException e) { // They likely gave a number to big or small, so it's just invalid.
                 return ExitCode.EXIT_INVALID_SYNTAX;
-            return setPlayerTime(player, Long.parseLong(time), a);
+            }
 
         } else {
             switch (time.toLowerCase()) {
@@ -79,9 +83,10 @@ public class PlayerTime extends AsyncCommand {
                     return setPlayerTime(player, 14000L, a);
                 case "midnight":
                     return setPlayerTime(player, 18000L, a);
+                default:
+                    return ExitCode.EXIT_INVALID_SYNTAX;
             }
         }
-        return ExitCode.EXIT_SUCCESS;
     }
 
 
