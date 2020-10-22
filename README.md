@@ -14,3 +14,14 @@ Light-weight essentials replacement for DumbDogDiner
 | /jump | Takes you to the block that you're lookint at | stickycommands.jump |
 | /afk | Puts you in AFK mode | stickycommands.afk |
 | /mem | Outputs server performance statistics | stickycommands.memory |
+
+# GitHub Packages Setup
+
+- Create a file at `~/gradle.properties` with the following details:
+
+```
+ghUser=your github username
+ghPass=a github pat (personal access token) with the read:packages scope only
+```
+
+- Make sure that the `GRADLE_USER_HOME` env variable is set to your home folder

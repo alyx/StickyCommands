@@ -17,7 +17,13 @@ repositories {
     maven { url = "https://papermc.io/repo/repository/maven-public/" }
     maven { url = "https://repo.extendedclip.com/content/repositories/placeholderapi/" }
     maven { url = "https://jitpack.io" }
-}
+    maven { 
+        credentials {
+            username "$ghUser"
+            password "$ghPass"
+        }
+        url = "https://maven.pkg.github.com/DumbDogDiner/StickyAPI/" }
+    }
 
 dependencies {
     // java deps
@@ -32,7 +38,7 @@ dependencies {
     // plugin-specific deps
     compileOnly "com.github.MilkBowl:VaultAPI:1.7"
     compileOnly "me.clip:placeholderapi:2.10.6"
-    implementation "com.github.dumbdogdiner:stickyapi:1.2.0"
+    implementation "com.dumbdogdiner:stickyapi:1.4.3.2"
 }
 
 tasks.build.dependsOn tasks.shadowJar
