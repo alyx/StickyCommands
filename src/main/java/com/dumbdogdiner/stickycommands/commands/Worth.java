@@ -44,19 +44,7 @@ public class Worth extends AsyncCommand {
             }
             
             var worth = item.getWorth();
-            double percentage = 100.00;
-            if(item.hasDurability()) {
-                double maxDur = item.getAsItemStack().getType().getMaxDurability();
-                double currDur = maxDur - item.getAsItemStack().getDurability(); 
-                percentage = Math.round((currDur / maxDur) * 100.00) / 100.00;
-    
-                if((currDur / maxDur) < 0.4) {
-                    worth = 0.0;
-                } else {
-                    worth = Math.round((worth * percentage) * 100.00) / 100.00;
-                }
-    
-            }
+
             var itemAmount = 0;
             for (var is : inventory) {
                 if (is != null && is.getType() == item.getType()) {

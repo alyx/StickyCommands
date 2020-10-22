@@ -1,47 +1,42 @@
 package com.dumbdogdiner.stickycommands.utils;
 
-import java.io.File;
-import java.io.IOException;
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
-import java.util.TreeMap;
-
-import com.dumbdogdiner.stickycommands.Main;
 import com.dumbdogdiner.stickyapi.common.configuration.InvalidConfigurationException;
 import com.dumbdogdiner.stickyapi.common.configuration.file.FileConfiguration;
 import com.dumbdogdiner.stickyapi.common.configuration.file.YamlConfiguration;
 import com.dumbdogdiner.stickyapi.common.util.Debugger;
 import com.dumbdogdiner.stickyapi.common.util.StringUtil;
-
+import com.dumbdogdiner.stickycommands.Main;
+import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.MaterialData;
 import org.bukkit.persistence.PersistentDataType;
 
-import lombok.Getter;
+import java.io.File;
+import java.io.IOException;
+import java.text.DecimalFormat;
+import java.util.TreeMap;
 
 public class Item {
     Main self = Main.getInstance();
     @Getter
-    static DecimalFormat decimalFormat = new DecimalFormat("0.00"); // We don't want something like 25.3333333333, instead we want 25.33
+    static DecimalFormat decimalFormat = new DecimalFormat("0.00"); // We don't want something like 25.3333333333, instead we want 25.33. This also hides floating point precision things from the user.
     static File configFile;
     static FileConfiguration config;
-    private static String[] modifierPool = {
+    private static final String[] modifierPool = {
         "white", "orange", "magenta", "lightblue", "yellow", "lime", "pink", "gray", "lightgray", "cyan", "purple", "blue", "brown", "green", "red", "black", "oak", "spruce", "birch", "jungle", "acacia", "darkoak"
-    };
-    private static String[] durItemPool = {
-        "helmet", "tunic", "chestplate", "leggings", "boots", "axe", "shovel", "sword", "hoe"
     };
 
     @Getter
     private Material type;
     @Getter
     private int amount;
-    @Getter
-    private MaterialData data;
+    /*@Getter
+    private MaterialData data;*/
     @Getter
     private ItemMeta itemMeta;
     @Getter
@@ -69,7 +64,7 @@ public class Item {
     public Item(ItemStack is) {
         this.type = is.getType();
         this.amount = is.getAmount();
-        this.data = is.getData();
+        //this.data = is.getData();
         this.itemMeta = is.getItemMeta();
         this.name = StringUtil.capitaliseSentence(is.getType().toString().replace("_", " "));
         this.asItemStack = is;
@@ -82,13 +77,13 @@ public class Item {
      * @return The worth of the ItemStack
      */
     public double getWorth(final ItemStack is) {
-        final var name = is.getType().toString().replace("_", "").toLowerCase();
-        final var worth = config.getDouble(name, 0.0);
+        final String name = is.getType().toString().replace("_", "").toLowerCase();
+        final double worth = config.getDouble(name, 0.0);
         if (worth == 0) {
             for (final var s : modifierPool) {
                 if (name.startsWith(s)) {
-                    final var it = name.replace(s, "");
-                    return Double.valueOf(decimalFormat.format(config.getDouble(it)));
+                    final String it = name.replace(s, "");
+                    return Double.parseDouble(decimalFormat.format(config.getDouble(it)));
                 }
             }
         }
@@ -115,18 +110,31 @@ public class Item {
      * @return The worth of the ItemStack
      */
     public double getWorth() {
+        if (!sellable()) return 0.0;
         final var name = this.getType().toString().replace("_", "").toLowerCase();
-        final var worth = config.getDouble(name, 0.0);
-        if (worth == 0.0) {
+        double worth = config.getDouble(name, 0.0);
+        if (isDamageable()) {
+            double percentage;
+            double maxDur = getMaxDurability();
+            double currDur = getDurability();
+            percentage = Math.round((currDur / maxDur) * 100.00) / 100.0;
+
+            if (percentage > 0.4) {
+                worth = Math.round((worth * percentage) * 100.00) / 100.00;
+            } else {
+                worth = 0;
+            }
+
+
+        } else if (worth == 0.0) {
             for (final String s : modifierPool) {
                 if (name.startsWith(s)) {
                     final String it = name.replace(s, "");
-                    return config.getDouble(it, 0.0);
+                    worth = config.getDouble(it, 0.0);
+                    break;
                 }
             }
         }
-        if (!sellable())
-            return 0.0;
 
         return worth;
     }
@@ -141,15 +149,38 @@ public class Item {
         return !dataStore.has(new NamespacedKey(Main.getInstance(), "notsellable"), PersistentDataType.STRING);
     }
 
-    public boolean hasDurability() {
-        for(String s : durItemPool) {
-            if(getName().toLowerCase().endsWith(s)) {
-                return true;
-            }
-        }
-        return false;
-    } 
+    public boolean isDamageable() {
+        return itemMeta instanceof Damageable;
+    }
 
+    public int getDurability() {
+        if(! isDamageable())
+            return -1;
+
+        return ((Damageable) itemMeta).getDamage();
+    }
+
+    /**
+     * Sets durability of item if it is damageable, otherwise does nothing
+     * @param damage The damage to set the item to
+     */
+    public void setDurability(int damage){
+        if(isDamageable()){
+            ((Damageable) itemMeta).setDamage(damage);
+            asItemStack.setItemMeta(itemMeta);
+        }
+    }
+
+    /**
+     * Provides the maximum durability of an item
+     * @return the maximum durability of an item
+     */
+    public int getMaxDurability() {
+        return isDamageable() ? type.getMaxDurability() : -1;
+    }
+
+
+    //TODO: Allow selling an arbitrary amount of items in hand
     public void sell(Player player, Boolean sellInventory, TreeMap<String, String> variables, Integer amount) {
         Debugger debug = new Debugger(getClass());
         debug.print("selling item " + getName());
@@ -177,7 +208,7 @@ public class Item {
         debug.print("Removing " + count + "items of type " + mat.toString() + " from " + player.getName() +"'s inventory'");
         for (ItemStack s : item) {
             if (s != null) {
-                if (s.getType() == mat) {
+                if (s.getType().equals(mat)) {
                     debug.print("found slot with item, removing");
                     s.setAmount(0);
                 }

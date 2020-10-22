@@ -17,6 +17,7 @@ import com.dumbdogdiner.stickyapi.common.util.NumberUtil;
 
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
@@ -39,7 +40,7 @@ public class Sell extends AsyncCommand {
             return ExitCode.EXIT_PERMISSION_DENIED.setMessage(locale.translate("no-permission", variables));
 
         Arguments a = new Arguments(args);
-        a.optionalString("sellMode");
+        a.optionalFlag("sellMode", "hand");
         a.optionalString("confirm");
 
         var player = (Player) sender;
@@ -72,28 +73,15 @@ public class Sell extends AsyncCommand {
             }
         }
         var worth = item.getWorth();
-        double percentage = 100.00;
-        if (item.hasDurability()) {
-            double maxDur = item.getAsItemStack().getType().getMaxDurability();
-            double currDur = maxDur - item.getAsItemStack().getDurability(); // TODO Change to use Damagables
-            percentage = Math.round((currDur / maxDur) * 100.00) / 100.00;
 
-            if ((currDur / maxDur) < 0.4) {
-                worth = 0.0;
-            } else {
-                worth = Math.round((worth * percentage) * 100.00) / 100.00;
-            }
-
-        }
         variables.put("single_worth", Double.toString(worth));
         variables.put("hand_worth", Double.toString(worth * item.getAmount()));
         variables.put("inventory_worth", Double.toString(worth * inventoryAmount));
 
         if (worth > 0.0) {
-            switch (a.get("sellMode") == null ? "hand" : a.get("sellMode").toLowerCase()) {
+            switch (a.get("sellMode").toLowerCase()) {
                 case "hand":
-                case "confirm":
-                case "":
+                case "confirm": //TODO: This isnt really great to be here but for now its fine
                     // I don't like this, but it works so whatever...
                     // TODO: discomfuckulate this shit
                     if (a.exists("confirm") ? a.get("confirm").equalsIgnoreCase("confirm")
