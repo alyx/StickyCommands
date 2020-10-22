@@ -30,7 +30,7 @@ public class PlayerTime extends AsyncCommand {
     @Override
     public ExitCode executeCommand(CommandSender sender, String commandLabel, String[] args) {
         if (!sender.hasPermission("stickycommands.sell") || (!(sender instanceof Player)))
-            return ExitCode.EXIT_PERMISSION_DENIED;
+            return ExitCode.EXIT_PERMISSION_DENIED.setMessage(locale.translate("no-permission", variables));
 
         var player = (Player) sender;
         variables.put("player", player.getName());
@@ -57,10 +57,10 @@ public class PlayerTime extends AsyncCommand {
         } else if (NumberUtil.isNumeric(time)) {
             try {
                 if (Long.parseLong(time) > 24000L || Long.parseLong(time) < 0L) 
-                    return ExitCode.EXIT_INVALID_SYNTAX;
+                    return onSyntaxError();
                 return setPlayerTime(player, Long.parseLong(time), a);
             } catch (NumberFormatException e) { // They likely gave a number to big or small, so it's just invalid.
-                return ExitCode.EXIT_INVALID_SYNTAX;
+                return onSyntaxError();
             }
 
         } else {
@@ -84,26 +84,15 @@ public class PlayerTime extends AsyncCommand {
                 case "midnight":
                     return setPlayerTime(player, 18000L, a);
                 default:
-                    return ExitCode.EXIT_INVALID_SYNTAX;
+                    return onSyntaxError();
             }
         }
     }
 
-
-    @Override
-    public void onSyntaxError(CommandSender sender, String label, String[] args) {
-        sender.sendMessage(locale.translate("invalid-syntax", variables));
+    ExitCode onSyntaxError() {
+        return ExitCode.EXIT_INVALID_SYNTAX.setMessage(locale.translate("invalid-syntax", variables));
     }
 
-    @Override
-    public void onPermissionDenied(CommandSender sender, String label, String[] args) {
-        sender.sendMessage(locale.translate("no-permission", variables));
-    }
-
-    @Override
-    public void onError(CommandSender sender, String label, String[] args) {
-        sender.sendMessage(locale.translate("server-error", variables));
-    }
 
     ExitCode setPlayerTime(Player player, Long time, Arguments args) {
         var relative = args.exists("relative");

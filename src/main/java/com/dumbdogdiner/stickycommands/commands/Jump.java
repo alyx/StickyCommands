@@ -31,10 +31,8 @@ public class Jump extends AsyncCommand {
     public ExitCode executeCommand(CommandSender sender, String commandLabel, String[] args) {
         // TODO handle
         try {
-            if (!(sender instanceof Player)) {
-                sender.sendMessage(locale.translate("must-be-player", new TreeMap<String, String>()));
-                return ExitCode.EXIT_SUCCESS;
-            }
+            if (!(sender instanceof Player))
+                return ExitCode.EXIT_MUST_BE_PLAYER.setMessage(locale.translate("must-be-player", variables));
     
             var player = (Player) sender;
             Location loc = null;
@@ -64,23 +62,8 @@ public class Jump extends AsyncCommand {
             return ExitCode.EXIT_SUCCESS;
         } catch (Exception e) {
             e.printStackTrace();
-            return ExitCode.EXIT_ERROR;
+            return ExitCode.EXIT_ERROR.setMessage(locale.translate("server-error", variables));
         }
-    }
-
-    @Override
-    public void onSyntaxError(CommandSender sender, String label, String[] args) {
-        
-    }
-    
-    @Override
-    public void onPermissionDenied(CommandSender sender, String label, String[] args) {
-        sender.sendMessage(locale.translate("no-permission", variables));
-    }
-
-    @Override
-    public void onError(CommandSender sender, String label, String[] args) {
-        sender.sendMessage(locale.translate("server-error", variables));
     }
 
     @Override

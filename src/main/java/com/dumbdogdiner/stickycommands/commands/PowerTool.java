@@ -29,24 +29,9 @@ public class PowerTool extends AsyncCommand {
     }
 
     @Override
-    public void onSyntaxError(CommandSender sender, String label, String[] args) {
-        sender.sendMessage(locale.translate("invalid-syntax", variables));
-    }
-
-    @Override
-    public void onPermissionDenied(CommandSender sender, String label, String[] args) {
-        sender.sendMessage(locale.translate("no-permission", variables));
-    }
-
-    @Override
-    public void onError(CommandSender sender, String label, String[] args) {
-        sender.sendMessage(locale.translate("server-error", variables));
-    }
-
-    @Override
     public ExitCode executeCommand(CommandSender sender, String commandLabel, String[] args) {
         if (!sender.hasPermission("stickycommands.powertool") || (!(sender instanceof Player)))
-            return ExitCode.EXIT_PERMISSION_DENIED;
+            return ExitCode.EXIT_PERMISSION_DENIED.setMessage(locale.translate("no-permission", variables));
 
         var player = (Player) sender;
         variables.put("player", player.getName());
@@ -69,7 +54,7 @@ public class PowerTool extends AsyncCommand {
                 sender.sendMessage(locale.translate("powertool.cannot-bind-air", variables));
             }
         } catch (Exception e) {
-            return ExitCode.EXIT_ERROR;
+            return ExitCode.EXIT_ERROR.setMessage(locale.translate("server-error", variables));
         }
         return ExitCode.EXIT_SUCCESS;
     }

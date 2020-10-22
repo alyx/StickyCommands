@@ -27,7 +27,7 @@ public class Seen extends AsyncCommand {
     @Override
     public ExitCode executeCommand(CommandSender sender, String commandLabel, String[] args) {
         if (!(sender instanceof Player))
-            return ExitCode.EXIT_PERMISSION_DENIED;
+            return ExitCode.EXIT_PERMISSION_DENIED.setMessage(locale.translate("no-permission", variables));
 
         var player = (Player)sender;
         variables.put("player", player.getName());
@@ -36,7 +36,7 @@ public class Seen extends AsyncCommand {
         a.requiredString("player");
 
         if (!a.valid())
-            return ExitCode.EXIT_INVALID_SYNTAX;
+            return ExitCode.EXIT_INVALID_SYNTAX.setMessage(locale.translate("invalid-syntax", variables));
 
         var userData = Main.getInstance().getDatabase().getUserData(a.get("player"));
         if (userData == null) {
@@ -52,19 +52,4 @@ public class Seen extends AsyncCommand {
 
         return ExitCode.EXIT_SUCCESS;
     }
-
-    @Override
-    public void onSyntaxError(CommandSender sender, String label, String[] args) {
-        sender.sendMessage(locale.translate("invalid-syntax", variables));
-    }
-
-    @Override
-    public void onPermissionDenied(CommandSender sender, String label, String[] args) {
-        sender.sendMessage(locale.translate("no-permission", variables));
-    }
-
-    @Override
-    public void onError(CommandSender sender, String label, String[] args) {
-        sender.sendMessage(locale.translate("server-error", variables));
-    } 
 }

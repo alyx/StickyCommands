@@ -28,7 +28,8 @@ public class Afk extends AsyncCommand {
     @Override
     public ExitCode executeCommand(CommandSender sender, String commandLabel, String[] args) {
         if (!(sender instanceof Player))
-            return ExitCode.EXIT_PERMISSION_DENIED;
+            return ExitCode.EXIT_MUST_BE_PLAYER.setMessage(locale.translate("must-be-player", variables));
+
         User user = Main.getInstance().getOnlineUser(((Player)sender).getUniqueId());
         variables.put("player", user.getName());
         variables.put("player_uuid", user.getUniqueId().toString());
@@ -48,20 +49,5 @@ public class Afk extends AsyncCommand {
         }
         
         return ExitCode.EXIT_SUCCESS;
-    }
-
-    @Override
-    public void onSyntaxError(CommandSender sender, String label, String[] args) {
-        sender.sendMessage(locale.translate("invalid-syntax", variables));
-    }
-
-    @Override
-    public void onPermissionDenied(CommandSender sender, String label, String[] args) {
-        sender.sendMessage(locale.translate("no-permission", variables));
-    }
-
-    @Override
-    public void onError(CommandSender sender, String label, String[] args) {
-        sender.sendMessage(locale.translate("server-error", variables));
     }
 }

@@ -29,21 +29,21 @@ public class Speed extends AsyncCommand {
     @Override
     public ExitCode executeCommand(CommandSender sender, String commandLabel, String[] args) {
         if (!(sender instanceof Player))
-            return ExitCode.EXIT_PERMISSION_DENIED;
+            return ExitCode.EXIT_PERMISSION_DENIED.setMessage(locale.translate("no-permission", variables));
 
         User user = Main.getInstance().getOnlineUser(((Player)sender).getUniqueId());
         Arguments a = new Arguments(args);
         a.requiredString("speed");
 
         if (!a.valid())
-            return ExitCode.EXIT_INVALID_SYNTAX;
+            return onSyntaxError();
 
         if (!(a.get("speed").matches("\\d*\\.?\\d+")))
-            return ExitCode.EXIT_INVALID_SYNTAX;
+            return onSyntaxError();
 
         var speed = Float.parseFloat(a.get("speed")) / 10;
         if (speed*10> 10 || speed*10 <= 0)
-            return ExitCode.EXIT_INVALID_SYNTAX;
+            return onSyntaxError();
 
         if (((Player)sender).isFlying()) {
             user.setSpeed(SpeedType.FLY, speed);
@@ -55,19 +55,8 @@ public class Speed extends AsyncCommand {
         return ExitCode.EXIT_SUCCESS;
     }
 
-    @Override
-    public void onSyntaxError(CommandSender sender, String label, String[] args) {
-        sender.sendMessage(locale.translate("invalid-syntax", variables));
-    }
-    
-    @Override
-    public void onPermissionDenied(CommandSender sender, String label, String[] args) {
-        sender.sendMessage(locale.translate("no-permission", variables));
-    }
-
-    @Override
-    public void onError(CommandSender sender, String label, String[] args) {
-        sender.sendMessage(locale.translate("server-error", variables));
+    ExitCode onSyntaxError() {
+        return onSyntaxError().setMessage(locale.translate("invalid-syntax", variables));
     }
 
     @Override

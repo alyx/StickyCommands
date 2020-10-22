@@ -36,7 +36,7 @@ public class Sell extends AsyncCommand {
     @Override
     public ExitCode executeCommand(CommandSender sender, String commandLabel, String[] args) {
         if (!sender.hasPermission("stickycommands.sell") || (!(sender instanceof Player)))
-            return ExitCode.EXIT_PERMISSION_DENIED;
+            return ExitCode.EXIT_PERMISSION_DENIED.setMessage(locale.translate("no-permission", variables));
 
         Arguments a = new Arguments(args);
         a.optionalString("sellMode");
@@ -48,7 +48,7 @@ public class Sell extends AsyncCommand {
         // TODO: Find a better way to do this.
         if (a.get("sellMode") != null && a.get("sellMode").equalsIgnoreCase("log")) {
             if (!sender.hasPermission("stickycommands.sell.log"))
-                return ExitCode.EXIT_PERMISSION_DENIED;
+                return ExitCode.EXIT_PERMISSION_DENIED.setMessage(locale.translate("no-permission", variables));
             return handleLog(player, new Arguments(Arrays.copyOfRange(args, 1, args.length))); // We no longer need the
                                                                                                // first
                                                                                                // argument, just
@@ -119,14 +119,14 @@ public class Sell extends AsyncCommand {
                     sender.sendMessage(locale.translate("sell.must-confirm", variables));
                     return ExitCode.EXIT_SUCCESS;
                 default:
-                    return ExitCode.EXIT_INVALID_SYNTAX;
+                    return ExitCode.EXIT_INVALID_SYNTAX.setMessage(locale.translate("invalid-syntax", variables));
             }
         } else if (worth == 0.0) {
             sender.sendMessage(locale.translate("sell.cannot-sell", variables));
             return ExitCode.EXIT_SUCCESS;
         } else {
             sender.sendMessage(locale.translate("sell.bad-worth", variables));
-            return ExitCode.EXIT_ERROR;
+            return ExitCode.EXIT_ERROR.setMessage(locale.translate("server-error", variables));
         }
         // SHOULD NOT REACH HERE
     }
@@ -138,7 +138,7 @@ public class Sell extends AsyncCommand {
     ExitCode handleLog(Player sender, Arguments a) {
         a.optionalString("page");
         if (!a.valid())
-            return ExitCode.EXIT_INVALID_SYNTAX;
+            return ExitCode.EXIT_INVALID_SYNTAX.setMessage(locale.translate("invalid-syntax", variables));
 
         // I hate and love this.
         Integer page = a.get("page") == null ? 1
@@ -180,21 +180,6 @@ public class Sell extends AsyncCommand {
         sender.sendMessage(locale.translate("sell.log.paginator", variables));
 
         return ExitCode.EXIT_SUCCESS;
-    }
-
-    @Override
-    public void onSyntaxError(CommandSender sender, String label, String[] args) {
-        sender.sendMessage(locale.translate("invalid-syntax", variables));
-    }
-
-    @Override
-    public void onPermissionDenied(CommandSender sender, String label, String[] args) {
-        sender.sendMessage(locale.translate("no-permission", variables));
-    }
-
-    @Override
-    public void onError(CommandSender sender, String label, String[] args) {
-        sender.sendMessage(locale.translate("server-error", variables));
     }
 
     @Override

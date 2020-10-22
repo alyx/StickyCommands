@@ -33,7 +33,7 @@ public class Kill extends AsyncCommand {
     public ExitCode executeCommand(CommandSender sender, String commandLabel, String[] args) {
         try {
             if (!sender.hasPermission("stickycommands.kill"))
-                return ExitCode.EXIT_PERMISSION_DENIED;
+                return ExitCode.EXIT_PERMISSION_DENIED.setMessage(locale.translate("no-permission", variables));
 
             Arguments a = new Arguments(args);
             a.optionalString("target");
@@ -61,7 +61,7 @@ public class Kill extends AsyncCommand {
 
             return ExitCode.EXIT_SUCCESS;
         } catch (Exception e) {
-            return ExitCode.EXIT_ERROR;
+            return ExitCode.EXIT_ERROR.setMessage(locale.translate("server-error", variables));
         }
     }
 
@@ -81,20 +81,5 @@ public class Kill extends AsyncCommand {
                 usernames.add(player.getName());
         }
         return usernames;
-    }
-
-    @Override
-    public void onSyntaxError(CommandSender sender, String label, String[] args) {
-        sender.sendMessage(locale.translate("invalid-syntax", variables));
-    }
-
-    @Override
-    public void onPermissionDenied(CommandSender sender, String label, String[] args) {
-        sender.sendMessage(locale.translate("no-permission", variables));
-    }
-
-    @Override
-    public void onError(CommandSender sender, String label, String[] args) {
-        sender.sendMessage(locale.translate("server-error", variables));
     }
 }

@@ -10,6 +10,7 @@ import com.dumbdogdiner.stickyapi.bukkit.command.AsyncCommand;
 import com.dumbdogdiner.stickyapi.bukkit.command.ExitCode;
 import com.dumbdogdiner.stickyapi.common.translation.LocaleProvider;
 import com.dumbdogdiner.stickyapi.common.util.TimeUtil;
+import com.dumbdogdiner.stickyapi.common.util.StringUtil;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -32,7 +33,7 @@ public class Memory extends AsyncCommand {
     public ExitCode executeCommand(CommandSender sender, String commandLabel, String[] args) {
         try {
             if (!sender.hasPermission("stickycommands.memory"))
-                return ExitCode.EXIT_PERMISSION_DENIED;
+                return ExitCode.EXIT_PERMISSION_DENIED.setMessage(locale.translate("no-permission", variables));
             if (!(sender instanceof Player)) {
                 sender.sendMessage(locale.translate("must-be-player", new TreeMap<String, String>()));
                 return ExitCode.EXIT_SUCCESS;
@@ -53,7 +54,7 @@ public class Memory extends AsyncCommand {
             variables.put("tps_15m", String.valueOf(df.format(tps[2])));
             variables.put("max_memory", String.valueOf(max));
             variables.put("used_memory", String.valueOf(used));
-            variables.put("memory_bar", ChatColor.translateAlternateColorCodes('&', "&f[&" + color + createBar(25, usage) + "&f]"));
+            variables.put("memory_bar", ChatColor.translateAlternateColorCodes('&', "&f[&" + color + StringUtil.createProgressBar(25, usage, false, true, false) + "&f]"));
             variables.put("loaded_chunks", String.valueOf(player.getWorld().getLoadedChunks().length));
             variables.put("entities", String.valueOf(player.getWorld().getEntities().size()));
             variables.put("world", player.getWorld().getName());
@@ -62,28 +63,10 @@ public class Memory extends AsyncCommand {
             sender.sendMessage(locale.translate("memory-message", variables));
         } catch (Exception e) {
             e.printStackTrace();
-            return ExitCode.EXIT_ERROR;
+            return ExitCode.EXIT_ERROR.setMessage(locale.translate("server-error", variables));
         }
         return ExitCode.EXIT_SUCCESS;
     }
-
-    @Override
-    public void onSyntaxError(CommandSender sender, String label, String[] args) {
-        TreeMap<String, String> vars = locale.newVariables();
-        vars.put("syntax", "/memory");
-        sender.sendMessage(locale.translate("invalidSyntax", vars));
-    }
-
-    @Override
-    public void onPermissionDenied(CommandSender sender, String label, String[] args) {
-        sender.sendMessage(locale.translate("no-permission", variables));
-    }
-
-    @Override
-    public void onError(CommandSender sender, String label, String[] args) {
-        sender.sendMessage(locale.translate("server-error", variables));
-    }
-
     @Override
     public List<String> tabComplete(CommandSender sender, String alias, String[] args) {
         return null;

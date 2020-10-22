@@ -26,27 +26,16 @@ public class Top extends AsyncCommand {
     }
 
     @Override
-    public void onSyntaxError(CommandSender sender, String label, String[] args) {
-        sender.sendMessage(locale.translate("invalid-syntax", variables));    }
-
-    @Override
-    public void onPermissionDenied(CommandSender sender, String label, String[] args) {
-        sender.sendMessage(locale.translate("no-permission", variables));
-    }
-
-    @Override
-    public void onError(CommandSender sender, String label, String[] args) {
-        sender.sendMessage(locale.translate("server-error", variables));
-    }
-
-    @Override
     public ExitCode executeCommand(CommandSender sender, String commandLabel, String[] args) {
         try {
             if (!sender.hasPermission("stickycommands.top"))
-                return ExitCode.EXIT_PERMISSION_DENIED;
+                return ExitCode.EXIT_PERMISSION_DENIED.setMessage(locale.translate("no-permission", variables));
     
-            if (!(sender instanceof Player))
+            if (!(sender instanceof Player)) {
                 sender.sendMessage(locale.translate("must-be-player", variables));
+                return ExitCode.EXIT_MUST_BE_PLAYER.setMessage(locale.translate("must-be-player", variables));
+            }
+            
             var player = (Player) sender;
             var loc = LocationUtil.getSafeDestination(new Location(player.getWorld(), player.getLocation().getBlockX(), player.getWorld().getMaxHeight(), player.getLocation().getBlockZ(), player.getLocation().getYaw(), player.getLocation().getPitch()));
             variables.put("x", String.valueOf(loc.getX()));
@@ -57,7 +46,7 @@ public class Top extends AsyncCommand {
             sender.sendMessage(locale.translate("top-message", variables));
         } catch (Exception e) {
             e.printStackTrace();
-            return ExitCode.EXIT_ERROR;
+            return ExitCode.EXIT_ERROR.setMessage(locale.translate("server-error", variables));
         }
 
         return ExitCode.EXIT_SUCCESS;
