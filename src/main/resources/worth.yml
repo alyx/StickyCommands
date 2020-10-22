@@ -1,6 +1,7 @@
 # Items not listed in this file will not be sellable on the server
 # Setting the worth to 0 will disallow the ability to sell the item, delete the item or set to -1 to disable.
 # This will set the worth of all logs to '2'
+# This file is processed <check: top to bottom, no overwrite or yes overwrite?>
 log: 1.0  
 dye: 1.0
 
@@ -8,6 +9,9 @@ dye: 1.0
 wool: 1.0
 leaves: 0.5
 sapling: 0.5
+
+# Seriously, don't let this be sold, explicitly.
+dragonegg: 0
 
 #Custom items   
 emerald: 100.0
@@ -47,7 +51,6 @@ rawfish: 10.0
 minecart: 80.0
 leatherchestplate: 40.0
 storageminecart: 80.0
-leaves: 1.0
 feather: 3.0
 goldchestplate: 20.0
 mushroomsoup: 3.0
@@ -121,7 +124,6 @@ rail: 5.0
 poweredrail: 5.0
 activatorrail: 5.0
 detectorrail: 5.0
-rail: 5.0
 ironore: 12.0
 leatherhelmet: 36.0
 stone: 0.4
