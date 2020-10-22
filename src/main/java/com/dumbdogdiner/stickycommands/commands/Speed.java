@@ -26,6 +26,7 @@ public class Speed extends AsyncCommand {
         super("speed", owner);
         setPermission("stickycommands.speed");
         setDescription("Change your fly or walk speed");
+        variables.put("syntax", "/speed [1-10]");
     }
     
     @Override
@@ -38,9 +39,10 @@ public class Speed extends AsyncCommand {
         a.optionalString("speed");
 
         if (!a.valid())
-            return ExitCode.EXIT_INVALID_SYNTAX;
+            return ExitCode.EXIT_INVALID_SYNTAX.setMessage(locale.translate("invalid-syntax", variables));
         boolean flying = ((Player)sender).isFlying(); // We save state to prevent a race condition
         float speed;
+        variables.put("speed", a.exists("speed") ? a.get("speed") : "1");
         if(!a.exists("speed")){ // No argument provided, use the default
             if(flying) {
                 speed = DEFAULT_FLYING_SPEED;
@@ -48,12 +50,12 @@ public class Speed extends AsyncCommand {
                 speed = DEFAULT_WALKING_SPEED;
             }
         } else if (!(a.get("speed").matches("\\d*\\.?\\d+"))) {
-            return ExitCode.EXIT_INVALID_SYNTAX;
+            return ExitCode.EXIT_INVALID_SYNTAX.setMessage(locale.translate("invalid-syntax", variables));
         } else {
             speed = Float.parseFloat(a.get("speed"));
 
             if (speed > 10 || speed <= 0)
-                return ExitCode.EXIT_INVALID_SYNTAX;
+                return ExitCode.EXIT_INVALID_SYNTAX.setMessage(locale.translate("invalid-syntax", variables));
             else speed /= 10f;
         }
         if (flying) {
@@ -63,10 +65,6 @@ public class Speed extends AsyncCommand {
         }
         sender.sendMessage(locale.translate("speed-message", variables));
         return ExitCode.EXIT_SUCCESS;
-    }
-
-    ExitCode onSyntaxError() {
-        return ExitCode.EXIT_INVALID_SYNTAX.setMessage(locale.translate("invalid-syntax", variables));
     }
 
     @Override

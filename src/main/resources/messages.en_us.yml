@@ -9,7 +9,7 @@ network-name: "&bDumb Dog Diner"
 website: "dumbdogdiner.com"
 
 # Common error messages used throughout the plugin
-invalid-syntax: "{prefix}&cInvalid Syntax!"
+invalid-syntax: "{prefix}&cInvalid Syntax! Please use &f{syntax}&c!"
 server-error: "{prefix}&cThe server encountered an error, please try again later."
 no-permission: "{prefix}&cError! Permission denied!"
 player-does-not-exist: "{prefix}&cError! The player {bad_user} does not exist!"
