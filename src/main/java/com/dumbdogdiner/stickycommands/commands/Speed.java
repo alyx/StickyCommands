@@ -34,9 +34,10 @@ public class Speed extends AsyncCommand {
         User user = Main.getInstance().getOnlineUser(((Player)sender).getUniqueId());
         Arguments a = new Arguments(args);
         a.requiredString("speed");
-
         if (!a.valid())
             return onSyntaxError();
+
+        variables.put("speed", a.get("speed"));
 
         if (!(a.get("speed").matches("\\d*\\.?\\d+")))
             return onSyntaxError();
@@ -50,13 +51,12 @@ public class Speed extends AsyncCommand {
         } else {
             user.setSpeed(SpeedType.WALK, speed);
         }
-        variables.put("speed", a.get("speed"));
         sender.sendMessage(locale.translate("speed-message", variables));
         return ExitCode.EXIT_SUCCESS;
     }
 
     ExitCode onSyntaxError() {
-        return onSyntaxError().setMessage(locale.translate("invalid-syntax", variables));
+        return ExitCode.EXIT_INVALID_SYNTAX.setMessage(locale.translate("invalid-syntax", variables));
     }
 
     @Override
