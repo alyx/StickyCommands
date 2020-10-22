@@ -37,6 +37,9 @@ hs_err_pid*
 .gradle/
 build/
 
+# Ignore git access token for gradle
+gradle.properties
+
 # Ignore Gradle GUI config
 gradle-app.setting
 

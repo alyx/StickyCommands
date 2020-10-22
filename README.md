@@ -17,7 +17,7 @@ Light-weight essentials replacement for DumbDogDiner
 
 # GitHub Packages Setup
 
-- Create a file at `~/gradle.properties` with the following details:
+- Create a file at `~/gradle.properties` or `~/.gradle/gradle.properties` (depending on your system) with the following details:
 
 ```
 ghUser=your github username
