@@ -18,14 +18,14 @@ import org.bukkit.plugin.Plugin;
 
 public class Kill extends AsyncCommand {
 
-    private LocaleProvider locale = Main.getPlugin(Main.class).getLocaleProvider();
+    private final LocaleProvider locale = Main.getPlugin(Main.class).getLocaleProvider();
     TreeMap<String, String> variables = locale.newVariables();
 
     public Kill(Plugin owner) {
         super("kill", owner);
         setPermission("stickycommands.kill");
         setDescription("Kill a player, or yourself...");
-        setAliases(Arrays.asList(new String[] { "slay" }));
+        setAliases(Arrays.asList("slay", "murder"));
         variables.put("syntax", "/kill [player]");
     }
 
@@ -38,7 +38,7 @@ public class Kill extends AsyncCommand {
             Arguments a = new Arguments(args);
             a.optionalString("target");
 
-            Player target = null;
+            Player target;
             variables.put("player", a.get("target"));
             variables.put("sender", sender.getName());
 

@@ -30,7 +30,7 @@ public class Sell extends AsyncCommand {
         super("sell", owner);
         setDescription("Sell an item.");
         setPermission("stickycommands.sell");
-        variables.put("syntax", "/worth");
+        variables.put("syntax", "/sell");
     }
 
     @Override
@@ -90,7 +90,7 @@ public class Sell extends AsyncCommand {
         variables.put("inventory_worth", Double.toString(worth * inventoryAmount));
 
         if (worth > 0.0) {
-            switch (a.get("sellMode") == null ? "" : a.get("sellMode").toLowerCase()) {
+            switch (a.get("sellMode") == null ? "hand" : a.get("sellMode").toLowerCase()) {
                 case "hand":
                 case "confirm":
                 case "":

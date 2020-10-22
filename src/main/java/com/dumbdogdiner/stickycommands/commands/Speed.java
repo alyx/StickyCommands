@@ -17,9 +17,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 public class Speed extends AsyncCommand {
-
+    //TODO: Move constants to a config file
+    private static final float DEFAULT_WALKING_SPEED = 0.2f; // 0.1 is sneak, supposedly.
+    private static final float DEFAULT_FLYING_SPEED = 0.1f; // according to google
     LocaleProvider locale = Main.getInstance().getLocaleProvider();
-    TreeMap<String, String> variables = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
+    TreeMap<String, String> variables = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     public Speed(Plugin owner) {
         super("speed", owner);
         setPermission("stickycommands.speed");
@@ -33,20 +35,28 @@ public class Speed extends AsyncCommand {
 
         User user = Main.getInstance().getOnlineUser(((Player)sender).getUniqueId());
         Arguments a = new Arguments(args);
-        a.requiredString("speed");
+        a.optionalString("speed");
+
         if (!a.valid())
-            return onSyntaxError();
+            return ExitCode.EXIT_INVALID_SYNTAX;
+        boolean flying = ((Player)sender).isFlying(); // We save state to prevent a race condition
+        float speed;
+        if(!a.exists("speed")){ // No argument provided, use the default
+            if(flying) {
+                speed = DEFAULT_FLYING_SPEED;
+            } else {
+                speed = DEFAULT_WALKING_SPEED;
+            }
+        } else if (!(a.get("speed").matches("\\d*\\.?\\d+"))) {
+            return ExitCode.EXIT_INVALID_SYNTAX;
+        } else {
+            speed = Float.parseFloat(a.get("speed"));
 
-        variables.put("speed", a.get("speed"));
-
-        if (!(a.get("speed").matches("\\d*\\.?\\d+")))
-            return onSyntaxError();
-
-        var speed = Float.parseFloat(a.get("speed")) / 10;
-        if (speed*10> 10 || speed*10 <= 0)
-            return onSyntaxError();
-
-        if (((Player)sender).isFlying()) {
+            if (speed > 10 || speed <= 0)
+                return ExitCode.EXIT_INVALID_SYNTAX;
+            else speed /= 10f;
+        }
+        if (flying) {
             user.setSpeed(SpeedType.FLY, speed);
         } else {
             user.setSpeed(SpeedType.WALK, speed);
@@ -62,18 +72,7 @@ public class Speed extends AsyncCommand {
     @Override
     public List<String> tabComplete(CommandSender sender, String alias, String[] args) {
         if (args.length < 2) {
-            return Arrays.asList(new String[] {
-                "1",
-                "2",
-                "3",
-                "4",
-                "5",
-                "6",
-                "7",
-                "8",
-                "9",
-                "10"
-            });
+            return Arrays.asList("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "0");
         }
         return null;
     }
