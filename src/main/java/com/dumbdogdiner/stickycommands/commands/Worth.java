@@ -21,15 +21,15 @@ public class Worth extends AsyncCommand {
     
     public Worth(Plugin owner) {
         super("worth", owner);
-        setDescription("Check the worth of an item.");
+        setDescription("Check the worth of the item in your hand.");
         setPermission("stickycommands.worth");
-        variables.put("syntax", "/worth [hand/inventory]");
+        variables.put("syntax", "/worth");
     }
 
     @Override
     public ExitCode executeCommand(CommandSender sender, String commandLabel, String[] args) {
         try {
-            if (!sender.hasPermission("stickycommands.worth") || (!(sender instanceof Player)))
+            if (!(sender instanceof Player && sender.hasPermission("stickycommands.worth")))
                 return ExitCode.EXIT_PERMISSION_DENIED.setMessage(locale.translate("no-permission", variables));
             
             var player = (Player) sender;
