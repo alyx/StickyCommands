@@ -27,7 +27,7 @@ repositories {
 
 dependencies {
     // java deps
-    compileOnly "org.projectlombok:lombok:1.18.12"
+    compileOnly "org.projectlombok:lombok:1.18.16"
     annotationProcessor 'org.projectlombok:lombok:1.18.12'
     implementation 'org.jetbrains:annotations:18.0.0'
 
