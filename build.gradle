@@ -50,7 +50,7 @@ tasks.withType(JavaCompile) {
 
 tasks.build.dependsOn tasks.shadowJar
 shadowJar {
-    //archiveClassifier = ""
+    archiveClassifier = ""
     project.configurations.implementation.canBeResolved = true
     configurations = [project.configurations.implementation]
 }
