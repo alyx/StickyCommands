@@ -31,6 +31,7 @@ import lombok.Setter;
 /**
  * Utility class for interfacing with the database.
  */
+@SuppressWarnings("SqlNoDataSourceInspection")
 public class Database {
     private Connection connection = null;
 

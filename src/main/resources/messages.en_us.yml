@@ -15,6 +15,8 @@ no-permission: "{prefix}&cError! Permission denied!"
 player-does-not-exist: "{prefix}&cError! The player {bad_user} does not exist!"
 player-has-not-joined: "{prefix}&cError! The player {bad_user} has not joined before!"
 must-be-player: "{prefix}&cYou must be a player to execute this command!"
+not-online-player: "{prefix}&c Error! {PLAYER} is not online!"
+invalid-group: "{prefix}&cError! Group {GROUP} is invalid!"
 
 # The config supports new lines (\n), it can be used on any node
 seen-message: "{prefix}&bUser data for {data_player}\n{newline}&b{online|yesno:'&aOnline,&cOffline'} &bsince: &f{lastlogin|expiry}\n{newline}&bIP: &f{IPADDRESS}\n{newline}&bFirst Login: &f{firstlogin|datetime:\"EEE, MMM d yyyy HH:mm:ss\"}\n{newline}&bLast Login: &f{lastlogin|datetime:\"EEE, MMM d yyyy HH:mm:ss\"}\n{newline}&bLast Server: &f{SERVER}\n{newline}&bTimes Connected: &f{timesconnected}\n{newline}&bFly/Walk: &f{fly_speed}&b / &f{walk_speed}"
@@ -26,8 +28,7 @@ reload:
   database-success: "{prefix}&aReloaded configuration and messages successfully!"
   error: "{prefix}&cThere was an error reloading StickyCommands, please see console for details!"
 
-you-smitted: "{prefix}&bYou smitted &f{PLAYER}&bat &f{LOCX}, {LOCY}, {LOCZ}!"
-you-were-smitten: "{prefix}&bThou hast been smitten!"
+
 
 sell:
   cannot-sell: "{prefix}&cThis item cannot be sold!"
@@ -58,6 +59,13 @@ kill:
   you-were-killed: "{prefix}&bThou hast been slain!"
   you-killed: "{prefix}&bYou killed {PLAYER}"
   suicide: "{prefix}&bYou magically died!"
+
+smite:
+  smite-other-player-success: "{prefix}&b Your fury reigns down on {PLAYER}"
+  smite-block: "{prefix}&b Your fury reigns down on the block at {X},{Y},{Z} of world {WORLD}"
+  smite-message: "{prefix}&b Thou hast been smitten!"
+  smite-immune: "{prefix}&b {PLAYER} is immune to your wrath!"
+  yourself: "{prefix}&b You have smitten yourself!"
 
 whip:
   you-whipped: "{prefix}&bYou whipped &f{PLAYER}&b for &f{DAMAGE}&bhp &f{AMOUNT}&b times!"

@@ -44,8 +44,8 @@ public class Memory extends AsyncCommand {
             // FIXME: Memory usage is always 0%
             var max = Runtime.getRuntime().maxMemory() / 1024 / 1024;
             var used = Runtime.getRuntime().totalMemory() / 1024 / 1024 - Runtime.getRuntime().freeMemory() / 1024 / 1024;
-            var usage = Double.valueOf(df.format(((used / max) * 100)));
-            var color = usage < 60 ? 'a' : (usage < 85 ? 'e' : 'c');
+            double usage = Double.parseDouble(df.format(((used / max) * 100)));
+            char color = usage < 60 ? 'a' : (usage < 85 ? 'e' : 'c');
             
             double[] tps = Main.getInstance().getRecentTps();
             
