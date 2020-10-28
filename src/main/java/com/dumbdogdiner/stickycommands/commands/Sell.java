@@ -97,7 +97,7 @@ public class Sell extends AsyncCommand {
                     // I don't like this, but it works so whatever...
                     // TODO: discomfuckulate this shit
                     if (a.exists("confirm") ? a.get("confirm").equalsIgnoreCase("confirm")
-                            : a.exists("sellMode") ? a.get("sellMode").equalsIgnoreCase("confirm") : false) {
+                            : a.exists("sellMode") && a.get("sellMode").equalsIgnoreCase("confirm")) {
                         variables.put("amount", String.valueOf(item.getAmount()));
                         variables.put("worth", String.valueOf(item.getWorth() * item.getAmount()));
                         player.sendMessage(locale.translate("sell.sell-message", variables));
