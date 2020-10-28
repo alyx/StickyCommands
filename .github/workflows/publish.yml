@@ -21,7 +21,7 @@ jobs:
         mkdir -p ~/.gradle/
         echo "::set-env name=GRADLE_USER_HOME::$HOME/.gradle"
         echo "ghUser=${GITHUB_ACTOR}" >> ~/.gradle/gradle.properties
-        echo "ghUser=${GITHUB_TOKEN}" >> ~/.gradle/gradle.properties
+        echo "ghPass=${GITHUB_TOKEN}" >> ~/.gradle/gradle.properties
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Publish with Gradle
