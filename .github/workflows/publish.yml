@@ -19,7 +19,7 @@ jobs:
     - name: Setup gradle.properties
       run: |
         mkdir -p ~/.gradle/
-        echo "::set-env name=GRADLE_USER_HOME::$HOME/.gradle"
+        echo "GRADLE_USER_HOME=$HOME/.gradle" >> $GITHUB_ENV
         echo "ghUser=${GITHUB_ACTOR}" >> ~/.gradle/gradle.properties
         echo "ghPass=${GITHUB_TOKEN}" >> ~/.gradle/gradle.properties
       env:
