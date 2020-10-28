@@ -134,7 +134,7 @@ public class Main extends JavaPlugin {
         if (!registerCommands())
         return;
         
-        afkRunnable.scheduleAtFixedRate(new AfkTimeRunnable(), 0x3E8L, 0x3E8L); // We must run this every ONE second!
+        afkRunnable.scheduleAtFixedRate(new AfkTimeRunnable(), 1000L, 1000L); // We must run this every ONE second!
         
         getLogger().info("StickyCommands started successfully!");
     }
