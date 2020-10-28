@@ -5,6 +5,7 @@ plugins {
     id "com.github.johnrengelman.shadow" version "6.1.0"
     id "maven-publish"
     id "io.freefair.lombok" version "5.2.1"
+    id 'maven-publish'
 }
 
 group = "com.dumbdogdiner"
@@ -40,7 +41,7 @@ dependencies {
     // plugin-specific deps
     compileOnly "com.github.MilkBowl:VaultAPI:1.7"
     compileOnly "me.clip:placeholderapi:2.10.6"
-    implementation "com.dumbdogdiner:stickyapi:1.4.4"
+    implementation "com.dumbdogdiner:stickyapi:1.4.5"
     compileOnly 'net.luckperms:api:5.2'
 }
 
