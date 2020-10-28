@@ -20,16 +20,11 @@ import java.util.*;
 
 
 public class Smite extends AsyncCommand {
-    private enum SmiteStatus {
-        NO_PLAYER,
-        PLAYER_IMMUNE,
-        SMITTEN
-    }
+
 
     private final LocaleProvider locale = Main.getPlugin(Main.class).getLocaleProvider();
     TreeMap<String, String> variables = locale.newVariables();
     private static final String PERMISSION_USE = "stickycommands.smite";
-    private static final String PERMISSION_IMMUNE = "stickycommands.smite.immune";
 
     private static final float EXPLOSION_STRENGTH = 1.5F;
     private static final int TARGET_RANGE = 100;
@@ -70,7 +65,9 @@ public class Smite extends AsyncCommand {
         a.optionalString("smitetarget", "target");
 
 
+
         String smiteTarget = a.get("smitetarget").toLowerCase();
+        System.out.println(smiteTarget);
         boolean isConsole = !(sender instanceof Player);
 
 
@@ -85,14 +82,10 @@ public class Smite extends AsyncCommand {
                 tempvars.put("player", "%s");
                 for (Player player : Bukkit.getOnlinePlayers()) {
                     if (player.hasPermission("group." + smiteTarget)) {
-                        switch (smitePlayer(player)) {
-                            case SMITTEN:
-                                sender.sendMessage(String.format(locale.translate("smite.smite-other-player-success", tempvars), player.getDisplayName()));
-                                break;
-                            case PLAYER_IMMUNE:
-                                sender.sendMessage(String.format(locale.translate("smite.smite-immune", tempvars), player.getDisplayName()));
-                                break;
-                            case NO_PLAYER: // This shouldn't happen but lets be safe I guess
+                        if (smitePlayer(player)) {
+
+                            sender.sendMessage(String.format(locale.translate("smite.smite-other-player-success", tempvars), player.getDisplayName()));
+                        } else {
                                 sender.sendMessage(String.format(locale.translate("not-online-player", tempvars), player.getDisplayName()));
                         }
                     }
@@ -126,19 +119,16 @@ public class Smite extends AsyncCommand {
                 }
             } else {
 
-                switch (smitePlayer(smiteTarget)) {
-                    case SMITTEN:
-                        return ExitCode.EXIT_SUCCESS.setMessage(locale.translate("smite.smite-other-player-success", variables));
-                    case NO_PLAYER:
+                if (smitePlayer(smiteTarget)) {
+
+                    return ExitCode.EXIT_SUCCESS.setMessage(locale.translate("smite.smite-other-player-success", variables));
+                } else {
+
                         return ExitCode.EXIT_INVALID_SYNTAX.setMessage(locale.translate("not-online-player", variables));
-                    case PLAYER_IMMUNE:
-                        return ExitCode.EXIT_PERMISSION_DENIED.setMessage(locale.translate("smite.smite-immune", variables));
+
                 }
             }
         }
-
-        // SHOULD NOT REACH HERE
-        return ExitCode.EXIT_INVALID_STATE;
     }
 
     /**
@@ -147,7 +137,7 @@ public class Smite extends AsyncCommand {
      * @param playerName player to smite
      * @return if player exists (and was smitten) or not
      */
-    private SmiteStatus smitePlayer(String playerName) {
+    private boolean smitePlayer(String playerName) {
         return smitePlayer(Bukkit.getPlayer(playerName));
     }
 
@@ -157,15 +147,13 @@ public class Smite extends AsyncCommand {
      * @param player player to smite
      * @return if player exists (and was smitten) or not
      */
-    private SmiteStatus smitePlayer(Player player) {
+    private boolean smitePlayer(Player player) {
         if (player == null)
-            return SmiteStatus.NO_PLAYER;
-        if (player.hasPermission(PERMISSION_IMMUNE))
-            return SmiteStatus.PLAYER_IMMUNE;
+            return false;
         lightningOnCoord(player.getLocation(), player.getWorld());
         player.sendMessage(locale.translate("smite.smite-message", variables));
         System.out.println(locale.translate("smite.smite-message", variables));
-        return SmiteStatus.SMITTEN;
+        return true;
     }
 
     /**
