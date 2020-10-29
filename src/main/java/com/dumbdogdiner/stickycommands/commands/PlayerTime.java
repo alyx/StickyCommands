@@ -8,7 +8,7 @@ import com.dumbdogdiner.stickyapi.bukkit.command.ExitCode;
 import com.dumbdogdiner.stickyapi.common.arguments.Arguments;
 import com.dumbdogdiner.stickyapi.common.translation.LocaleProvider;
 import com.dumbdogdiner.stickyapi.common.util.NumberUtil;
-import com.dumbdogdiner.stickycommands.Main;
+import com.dumbdogdiner.stickycommands.StickyCommands;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -16,7 +16,7 @@ import org.bukkit.plugin.Plugin;
 
 public class PlayerTime extends AsyncCommand {
 
-    LocaleProvider locale = Main.getInstance().getLocaleProvider();
+    LocaleProvider locale = StickyCommands.getInstance().getLocaleProvider();
     TreeMap<String, String> variables = locale.newVariables();
 
     public PlayerTime(Plugin owner) {

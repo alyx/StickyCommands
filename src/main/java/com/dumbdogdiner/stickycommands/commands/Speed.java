@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.TreeMap;
 
-import com.dumbdogdiner.stickycommands.Main;
+import com.dumbdogdiner.stickycommands.StickyCommands;
 import com.dumbdogdiner.stickycommands.SpeedType;
 import com.dumbdogdiner.stickycommands.User;
 import com.dumbdogdiner.stickyapi.bukkit.command.AsyncCommand;
@@ -20,7 +20,7 @@ public class Speed extends AsyncCommand {
     //TODO: Move constants to a config file
     private static final float DEFAULT_WALKING_SPEED = 0.2f; // 0.1 is sneak, supposedly.
     private static final float DEFAULT_FLYING_SPEED = 0.1f; // according to google
-    LocaleProvider locale = Main.getInstance().getLocaleProvider();
+    LocaleProvider locale = StickyCommands.getInstance().getLocaleProvider();
     TreeMap<String, String> variables = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     public Speed(Plugin owner) {
         super("speed", owner);
@@ -34,7 +34,7 @@ public class Speed extends AsyncCommand {
         if (!(sender instanceof Player))
             return ExitCode.EXIT_PERMISSION_DENIED.setMessage(locale.translate("no-permission", variables));
 
-        User user = Main.getInstance().getOnlineUser(((Player)sender).getUniqueId());
+        User user = StickyCommands.getInstance().getOnlineUser(((Player)sender).getUniqueId());
         Arguments a = new Arguments(args);
         a.optionalString("speed");
 

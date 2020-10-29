@@ -2,7 +2,7 @@ package com.dumbdogdiner.stickycommands.listeners;
 
 import java.util.TreeMap;
 
-import com.dumbdogdiner.stickycommands.Main;
+import com.dumbdogdiner.stickycommands.StickyCommands;
 import com.dumbdogdiner.stickycommands.User;
 
 import org.bukkit.Bukkit;
@@ -28,7 +28,7 @@ public class AfkEventListener implements Listener {
     
     @EventHandler(priority = EventPriority.MONITOR)
     public void onMove(PlayerMoveEvent event) {
-        User user = Main.getInstance().getOnlineUser(event.getPlayer().getUniqueId());
+        User user = StickyCommands.getInstance().getOnlineUser(event.getPlayer().getUniqueId());
         // Let's make sure this is only a 3 block buffer!
         if (user.getBlockBuffer().size() > 3)
             user.getBlockBuffer().remove(user.getBlockBuffer().iterator().next()); // Remove the first entry
@@ -84,17 +84,18 @@ public class AfkEventListener implements Listener {
 
     private void checkAfk(Player player, PlayerEvent event) {
         @NotNull
-        User user = Main.getInstance().getOnlineUser(player.getUniqueId());
+        User user = StickyCommands.getInstance().getOnlineUser(player.getUniqueId());
         if (user == null) // If for some reason, their user object doesn't exist (???) let's create a new one.
-            Main.getInstance().getOnlineUserCache().put(player.getUniqueId(), User.fromPlayer(player));
-            
+            StickyCommands.getInstance().getOnlineUserCache().put(player.getUniqueId(), User.fromPlayer(player));
+
+        assert user != null;
         user.setAfkTime(0);
         if (user.isAfk()) {
             variables.put("player", player.getName());
             // Reset their AFK time
             user.setAfk(false);
             for (var p : Bukkit.getOnlinePlayers()) {
-                p.sendMessage(Main.getInstance().getLocaleProvider().translate("afk.not-afk", variables));
+                p.sendMessage(StickyCommands.getInstance().getLocaleProvider().translate("afk.not-afk", variables));
             }
         }
     }

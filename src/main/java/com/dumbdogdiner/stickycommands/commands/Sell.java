@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.TreeMap;
 
-import com.dumbdogdiner.stickycommands.Main;
+import com.dumbdogdiner.stickycommands.StickyCommands;
 import com.dumbdogdiner.stickycommands.Sale;
 import com.dumbdogdiner.stickycommands.utils.Database;
 import com.dumbdogdiner.stickycommands.utils.Item;
@@ -22,8 +22,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
 public class Sell extends AsyncCommand {
-    static Main self = Main.getInstance();
-    LocaleProvider locale = Main.getInstance().getLocaleProvider();
+    static StickyCommands self = StickyCommands.getInstance();
+    LocaleProvider locale = StickyCommands.getInstance().getLocaleProvider();
     TreeMap<String, String> variables = locale.newVariables();
 
     public Sell(Plugin owner) {
@@ -143,7 +143,7 @@ public class Sell extends AsyncCommand {
         // I hate and love this.
         Integer page = a.get("page") == null ? 1
                 : (NumberUtil.isNumeric(a.get("page")) ? Integer.parseInt(a.get("page")) : 1);
-        Database database = Main.getInstance().getDatabase();
+        Database database = StickyCommands.getInstance().getDatabase();
         var salesList = database.getSaleLog(page);
 
         ArrayList<String> sales = new ArrayList<String>();

@@ -2,7 +2,7 @@ package com.dumbdogdiner.stickycommands.commands;
 
 import java.util.TreeMap;
 
-import com.dumbdogdiner.stickycommands.Main;
+import com.dumbdogdiner.stickycommands.StickyCommands;
 import com.dumbdogdiner.stickyapi.bukkit.command.AsyncCommand;
 import com.dumbdogdiner.stickyapi.bukkit.command.ExitCode;
 import com.dumbdogdiner.stickyapi.common.arguments.Arguments;
@@ -14,7 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 public class Seen extends AsyncCommand {
-    private static LocaleProvider locale = Main.getInstance().getLocaleProvider();
+    private static LocaleProvider locale = StickyCommands.getInstance().getLocaleProvider();
     TreeMap<String, String> variables = locale.newVariables();
     
     public Seen(Plugin owner) {
@@ -38,7 +38,7 @@ public class Seen extends AsyncCommand {
         if (!a.valid())
             return ExitCode.EXIT_INVALID_SYNTAX.setMessage(locale.translate("invalid-syntax", variables));
 
-        var userData = Main.getInstance().getDatabase().getUserData(a.get("player"));
+        var userData = StickyCommands.getInstance().getDatabase().getUserData(a.get("player"));
         if (userData == null) {
             variables.put("bad_user", a.get("player"));
             sender.sendMessage(locale.translate("player-has-not-joined", variables));

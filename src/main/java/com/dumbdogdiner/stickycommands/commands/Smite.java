@@ -4,7 +4,7 @@ import com.dumbdogdiner.stickyapi.bukkit.command.AsyncCommand;
 import com.dumbdogdiner.stickyapi.bukkit.command.ExitCode;
 import com.dumbdogdiner.stickyapi.common.arguments.Arguments;
 import com.dumbdogdiner.stickyapi.common.translation.LocaleProvider;
-import com.dumbdogdiner.stickycommands.Main;
+import com.dumbdogdiner.stickycommands.StickyCommands;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.model.group.Group;
 import org.bukkit.Bukkit;
@@ -20,7 +20,7 @@ import java.util.*;
 
 public class Smite extends AsyncCommand {
 
-    private final LocaleProvider locale = Main.getPlugin(Main.class).getLocaleProvider();
+    private final LocaleProvider locale = StickyCommands.getPlugin(StickyCommands.class).getLocaleProvider();
     TreeMap<String, String> variables = locale.newVariables();
     private static final String PERMISSION_USE = "stickycommands.smite";
 
@@ -39,14 +39,14 @@ public class Smite extends AsyncCommand {
 
     // TODO Move to StickyAPI, where its better suited?
     public List<String> getGroupsList() {
-        LuckPerms perms = Main.getInstance().getPerms();
+        LuckPerms perms = StickyCommands.getInstance().getPerms();
         List<String> returnList = new ArrayList<>();
         if (perms != null) {
             for (Group group : perms.getGroupManager().getLoadedGroups()) {
                 returnList.add(group.getName().toLowerCase());
             }
         } else {
-            Main.getInstance().getLogger().severe("Dependency LuckPerms not found!");
+            StickyCommands.getInstance().getLogger().severe("Dependency LuckPerms not found!");
         }
         return returnList;
     }
@@ -174,7 +174,7 @@ public class Smite extends AsyncCommand {
 
     private void lightningOnCoord(Location location, World world) {
 
-        Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getInstance(), new Runnable() {
+        Bukkit.getScheduler().scheduleSyncDelayedTask(StickyCommands.getInstance(), new Runnable() {
             @Override
             public void run() {
                 LightningStrike strike = world.strikeLightning(location);

@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.TreeMap;
 
-import com.dumbdogdiner.stickycommands.Main;
+import com.dumbdogdiner.stickycommands.StickyCommands;
 import com.dumbdogdiner.stickyapi.bukkit.command.AsyncCommand;
 import com.dumbdogdiner.stickyapi.bukkit.command.ExitCode;
 import com.dumbdogdiner.stickyapi.common.translation.LocaleProvider;
@@ -18,7 +18,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 public class Memory extends AsyncCommand {
-    LocaleProvider locale = Main.getInstance().getLocaleProvider();
+    LocaleProvider locale = StickyCommands.getInstance().getLocaleProvider();
     TreeMap<String, String> variables = locale.newVariables();
 
     public Memory(Plugin owner) {
@@ -47,7 +47,7 @@ public class Memory extends AsyncCommand {
             double usage = Double.parseDouble(df.format(((used / max) * 100)));
             char color = usage < 60 ? 'a' : (usage < 85 ? 'e' : 'c');
             
-            double[] tps = Main.getInstance().getRecentTps();
+            double[] tps = StickyCommands.getInstance().getRecentTps();
             
             variables.put("tps_1m", String.valueOf(df.format(tps[0])));
             variables.put("tps_5m", String.valueOf(df.format(tps[1])));
@@ -58,8 +58,8 @@ public class Memory extends AsyncCommand {
             variables.put("loaded_chunks", String.valueOf(player.getWorld().getLoadedChunks().length));
             variables.put("entities", String.valueOf(player.getWorld().getEntities().size()));
             variables.put("world", player.getWorld().getName());
-            variables.put("uptime", String.valueOf(TimeUtil.getUnixTime() - Main.getInstance().getUpTime()));
-            variables.put("uptime_long", String.valueOf(Main.getInstance().getUpTime()));
+            variables.put("uptime", String.valueOf(TimeUtil.getUnixTime() - StickyCommands.getInstance().getUpTime()));
+            variables.put("uptime_long", String.valueOf(StickyCommands.getInstance().getUpTime()));
             sender.sendMessage(locale.translate("memory-message", variables));
         } catch (Exception e) {
             e.printStackTrace();

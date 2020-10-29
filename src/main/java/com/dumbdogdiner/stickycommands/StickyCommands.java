@@ -18,7 +18,6 @@ import com.dumbdogdiner.stickycommands.utils.Database;
 import com.dumbdogdiner.stickycommands.utils.Item;
 import com.dumbdogdiner.stickyapi.StickyAPI;
 import com.dumbdogdiner.stickyapi.bukkit.util.StartupUtil;
-import com.dumbdogdiner.stickyapi.common.cache.Cache;
 import com.dumbdogdiner.stickyapi.common.translation.LocaleProvider;
 import com.dumbdogdiner.stickyapi.common.util.ReflectionUtil;
 import com.dumbdogdiner.stickyapi.common.util.TimeUtil;
@@ -35,13 +34,13 @@ import org.bukkit.plugin.java.JavaPlugin;
 import lombok.Getter;
 import net.milkbowl.vault.economy.Economy;
 
-public class Main extends JavaPlugin {
+public class StickyCommands extends JavaPlugin {
 
     /**
      * The singleton instance of the plugin.
      */
     @Getter
-    static Main instance;
+    static StickyCommands instance;
 
     @Getter
     protected Boolean enabled = false;

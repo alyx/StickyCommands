@@ -2,7 +2,7 @@ package com.dumbdogdiner.stickycommands.commands;
 
 import java.util.TreeMap;
 
-import com.dumbdogdiner.stickycommands.Main;
+import com.dumbdogdiner.stickycommands.StickyCommands;
 import com.dumbdogdiner.stickycommands.utils.Item;
 import com.dumbdogdiner.stickyapi.bukkit.command.AsyncCommand;
 import com.dumbdogdiner.stickyapi.bukkit.command.ExitCode;
@@ -15,8 +15,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
 public class Worth extends AsyncCommand {
-    static Main self = Main.getInstance();
-    LocaleProvider locale = Main.getInstance().getLocaleProvider();
+    static StickyCommands self = StickyCommands.getInstance();
+    LocaleProvider locale = StickyCommands.getInstance().getLocaleProvider();
     TreeMap<String, String> variables = locale.newVariables();
     
     public Worth(Plugin owner) {

@@ -1,6 +1,6 @@
 name: StickyCommands
-version: 2.9.1
-main: com.dumbdogdiner.stickycommands.Main
+version: 3.0.1
+main: com.dumbdogdiner.stickycommands.StickyCommands
 load: STARTUP
 authors:
   - NotZachery
