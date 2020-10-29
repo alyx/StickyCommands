@@ -88,11 +88,11 @@ public class User implements Cacheable {
         switch(type) {
             case FLY:
                 Bukkit.getPlayer(this.uniqueId).setFlySpeed(speed);
-                Main.getInstance().getDatabase().setSpeed(this.uniqueId, speed, 1);
+                StickyCommands.getInstance().getDatabase().setSpeed(this.uniqueId, speed, 1);
                 break;
             case WALK:
                 Bukkit.getPlayer(this.uniqueId).setWalkSpeed(speed);
-                Main.getInstance().getDatabase().setSpeed(this.uniqueId, speed, 0);
+                StickyCommands.getInstance().getDatabase().setSpeed(this.uniqueId, speed, 0);
                 break;
         }
     }

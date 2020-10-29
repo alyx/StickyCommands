@@ -2,11 +2,10 @@ package com.dumbdogdiner.stickycommands.utils;
 
 import java.io.File;
 import java.io.IOException;
-import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.TreeMap;
 
-import com.dumbdogdiner.stickycommands.Main;
+import com.dumbdogdiner.stickycommands.StickyCommands;
 import com.dumbdogdiner.stickyapi.common.configuration.InvalidConfigurationException;
 import com.dumbdogdiner.stickyapi.common.configuration.file.FileConfiguration;
 import com.dumbdogdiner.stickyapi.common.configuration.file.YamlConfiguration;
@@ -24,7 +23,7 @@ import org.bukkit.persistence.PersistentDataType;
 import lombok.Getter;
 
 public class Item {
-    Main self = Main.getInstance();
+    StickyCommands self = StickyCommands.getInstance();
     @Getter
     static DecimalFormat decimalFormat = new DecimalFormat("0.00"); // We don't want something like 25.3333333333, instead we want 25.33
     static File configFile;
@@ -106,7 +105,7 @@ public class Item {
     public boolean isSellable(final ItemStack is) {
         final var meta = is.getItemMeta();
         final var dataStore = meta.getPersistentDataContainer();
-        return !dataStore.has(new NamespacedKey(Main.getInstance(), "notsellable"), PersistentDataType.STRING);
+        return !dataStore.has(new NamespacedKey(StickyCommands.getInstance(), "notsellable"), PersistentDataType.STRING);
     }
 
     /**
@@ -138,7 +137,7 @@ public class Item {
     public boolean sellable() {
         final var meta = this.getItemMeta();
         final var dataStore = meta.getPersistentDataContainer();
-        return !dataStore.has(new NamespacedKey(Main.getInstance(), "notsellable"), PersistentDataType.STRING);
+        return !dataStore.has(new NamespacedKey(StickyCommands.getInstance(), "notsellable"), PersistentDataType.STRING);
     }
 
     public boolean hasDurability() {
@@ -153,16 +152,16 @@ public class Item {
     public void sell(Player player, Boolean sellInventory, TreeMap<String, String> variables, Integer amount) {
         Debugger debug = new Debugger(getClass());
         debug.print("selling item " + getName());
-        var database = Main.getInstance().getDatabase();
+        var database = StickyCommands.getInstance().getDatabase();
         debug.print("database variable declared");
         if (!sellInventory) {
             debug.print("Not selling inventory...");
-            Main.getInstance().getEconomy().depositPlayer(player, getWorth() * amount);
+            StickyCommands.getInstance().getEconomy().depositPlayer(player, getWorth() * amount);
             debug.print("Depositted " + getWorth() * amount + " in " + player.getName() + "'s account");
             player.getInventory().getItemInMainHand().setAmount(0);
             debug.print("removed items");
         } else {
-            Main.getInstance().getEconomy().depositPlayer(player, getWorth() * amount);
+            StickyCommands.getInstance().getEconomy().depositPlayer(player, getWorth() * amount);
             debug.print("Depositted " + getWorth() * amount + " in " + player.getName() + "'s account");
             debug.print("removing items...");
             consumeItem(player, amount, getType());

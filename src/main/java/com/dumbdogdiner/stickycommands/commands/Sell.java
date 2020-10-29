@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.TreeMap;
 
-import com.dumbdogdiner.stickycommands.Main;
+import com.dumbdogdiner.stickycommands.StickyCommands;
 import com.dumbdogdiner.stickycommands.Sale;
 import com.dumbdogdiner.stickycommands.utils.Database;
 import com.dumbdogdiner.stickycommands.utils.Item;
@@ -25,8 +25,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
 public class Sell extends AsyncCommand {
-    static Main self = Main.getInstance();
-    LocaleProvider locale = Main.getInstance().getLocaleProvider();
+    static StickyCommands self = StickyCommands.getInstance();
+    LocaleProvider locale = StickyCommands.getInstance().getLocaleProvider();
     TreeMap<String, String> variables = locale.newVariables();
 
     public Sell(Plugin owner) {
@@ -143,7 +143,7 @@ public class Sell extends AsyncCommand {
         // I hate and love this.
         Integer page = a.get("page") == null ? 1
                 : (NumberUtil.isNumeric(a.get("page")) ? Integer.parseInt(a.get("page")) : 1);
-        Database database = Main.getInstance().getDatabase();
+        Database database = StickyCommands.getInstance().getDatabase();
         var salesList = database.getSaleLog(page);
 
         sender.sendMessage(locale.translate("sell.log.log-message", variables));
@@ -160,7 +160,7 @@ public class Sell extends AsyncCommand {
             variables.put("old_balance", sale.getOldBalance().toString());
             variables.put("balance_change", String.valueOf(Item.getDecimalFormat().format(sale.getNewBalance() - sale.getOldBalance())));
             variables.put("date", sale.getDate().toString());
-            sender.spigot().sendMessage(new ChatMessage(locale.translate("sell.log.log", variables)).setHoverMessage(Translation.translate(locale, "&b{log_player} sold an item\n&8&l» &bItem Sold:&f {item_enum}\n&8&l» &bAmount Sold:&f {amount}\n&8&l» &bNew Balance:&f ${new_balance} &2(+${balance_change})\n&8&l» &bDate:&f {date} &7({date|expiry})\n&8&l» &bTransaction ID:&f {saleid}", "&", variables)).getComponent());        
+            sender.spigot().sendMessage(new ChatMessage(locale.translate("sell.log.log", variables)).setHoverMessage(locale.translate("sell.log.log-hover", variables)).getComponent());
             // Due to a limitation with the ChatMessage class, I can't append hover messages...
             // sender.spigot().sendMessage(logMessage.getComponent());
         }

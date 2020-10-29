@@ -3,7 +3,7 @@ package com.dumbdogdiner.stickycommands.commands;
 import java.util.List;
 import java.util.TreeMap;
 
-import com.dumbdogdiner.stickycommands.Main;
+import com.dumbdogdiner.stickycommands.StickyCommands;
 import com.dumbdogdiner.stickycommands.utils.LocationUtil;
 import com.dumbdogdiner.stickyapi.bukkit.command.AsyncCommand;
 import com.dumbdogdiner.stickyapi.bukkit.command.ExitCode;
@@ -17,7 +17,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.entity.Player;
 
 public class Jump extends AsyncCommand {
-    private static LocaleProvider locale = Main.getInstance().getLocaleProvider();
+    private static LocaleProvider locale = StickyCommands.getInstance().getLocaleProvider();
     TreeMap<String, String> variables = locale.newVariables();
 
     public Jump(Plugin owner) {
@@ -51,7 +51,7 @@ public class Jump extends AsyncCommand {
             loc.setPitch(player.getLocation().getPitch());
             loc.add(0, 1, 0);
             final Location syncLoc = loc;
-            Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getInstance(), () -> player.teleport(syncLoc), 1L);
+            Bukkit.getScheduler().scheduleSyncDelayedTask(StickyCommands.getInstance(), () -> player.teleport(syncLoc), 1L);
             variables.put("player", player.getName());
             variables.put("x", String.valueOf(loc.getX()));
             variables.put("y", String.valueOf(loc.getY()));

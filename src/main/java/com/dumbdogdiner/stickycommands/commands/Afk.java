@@ -2,7 +2,7 @@ package com.dumbdogdiner.stickycommands.commands;
 
 import java.util.TreeMap;
 
-import com.dumbdogdiner.stickycommands.Main;
+import com.dumbdogdiner.stickycommands.StickyCommands;
 import com.dumbdogdiner.stickycommands.User;
 import com.dumbdogdiner.stickyapi.bukkit.command.AsyncCommand;
 import com.dumbdogdiner.stickyapi.bukkit.command.ExitCode;
@@ -15,7 +15,7 @@ import org.bukkit.plugin.Plugin;
 
 public class Afk extends AsyncCommand {
 
-    private static LocaleProvider locale = Main.getInstance().getLocaleProvider();
+    private static LocaleProvider locale = StickyCommands.getInstance().getLocaleProvider();
     TreeMap<String, String> variables = locale.newVariables();
     
     public Afk(Plugin owner) {
@@ -30,7 +30,7 @@ public class Afk extends AsyncCommand {
         if (!(sender instanceof Player))
             return ExitCode.EXIT_MUST_BE_PLAYER.setMessage(locale.translate("must-be-player", variables));
 
-        User user = Main.getInstance().getOnlineUser(((Player)sender).getUniqueId());
+        User user = StickyCommands.getInstance().getOnlineUser(((Player)sender).getUniqueId());
         variables.put("player", user.getName());
         variables.put("player_uuid", user.getUniqueId().toString());
         
@@ -38,14 +38,14 @@ public class Afk extends AsyncCommand {
             user.setAfk(false);
             user.setAfkTime(0);
             for (Player p : Bukkit.getOnlinePlayers()) {
-                p.sendMessage(Main.getInstance().getLocaleProvider().translate("afk.not-afk", variables));
+                p.sendMessage(StickyCommands.getInstance().getLocaleProvider().translate("afk.not-afk", variables));
             }
             return ExitCode.EXIT_SUCCESS;
         }
         user.setAfk(true);
         // Bukkit is literally fucking retarded, and I can't use broadcastMessage because that magically doesn't work now! Who knew....
         for (Player p : Bukkit.getOnlinePlayers()) {
-            p.sendMessage(Main.getInstance().getLocaleProvider().translate("afk.afk", variables));
+            p.sendMessage(StickyCommands.getInstance().getLocaleProvider().translate("afk.afk", variables));
         }
         
         return ExitCode.EXIT_SUCCESS;

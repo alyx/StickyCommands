@@ -4,7 +4,7 @@ import java.util.TimerTask;
 import java.util.TreeMap;
 
 import com.dumbdogdiner.stickyapi.common.util.NumberUtil;
-import com.dumbdogdiner.stickycommands.Main;
+import com.dumbdogdiner.stickycommands.StickyCommands;
 import com.dumbdogdiner.stickycommands.User;
 
 import org.bukkit.Bukkit;
@@ -12,11 +12,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 
 public class AfkTimeRunnable extends TimerTask {
-    protected Integer AFK_TIMEOUT = Main.getInstance().getConfig().getInt("afk-timeout", 300);
+    protected Integer AFK_TIMEOUT = StickyCommands.getInstance().getConfig().getInt("afk-timeout", 300);
 
     @Override
     public void run() {
-        for (User user : Main.getInstance().getOnlineUserCache().values()) {
+        for (User user : StickyCommands.getInstance().getOnlineUserCache().values()) {
             user.setAfkTime(user.getAfkTime() + 1);
             if (user.getAfkTime() >= AFK_TIMEOUT) {
                 var variables = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
@@ -24,12 +24,12 @@ public class AfkTimeRunnable extends TimerTask {
                     user.setAfk(true);
                     variables.put("player", user.getName());
                     for (Player players : Bukkit.getOnlinePlayers()) {
-                        players.sendMessage(Main.getInstance().getLocaleProvider().translate("afk.afk", variables));
+                        players.sendMessage(StickyCommands.getInstance().getLocaleProvider().translate("afk.afk", variables));
                     }
                 } else if (exceedsPermissionTime(user, user.getAfkTime() - AFK_TIMEOUT)) {
                     variables.put("time", String.valueOf(user.getAfkTime() - AFK_TIMEOUT));
                     System.out.println(variables.get("time"));
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getInstance(), () -> Bukkit.getPlayer(user.getUniqueId()).kickPlayer(Main.getInstance().getLocaleProvider().translate("afk.afk-kick", variables)), 1L);
+                    Bukkit.getScheduler().scheduleSyncDelayedTask(StickyCommands.getInstance(), () -> Bukkit.getPlayer(user.getUniqueId()).kickPlayer(StickyCommands.getInstance().getLocaleProvider().translate("afk.afk-kick", variables)), 1L);
                 }
             }
         }

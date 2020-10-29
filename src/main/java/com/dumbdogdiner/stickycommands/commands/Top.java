@@ -2,7 +2,7 @@ package com.dumbdogdiner.stickycommands.commands;
 
 import java.util.TreeMap;
 
-import com.dumbdogdiner.stickycommands.Main;
+import com.dumbdogdiner.stickycommands.StickyCommands;
 import com.dumbdogdiner.stickycommands.utils.LocationUtil;
 import com.dumbdogdiner.stickyapi.bukkit.command.AsyncCommand;
 import com.dumbdogdiner.stickyapi.bukkit.command.ExitCode;
@@ -16,7 +16,7 @@ import org.bukkit.plugin.Plugin;
 
 public class Top extends AsyncCommand {
 
-    LocaleProvider locale = Main.getInstance().getLocaleProvider();
+    LocaleProvider locale = StickyCommands.getInstance().getLocaleProvider();
     TreeMap<String, String> variables = locale.newVariables();
     public Top(Plugin owner) {
         super("top", owner);
@@ -42,7 +42,7 @@ public class Top extends AsyncCommand {
             variables.put("y", String.valueOf(loc.getY()));
             variables.put("z", String.valueOf(loc.getZ()));
             variables.put("player", player.getName());
-            Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getInstance(), () -> player.teleport(loc), 1L);
+            Bukkit.getScheduler().scheduleSyncDelayedTask(StickyCommands.getInstance(), () -> player.teleport(loc), 1L);
             sender.sendMessage(locale.translate("top-message", variables));
         } catch (Exception e) {
             e.printStackTrace();

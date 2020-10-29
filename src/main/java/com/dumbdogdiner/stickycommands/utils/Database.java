@@ -12,16 +12,14 @@ import java.util.List;
 import java.util.TreeMap;
 import java.util.UUID;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 
 import com.dumbdogdiner.stickyapi.common.util.Debugger;
 import com.dumbdogdiner.stickyapi.common.util.TimeUtil;
-import com.dumbdogdiner.stickycommands.Main;
+import com.dumbdogdiner.stickycommands.StickyCommands;
 import com.dumbdogdiner.stickycommands.Sale;
 import com.dumbdogdiner.stickycommands.SpeedType;
 
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 
@@ -35,7 +33,7 @@ import lombok.Setter;
 public class Database {
     private Connection connection = null;
 
-    private FileConfiguration config = Main.getInstance().getConfig();
+    private FileConfiguration config = StickyCommands.getInstance().getConfig();
 
     @Getter
     @Setter
@@ -142,7 +140,7 @@ public class Database {
 
         } catch (SQLException e) {
             e.printStackTrace();
-            Main.getInstance().getLogger()
+            StickyCommands.getInstance().getLogger()
                     .severe("Cannot create database tables, please ensure your SQL user has the correct permissions.");
             return false;
 
@@ -183,7 +181,7 @@ public class Database {
                 return true;
             }
         });
-        Main.getInstance().getPool().execute(t);
+        StickyCommands.getInstance().getPool().execute(t);
         return true;
     }
 
@@ -334,7 +332,7 @@ public class Database {
                 return true;
             }
         });
-        Main.getInstance().getPool().execute(t);
+        StickyCommands.getInstance().getPool().execute(t);
         return true;
     }
 
@@ -379,7 +377,7 @@ public class Database {
                     insertUser.setString(i++, ipAddress);
                     insertUser.setTimestamp(i++, firstLogin);
                     insertUser.setTimestamp(i++, lastLogin);
-                    insertUser.setString(i++, Main.getInstance().getConfig().getString("server", "#"));
+                    insertUser.setString(i++, StickyCommands.getInstance().getConfig().getString("server", "#"));
                     insertUser.setInt(i++, 1);
                     insertUser.setBoolean(i++, isOnline);
                     insertUser.executeUpdate();
@@ -392,7 +390,7 @@ public class Database {
             }
         });
 
-        Main.getInstance().getPool().execute(t);
+        StickyCommands.getInstance().getPool().execute(t);
 
         return true;
     }
@@ -450,7 +448,7 @@ public class Database {
                         updateUser.setTimestamp(i++, lastLogin);
                         updateUser.setString(i++, playerName);
                         updateUser.setString(i++, ipAddress);
-                        updateUser.setString(i++, Main.getInstance().getConfig().getString("server", "#"));
+                        updateUser.setString(i++, StickyCommands.getInstance().getConfig().getString("server", "#"));
                         updateUser.setInt(i++, isJoining ? ++tc : tc);
                         updateUser.setBoolean(i++, isOnline);
                         updateUser.setString(i++, uuid);
@@ -477,7 +475,7 @@ public class Database {
             }
         });
 
-        Main.getInstance().getPool().execute(t);
+        StickyCommands.getInstance().getPool().execute(t);
         return true;
     }
 

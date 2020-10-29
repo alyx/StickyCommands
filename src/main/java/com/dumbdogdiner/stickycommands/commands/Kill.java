@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.TreeMap;
 
-import com.dumbdogdiner.stickycommands.Main;
+import com.dumbdogdiner.stickycommands.StickyCommands;
 import com.dumbdogdiner.stickyapi.common.arguments.Arguments;
 import com.dumbdogdiner.stickyapi.bukkit.command.AsyncCommand;
 import com.dumbdogdiner.stickyapi.bukkit.command.ExitCode;
@@ -18,7 +18,7 @@ import org.bukkit.plugin.Plugin;
 
 public class Kill extends AsyncCommand {
 
-    private final LocaleProvider locale = Main.getPlugin(Main.class).getLocaleProvider();
+    private final LocaleProvider locale = StickyCommands.getPlugin(StickyCommands.class).getLocaleProvider();
     TreeMap<String, String> variables = locale.newVariables();
 
     public Kill(Plugin owner) {
@@ -70,7 +70,7 @@ public class Kill extends AsyncCommand {
         target.sendMessage(locale.translate(message, variables));
         // md_5 couldn't help but throw exceptions instead of trying to actually solve the problem
         // so we have to run certain events, like kick and death, synchronously
-        Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getInstance(), () -> target.setHealth(0), 1L);
+        Bukkit.getScheduler().scheduleSyncDelayedTask(StickyCommands.getInstance(), () -> target.setHealth(0), 1L);
     }
 
     @Override
