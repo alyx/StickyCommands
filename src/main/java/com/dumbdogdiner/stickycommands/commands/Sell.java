@@ -39,8 +39,8 @@ public class Sell extends AsyncCommand {
             return ExitCode.EXIT_PERMISSION_DENIED.setMessage(locale.translate("no-permission", variables));
 
         Arguments a = new Arguments(args);
+        a.optionalFlag("confirm", "confirm");
         a.optionalString("sellMode");
-        a.optionalString("confirm");
 
         var player = (Player) sender;
         variables.put("player", player.getName());
@@ -93,11 +93,8 @@ public class Sell extends AsyncCommand {
             switch (a.get("sellMode") == null ? "hand" : a.get("sellMode").toLowerCase()) {
                 case "hand":
                 case "confirm":
-                case "":
-                    // I don't like this, but it works so whatever...
-                    // TODO: discomfuckulate this shit
-                    if (a.exists("confirm") ? a.get("confirm").equalsIgnoreCase("confirm")
-                            : a.exists("sellMode") && a.get("sellMode").equalsIgnoreCase("confirm")) {
+                if (a.getFlag("confirm")) {
+                    System.out.println(a.get("sellMode"));
                         variables.put("amount", String.valueOf(item.getAmount()));
                         variables.put("worth", String.valueOf(item.getWorth() * item.getAmount()));
                         player.sendMessage(locale.translate("sell.sell-message", variables));

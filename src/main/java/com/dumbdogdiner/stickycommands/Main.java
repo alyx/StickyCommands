@@ -17,6 +17,8 @@ import com.dumbdogdiner.stickycommands.listeners.AfkEventListener;
 import com.dumbdogdiner.stickycommands.utils.Database;
 import com.dumbdogdiner.stickycommands.utils.Item;
 import com.dumbdogdiner.stickyapi.StickyAPI;
+import com.dumbdogdiner.stickyapi.bukkit.util.CommandUtil;
+import com.dumbdogdiner.stickyapi.bukkit.util.ServerUtil;
 import com.dumbdogdiner.stickyapi.bukkit.util.StartupUtil;
 import com.dumbdogdiner.stickyapi.common.cache.Cache;
 import com.dumbdogdiner.stickyapi.common.translation.LocaleProvider;
@@ -195,8 +197,7 @@ public class Main extends JavaPlugin {
         commandList.add(new PlayerTime(this));
         commandList.add(new Smite(this));
 
-        CommandMap cmap = ReflectionUtil.getProtectedValue(Bukkit.getServer(), "commandMap");
-        cmap.registerAll(this.getName().toLowerCase(), commandList);
+        CommandUtil.registerCommands(getServer(), commandList);
         return true;
     }
 
