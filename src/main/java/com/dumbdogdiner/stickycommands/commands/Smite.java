@@ -61,7 +61,6 @@ public class Smite extends AsyncCommand {
         a.optionalString("smitetarget", "target");
 
         String smiteTarget = a.get("smitetarget").toLowerCase();
-        System.out.println(smiteTarget);
         boolean isConsole = !(sender instanceof Player);
 
         if (a.getFlag("group")) {
@@ -152,7 +151,6 @@ public class Smite extends AsyncCommand {
             return false;
         lightningOnCoord(player.getLocation(), player.getWorld());
         player.sendMessage(locale.translate("smite.smite-message", variables));
-        System.out.println(locale.translate("smite.smite-message", variables));
         return true;
     }
 

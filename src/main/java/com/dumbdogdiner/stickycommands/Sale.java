@@ -20,7 +20,7 @@ import lombok.Getter;
 public class Sale {
 
     @Getter
-    Integer orderId;
+    Integer saleId;
 
     @Getter
     UUID uniqueId;
@@ -49,7 +49,7 @@ public class Sale {
                 throw new NullPointerException("ResultSet is null, did the database query execute successfully?");
             UUID uuid = UUID.fromString(result.getString("uuid"));
             // We want the username of the player... So we need to query the users table.
-            this.orderId = result.getInt("id");
+            this.saleId = result.getInt("id");
             this.uniqueId = uuid;
             this.username = result.getString("player_name");
             this.item = new Item(new ItemStack(Material.getMaterial(result.getString("item")), result.getInt("amount")));

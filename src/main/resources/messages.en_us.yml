@@ -38,7 +38,8 @@ sell:
   must-confirm: "{prefix}&cPlease confirm your sale by typing /sell [inventory/hand] confirm!"
   log:
     log-message: "{prefix}&bRecent sale logs"
-    log: "{newline}&7({date|datetime:\"MM/dd/yy HH:mm:ss\"}) &f{log_player} &bsold &f{amount} {item} &bfor &f${price}\n"
+    log: "{newline}&7({date|datetime:\"mm/dd HH:mm\"}) &f{log_player} &bsold &f{amount} {item} &bfor &f${price}"
+    log-hover: "&bSale &f#{saleid}\n&8&l» &bItem Sold:&f {item_enum}\n&8&l» &bAmount Sold:&f {amount}\n&8&l» &bNew Balance:&f ${new_balance} &2(+${balance_change})\n&8&l» &bDate:&f {date} &7({date|expiry})\n&8&l» &bTransaction ID:&f {saleid}"
     no-sales: "{prefix}&bThere have been no sales!"
     paginator: "{prefix}&bpage &f{current}&b/&f{total}"
 

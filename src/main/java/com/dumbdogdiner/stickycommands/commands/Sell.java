@@ -12,8 +12,11 @@ import com.dumbdogdiner.stickycommands.utils.Item;
 import com.dumbdogdiner.stickyapi.common.arguments.Arguments;
 import com.dumbdogdiner.stickyapi.bukkit.command.AsyncCommand;
 import com.dumbdogdiner.stickyapi.bukkit.command.ExitCode;
+import com.dumbdogdiner.stickyapi.common.translation.ChatMessage;
 import com.dumbdogdiner.stickyapi.common.translation.LocaleProvider;
+import com.dumbdogdiner.stickyapi.common.translation.Translation;
 import com.dumbdogdiner.stickyapi.common.util.NumberUtil;
+import com.dumbdogdiner.stickyapi.common.util.TimeUtil;
 
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -143,37 +146,32 @@ public class Sell extends AsyncCommand {
         Database database = Main.getInstance().getDatabase();
         var salesList = database.getSaleLog(page);
 
-        ArrayList<String> sales = new ArrayList<String>();
+        sender.sendMessage(locale.translate("sell.log.log-message", variables));
+        var i = 0;
         for (Sale sale : salesList) {
+            ++i;
             variables.put("log_player", sale.getUsername());
-            variables.put("saleid", sale.getOrderId().toString());
+            variables.put("saleid", sale.getSaleId().toString());
             variables.put("item", sale.getItem().getName());
             variables.put("item_enum", sale.getItem().getType().toString());
             variables.put("amount", sale.getAmount().toString());
             variables.put("price", sale.getPrice().toString());
             variables.put("new_balance", sale.getNewBalance().toString());
             variables.put("old_balance", sale.getOldBalance().toString());
+            variables.put("balance_change", String.valueOf(Item.getDecimalFormat().format(sale.getNewBalance() - sale.getOldBalance())));
             variables.put("date", sale.getDate().toString());
-            sales.add(locale.translate("sell.log.log", variables));
+            sender.spigot().sendMessage(new ChatMessage(locale.translate("sell.log.log", variables)).setHoverMessage(Translation.translate(locale, "&b{log_player} sold an item\n&8&l» &bItem Sold:&f {item_enum}\n&8&l» &bAmount Sold:&f {amount}\n&8&l» &bNew Balance:&f ${new_balance} &2(+${balance_change})\n&8&l» &bDate:&f {date} &7({date|expiry})\n&8&l» &bTransaction ID:&f {saleid}", "&", variables)).getComponent());        
+            // Due to a limitation with the ChatMessage class, I can't append hover messages...
+            // sender.spigot().sendMessage(logMessage.getComponent());
         }
-
+        
         Integer totalPages = database.getSaleLogSize() / 8;
-        if (sales.size() < 1 || page > totalPages) {
+        if (i < 1 || page > totalPages) {
             sender.sendMessage(locale.translate("sell.log.no-sales", variables));
             return ExitCode.EXIT_SUCCESS;
         }
-
-        // Let's send this is one giant message, just incase it manages to
-        // get cut off by other messages!
-        var logMessage = "";
-        for (String log : sales)
-            logMessage += log;
-
         variables.put("current", String.valueOf(page));
         variables.put("total", String.valueOf(totalPages));
-
-        sender.sendMessage(locale.translate("sell.log.log-message", variables));
-        sender.sendMessage(logMessage);
         sender.sendMessage(locale.translate("sell.log.paginator", variables));
 
         return ExitCode.EXIT_SUCCESS;
