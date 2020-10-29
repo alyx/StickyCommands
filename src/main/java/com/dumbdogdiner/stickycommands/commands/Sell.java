@@ -141,8 +141,8 @@ public class Sell extends AsyncCommand {
             return ExitCode.EXIT_INVALID_SYNTAX.setMessage(locale.translate("invalid-syntax", variables));
 
         // I hate and love this.
-        Integer page = a.get("page") == null ? 1
-                : (NumberUtil.isNumeric(a.get("page")) ? Integer.parseInt(a.get("page")) : 1);
+        Integer page = a.get("page") == null ? 0
+                : (NumberUtil.isNumeric(a.get("page")) ? Integer.parseInt(a.get("page")) : 0);
         Database database = StickyCommands.getInstance().getDatabase();
         var salesList = database.getSaleLog(page);
 

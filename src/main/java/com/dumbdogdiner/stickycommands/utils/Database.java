@@ -242,16 +242,9 @@ public class Database {
      */
     public List<Sale> getSaleLog(Integer page) {
         try {
-            // I can't select `DESC id` before I do my `BETWEEN` query...
-            // So, we just select everything at the bottom first!
-            // This ensures that all latest sales are at the top of the list
-            final var TOTAL = getSaleLogSize();
-            final var MAX = TOTAL - (page == 1 ? 0 : (page * 8)); // If the page is 1, we don't want to subtract 8...
-            final var MIN = MAX - 7;
-
-            PreparedStatement getSales = connection.prepareStatement("SELECT * FROM " + withPrefix("sales") + " WHERE id BETWEEN ? AND ? ORDER BY id DESC");
-            getSales.setInt(1, MIN);
-            getSales.setInt(2, MAX);
+            final var OFFSET = page * 8;
+            PreparedStatement getSales = connection.prepareStatement("SELECT * FROM " + withPrefix("sales") + " ORDER BY id DESC LIMIT 8 OFFSET ?");
+            getSales.setInt(1, OFFSET);
             ResultSet rs = getSales.executeQuery();
             ArrayList<Sale> sales = new ArrayList<Sale>();
             while (rs.next()) {
