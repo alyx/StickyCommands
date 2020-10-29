@@ -2,6 +2,7 @@ package com.dumbdogdiner.stickycommands; // package owo
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
 import java.util.UUID;
@@ -55,7 +56,7 @@ public class Main extends JavaPlugin {
      * Cache of all online users.
      */
     @Getter
-    protected Cache<User> onlineUserCache = new Cache<>(User.class);
+    protected HashMap<UUID, User> onlineUserCache = new HashMap<UUID, User>();
 
 
     /**
@@ -100,8 +101,7 @@ public class Main extends JavaPlugin {
         // Set our thread pool
         StickyAPI.setPool(pool);
         new Item();
-        onlineUserCache.setMaxSize(1000);
-        onlineUserCache.setMaxMemoryUsage(2048);
+        // onlineUserCache.setMaxSize(1000);
     }
     
     @Override
@@ -125,7 +125,7 @@ public class Main extends JavaPlugin {
         // Register currently online users - in case of a reload.
         // (stop reloading spigot, please.)
         for (Player player : Bukkit.getOnlinePlayers()) {
-            this.onlineUserCache.put(User.fromPlayer(player));
+            this.onlineUserCache.put(player.getUniqueId(), new User(player));
         }
         
         if (!registerEvents())
@@ -182,16 +182,17 @@ public class Main extends JavaPlugin {
             commandList.add(new Sell(this));
             commandList.add(new Worth(this));
         }
-        
+
+        commandList.add(new Speed(this));
+        commandList.add(new Seen(this));
+    
         commandList.add(new Kill(this));
         commandList.add(new Jump(this));
         commandList.add(new Memory(this));
         commandList.add(new Top(this));
         commandList.add(new PowerTool(this));
         commandList.add(new Afk(this));
-        commandList.add(new Speed(this));
         commandList.add(new PlayerTime(this));
-        commandList.add(new Seen(this));
         commandList.add(new Smite(this));
 
         CommandMap cmap = ReflectionUtil.getProtectedValue(Bukkit.getServer(), "commandMap");
@@ -213,7 +214,7 @@ public class Main extends JavaPlugin {
      * @return The user if found, otherwise null
      */
     public User getOnlineUser(UUID uuid) {
-        for (User user : getOnlineUserCache().getAll()) {
+        for (User user : getOnlineUserCache().values()) {
             if (user.getUniqueId().equals(uuid))
                 return user;
         }

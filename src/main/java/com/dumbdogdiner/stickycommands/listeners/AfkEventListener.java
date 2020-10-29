@@ -86,7 +86,7 @@ public class AfkEventListener implements Listener {
         @NotNull
         User user = Main.getInstance().getOnlineUser(player.getUniqueId());
         if (user == null) // If for some reason, their user object doesn't exist (???) let's create a new one.
-            Main.getInstance().getOnlineUserCache().put(User.fromPlayer(player));
+            Main.getInstance().getOnlineUserCache().put(player.getUniqueId(), User.fromPlayer(player));
             
         user.setAfkTime(0);
         if (user.isAfk()) {

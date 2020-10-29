@@ -61,11 +61,11 @@ kill:
   suicide: "{prefix}&bYou magically died!"
 
 smite:
-  smite-other-player-success: "{prefix}&b Your fury reigns down on {PLAYER}"
-  smite-block: "{prefix}&b Your fury reigns down on the block at {X},{Y},{Z} of world {WORLD}"
-  smite-message: "{prefix}&b Thou hast been smitten!"
-  smite-immune: "{prefix}&b {PLAYER} is immune to your wrath!"
-  yourself: "{prefix}&b You have smitten yourself!"
+  smite-other-player-success: "{prefix}&bYour fury reigns down on {is_group|empty_if_false:\"&fthe group \"}&f{PLAYER}&b!"
+  smite-block: "{prefix}&bYour fury reigns down on the block at &f{X}, {Y}, {Z} &bof world &f{WORLD}"
+  smite-message: "{prefix}&bThou hast been smitten!"
+  smite-immune: "{prefix}&f{PLAYER}&b is immune to your wrath!"
+  yourself: "{prefix}&bYou have smitten yourself!"
 
 whip:
   you-whipped: "{prefix}&bYou whipped &f{PLAYER}&b for &f{DAMAGE}&bhp &f{AMOUNT}&b times!"

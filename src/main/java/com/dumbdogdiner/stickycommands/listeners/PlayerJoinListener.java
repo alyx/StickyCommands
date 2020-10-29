@@ -20,21 +20,21 @@ public class PlayerJoinListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerJoin(PlayerJoinEvent event) {
         var player = event.getPlayer();
-        Main.getInstance().getOnlineUserCache().put(User.fromPlayer(player));
+        Main.getInstance().getOnlineUserCache().put(player.getUniqueId(), User.fromPlayer(player));
         Main.getInstance().getDatabase().updateUser(player.getUniqueId().toString(), player.getName(), player.getAddress().getAddress().getHostAddress(), TimeUtil.now(), true, true);
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerQuit(PlayerQuitEvent event) {
         var player = event.getPlayer();
-        Main.getInstance().getOnlineUserCache().removeKey(player.getUniqueId().toString());
+        Main.getInstance().getOnlineUserCache().remove(player.getUniqueId());
         Main.getInstance().getDatabase().updateUser(player.getUniqueId().toString(), player.getName(), player.getAddress().getAddress().getHostAddress(), TimeUtil.now(), false, false);
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerQuit(PlayerKickEvent event) {
         var player = event.getPlayer();
-        Main.getInstance().getOnlineUserCache().removeKey(player.getUniqueId().toString());
+        Main.getInstance().getOnlineUserCache().remove(player.getUniqueId());
         Main.getInstance().getDatabase().updateUser(player.getUniqueId().toString(), player.getName(), player.getAddress().getAddress().getHostAddress(), TimeUtil.now(), false, false);
     }
 }

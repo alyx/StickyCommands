@@ -18,9 +18,7 @@ import org.bukkit.plugin.Plugin;
 
 import java.util.*;
 
-
 public class Smite extends AsyncCommand {
-
 
     private final LocaleProvider locale = Main.getPlugin(Main.class).getLocaleProvider();
     TreeMap<String, String> variables = locale.newVariables();
@@ -29,31 +27,29 @@ public class Smite extends AsyncCommand {
     private static final float EXPLOSION_STRENGTH = 1.5F;
     private static final int TARGET_RANGE = 100;
 
-
-
     public Smite(Plugin owner) {
         super("smite", owner);
         setPermission(PERMISSION_USE);
         setDescription("Smite a player, block, or yourself...");
         setAliases(Arrays.asList("strike", "lightningify"));
-        variables.put("syntax", "/smite [player | me | everyone | " + ChatColor.BOLD + "target" + ChatColor.RESET + "]");
+        variables.put("syntax",
+                "/smite [player | me | everyone | " + ChatColor.BOLD + "target" + ChatColor.RESET + "]");
 
     }
 
-    //TODO Move to StickyAPI, where its better suited?
+    // TODO Move to StickyAPI, where its better suited?
     public List<String> getGroupsList() {
         LuckPerms perms = Main.getInstance().getPerms();
         List<String> returnList = new ArrayList<>();
         if (perms != null) {
-             for(Group group : perms.getGroupManager().getLoadedGroups()){
-                 returnList.add(group.getName().toLowerCase());
-             }
+            for (Group group : perms.getGroupManager().getLoadedGroups()) {
+                returnList.add(group.getName().toLowerCase());
+            }
         } else {
-            Main.getInstance().getLogger().severe("Could not find luckperms!!!!!");
+            Main.getInstance().getLogger().severe("Dependency LuckPerms not found!");
         }
         return returnList;
     }
-
 
     @Override
     public ExitCode executeCommand(CommandSender sender, String commandLabel, String[] args) {
@@ -64,33 +60,35 @@ public class Smite extends AsyncCommand {
         a.optionalFlag("group", "group");
         a.optionalString("smitetarget", "target");
 
-
-
         String smiteTarget = a.get("smitetarget").toLowerCase();
         System.out.println(smiteTarget);
         boolean isConsole = !(sender instanceof Player);
 
-
         if (a.getFlag("group")) {
-            variables.put("player", "the group " + a.get("smitetarget"));
+            variables.put("player", a.get("smitetarget"));
             List<String> groupList = getGroupsList();
             if (groupList.contains(smiteTarget)) {
 
-                //noinspection unchecked
-                TreeMap<String, String> tempvars = (TreeMap<String, String>)variables.clone();
+                // noinspection unchecked
+                TreeMap<String, String> tempvars = (TreeMap<String, String>) variables.clone();
                 tempvars.remove("player");
                 tempvars.put("player", "%s");
+                tempvars.put("is_group", "true"); // lol
                 for (Player player : Bukkit.getOnlinePlayers()) {
                     if (player.hasPermission("group." + smiteTarget)) {
                         if (smitePlayer(player)) {
 
-                            sender.sendMessage(String.format(locale.translate("smite.smite-other-player-success", tempvars), player.getDisplayName()));
+                            sender.sendMessage(
+                                    String.format(locale.translate("smite.smite-other-player-success", tempvars),
+                                            player.getDisplayName()));
                         } else {
-                                sender.sendMessage(String.format(locale.translate("not-online-player", tempvars), player.getDisplayName()));
+                            sender.sendMessage(String.format(locale.translate("not-online-player", tempvars),
+                                    player.getDisplayName()));
                         }
                     }
                 }
-                return ExitCode.EXIT_SUCCESS.setMessage(locale.translate("smite.smite-other-player-success", variables));
+                sender.sendMessage(locale.translate("smite.smite-other-player-success", variables));
+                return ExitCode.EXIT_SUCCESS;
             } else {
                 variables.put("group", variables.get("player"));
                 return ExitCode.EXIT_INVALID_SYNTAX.setMessage(locale.translate("invalid-group", variables));
@@ -104,7 +102,8 @@ public class Smite extends AsyncCommand {
                 } else {
                     if (smiteTarget.equals("me")) {
                         smiteMe((Player) sender);
-                        return ExitCode.EXIT_SUCCESS.setMessage(locale.translate("smite.yourself", variables));
+                        sender.sendMessage(locale.translate("smite.yourself", variables));
+                        return ExitCode.EXIT_SUCCESS;
                     } else { // MUST be target
                         // TODO: Allow targetting an entity rather than a block
                         Location toStrike = ((Player) sender).getTargetBlock(null, TARGET_RANGE).getLocation();
@@ -112,19 +111,20 @@ public class Smite extends AsyncCommand {
                         variables.put("X", Integer.toString(toStrike.getBlockX()));
                         variables.put("Y", Integer.toString(toStrike.getBlockY()));
                         variables.put("Z", Integer.toString(toStrike.getBlockZ()));
-                        variables.put("WORLD", strikeWorld.toString());
+                        variables.put("WORLD", strikeWorld.getName());
                         lightningOnCoord(toStrike, strikeWorld);
-                        return ExitCode.EXIT_SUCCESS.setMessage(locale.translate("smite.smite-block", variables));
+                        sender.sendMessage(locale.translate("smite.smite-block", variables));
+                        return ExitCode.EXIT_SUCCESS;
                     }
                 }
             } else {
 
                 if (smitePlayer(smiteTarget)) {
-
-                    return ExitCode.EXIT_SUCCESS.setMessage(locale.translate("smite.smite-other-player-success", variables));
+                    sender.sendMessage(locale.translate("smite.smite-other-player-success", variables));
+                    return ExitCode.EXIT_SUCCESS;
                 } else {
 
-                        return ExitCode.EXIT_INVALID_SYNTAX.setMessage(locale.translate("not-online-player", variables));
+                    return ExitCode.EXIT_INVALID_SYNTAX.setMessage(locale.translate("not-online-player", variables));
 
                 }
             }

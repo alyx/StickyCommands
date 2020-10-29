@@ -8,6 +8,8 @@ import com.dumbdogdiner.stickyapi.common.cache.Cacheable;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -42,11 +44,17 @@ public class User implements Cacheable {
    // So, we need to keep a buffer of the last 3 blocks the player stood in, and if it contains water, we'll consider it as the water pushing them, since there's no event for
    // checking if a player is being pushed by water!
     @Getter
+    @NotNull
     private ArrayList<Material> blockBuffer = new ArrayList<Material>();
 
     public User(String username, UUID uniqueId) {
         this.name = username;
         this.uniqueId = uniqueId;
+    }
+
+    public User(Player player) {
+        this.name = player.getName();
+        this.uniqueId = player.getUniqueId();
     }
 
     /**

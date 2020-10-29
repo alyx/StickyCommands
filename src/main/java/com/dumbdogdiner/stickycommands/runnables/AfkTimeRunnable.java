@@ -16,7 +16,7 @@ public class AfkTimeRunnable extends TimerTask {
 
     @Override
     public void run() {
-        for (User user : Main.getInstance().getOnlineUserCache().getAll()) {
+        for (User user : Main.getInstance().getOnlineUserCache().values()) {
             user.setAfkTime(user.getAfkTime() + 1);
             if (user.getAfkTime() >= AFK_TIMEOUT) {
                 var variables = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
