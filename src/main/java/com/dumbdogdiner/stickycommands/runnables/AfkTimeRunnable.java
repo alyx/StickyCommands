@@ -17,7 +17,7 @@ public class AfkTimeRunnable extends TimerTask {
     @Override
     public void run() {
         for (User user : StickyCommands.getInstance().getOnlineUserCache().values()) {
-            user.setAfkTime(user.getAfkTime() + 1);
+            user.incAfkTime();
             if (user.getAfkTime() >= AFK_TIMEOUT) {
                 var variables = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
                 if (!user.isAfk()) {

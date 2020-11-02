@@ -89,7 +89,6 @@ public class AfkEventListener implements Listener {
             StickyCommands.getInstance().getOnlineUserCache().put(player.getUniqueId(), User.fromPlayer(player));
 
         assert user != null;
-        user.setAfkTime(0);
         if (user.isAfk()) {
             variables.put("player", player.getName());
             // Reset their AFK time

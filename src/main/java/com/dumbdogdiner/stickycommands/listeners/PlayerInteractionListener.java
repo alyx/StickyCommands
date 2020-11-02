@@ -15,10 +15,11 @@ public class PlayerInteractionListener implements Listener {
         var player = event.getPlayer();
         var is = player.getInventory().getItemInMainHand();
         var meta = is.getItemMeta();
-        if (is.getType() == Material.AIR || is.getType() == null)
+        if (is.getType() == Material.AIR)
             return;
-        if (meta.hasLore()) {
+        if (meta != null && meta.hasLore()) {
             List<String> lore = meta.getLore();
+            assert lore != null;
             String[] metaCheck = lore.get(0).split(":");
             if (metaCheck[0].equalsIgnoreCase("command") && metaCheck[1] != null) {
                 if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK

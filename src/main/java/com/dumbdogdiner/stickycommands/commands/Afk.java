@@ -36,7 +36,6 @@ public class Afk extends AsyncCommand {
         
         if (user.isAfk()) {
             user.setAfk(false);
-            user.setAfkTime(0);
             for (Player p : Bukkit.getOnlinePlayers()) {
                 p.sendMessage(StickyCommands.getInstance().getLocaleProvider().translate("afk.not-afk", variables));
             }

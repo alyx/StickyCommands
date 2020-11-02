@@ -8,6 +8,7 @@ import com.dumbdogdiner.stickyapi.common.cache.Cacheable;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.jetbrains.annotations.NotNull;
 
 import lombok.Getter;
@@ -31,14 +32,29 @@ public class User implements Cacheable {
 
     /**
      * Whether or not this user is AFK.
+     * We need a CUSTOM setter.
      */
     @Getter
-    @Setter
-    private boolean afk;
+    private boolean afk = false;
     
     @Getter
-    @Setter
     private Integer afkTime = 0;
+
+    public boolean setAfk(boolean AFKState){
+        if(!AFKState)
+            afkTime = 0;
+        afk = AFKState;
+        if(afk){
+            getPlayer().setMetadata("AFK", new FixedMetadataValue(StickyCommands.getInstance(), "AFK"));
+        } else {
+            getPlayer().removeMetadata("AFK", StickyCommands.getInstance());
+        }
+        return afk;
+    }
+
+    public int incAfkTime(){
+        return ++afkTime;
+    }
     
    // I spent an hour trying to come up with a good solution to this weird problem where if you are being pushed by water, and on the corner water block, your from block is considered air and not water...
    // So, we need to keep a buffer of the last 3 blocks the player stood in, and if it contains water, we'll consider it as the water pushing them, since there's no event for
