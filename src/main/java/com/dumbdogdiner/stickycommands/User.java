@@ -10,6 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.jetbrains.annotations.NotNull;
+import me.clip.placeholderapi.PlaceholderAPI;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -36,7 +37,7 @@ public class User implements Cacheable {
      */
     @Getter
     private boolean afk = false;
-    
+
     @Getter
     private Integer afkTime = 0;
 
@@ -45,7 +46,7 @@ public class User implements Cacheable {
             afkTime = 0;
         afk = AFKState;
         if(afk){
-            getPlayer().setMetadata("AFK", new FixedMetadataValue(StickyCommands.getInstance(), "AFK"));
+            getPlayer().setMetadata("AFK", new FixedMetadataValue(StickyCommands.getInstance(), "&8[AFK]"));
         } else {
             getPlayer().removeMetadata("AFK", StickyCommands.getInstance());
         }
@@ -54,6 +55,10 @@ public class User implements Cacheable {
 
     public int incAfkTime(){
         return ++afkTime;
+    }
+
+    public void resetAfkTime(){
+        afkTime = 0;
     }
     
    // I spent an hour trying to come up with a good solution to this weird problem where if you are being pushed by water, and on the corner water block, your from block is considered air and not water...

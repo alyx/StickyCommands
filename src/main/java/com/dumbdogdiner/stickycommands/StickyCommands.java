@@ -18,17 +18,15 @@ import com.dumbdogdiner.stickycommands.utils.Database;
 import com.dumbdogdiner.stickycommands.utils.Item;
 import com.dumbdogdiner.stickyapi.StickyAPI;
 import com.dumbdogdiner.stickyapi.bukkit.util.CommandUtil;
-import com.dumbdogdiner.stickyapi.bukkit.util.ServerUtil;
 import com.dumbdogdiner.stickyapi.bukkit.util.StartupUtil;
 import com.dumbdogdiner.stickyapi.common.translation.LocaleProvider;
-import com.dumbdogdiner.stickyapi.common.util.ReflectionUtil;
 import com.dumbdogdiner.stickyapi.common.util.TimeUtil;
 
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.luckperms.api.LuckPerms;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandMap;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -108,17 +106,25 @@ public class StickyCommands extends JavaPlugin {
     @Override
     public void onEnable() {
         if (!StartupUtil.setupConfig(this))
-        return;
+            return;
         
         this.localeProvider = StartupUtil.setupLocale(this, this.localeProvider);
         if (this.localeProvider == null)
-        return;
+            return;
+        // Register PAPI support if present
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            Bukkit.getLogger().info("Registering PlaceholderAPI placeholders");
+
+            StickyCommandsPlaceholder.getInstance().register();
+        }
+
         
         if (!setupEconomy())
             getLogger().severe("Disabled economy commands due to no Vault dependency found!");
 
         if (!setupLuckperms())
-            getLogger().severe("Disabled group listing/luckperms dependant features due to no Luckperms dependancy found!");
+            getLogger().severe("Disabled group listing/luckperms dependant features due to no Luckperms dependency found!");
+
         
         this.database = new Database();
         database.createMissingTables();
