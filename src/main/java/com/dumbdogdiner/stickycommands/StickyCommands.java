@@ -22,18 +22,19 @@ import com.dumbdogdiner.stickyapi.bukkit.util.StartupUtil;
 import com.dumbdogdiner.stickyapi.common.translation.LocaleProvider;
 import com.dumbdogdiner.stickyapi.common.util.TimeUtil;
 
-import me.clip.placeholderapi.PlaceholderAPI;
 import net.luckperms.api.LuckPerms;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import lombok.Getter;
 import net.milkbowl.vault.economy.Economy;
 
+import  me.xtomyserrax.StaffFacilities.SFAPI;
 public class StickyCommands extends JavaPlugin {
 
     /**
@@ -44,6 +45,9 @@ public class StickyCommands extends JavaPlugin {
 
     @Getter
     protected Boolean enabled = false;
+
+    @Getter
+    private boolean staffFacilitiesEnabled;
 
     /**
      * Thread pool for the execution of asynchronous tasks.
@@ -63,7 +67,7 @@ public class StickyCommands extends JavaPlugin {
      */
     @Getter
     protected Timer afkRunnable = new Timer();
-    
+
 
     /**
      * The server's uptime in seconds
@@ -92,7 +96,7 @@ public class StickyCommands extends JavaPlugin {
     @Getter
     Database database;
 
-    
+
     @Override
     public void onLoad() {
         enabled = true;
@@ -102,48 +106,66 @@ public class StickyCommands extends JavaPlugin {
         new Item();
         // onlineUserCache.setMaxSize(1000);
     }
-    
+
     @Override
     public void onEnable() {
         if (!StartupUtil.setupConfig(this))
             return;
-        
+
         this.localeProvider = StartupUtil.setupLocale(this, this.localeProvider);
         if (this.localeProvider == null)
             return;
-        // Register PAPI support if present
-        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            Bukkit.getLogger().info("Registering PlaceholderAPI placeholders");
 
-            StickyCommandsPlaceholder.getInstance().register();
-        }
 
-        
+        if (!setupPAPI())
+            getLogger().severe("PlaceholderAPI is not availible, is it installed?");
+
         if (!setupEconomy())
             getLogger().severe("Disabled economy commands due to no Vault dependency found!");
 
         if (!setupLuckperms())
             getLogger().severe("Disabled group listing/luckperms dependant features due to no Luckperms dependency found!");
 
-        
+        if (!setupStaffFacilities())
+            getLogger().severe("StaffFacilities not found, disabling integration");
+
+
         this.database = new Database();
         database.createMissingTables();
-        
+
         // Register currently online users - in case of a reload.
         // (stop reloading spigot, please.)
         for (Player player : Bukkit.getOnlinePlayers()) {
             this.onlineUserCache.put(player.getUniqueId(), new User(player));
         }
-        
+
         if (!registerEvents())
-        return;
-        
+            return;
+
         if (!registerCommands())
-        return;
-        
+            return;
+
         afkRunnable.scheduleAtFixedRate(new AfkTimeRunnable(), 1000L, 1000L); // We must run this every ONE second!
-        
+
         getLogger().info("StickyCommands started successfully!");
+    }
+
+    private boolean setupStaffFacilities() {
+        return staffFacilitiesEnabled = Bukkit.getPluginManager().getPlugin("StaffFacilities") != null;
+    }
+
+
+    private boolean setupPAPI() {
+        // Register PAPI support if present
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            Bukkit.getLogger().info("Registering PlaceholderAPI placeholders");
+
+            StickyCommandsPlaceholder.getInstance().register();
+            return true;
+        } else {
+            return false;
+        }
+
     }
 
     private boolean setupLuckperms() {
@@ -163,7 +185,7 @@ public class StickyCommands extends JavaPlugin {
         afkRunnable.cancel(); // Stop our AFK runnable
         enabled = false;
     }
-    
+
     /**
      * Setup the vault economy instance.
      */
@@ -178,7 +200,7 @@ public class StickyCommands extends JavaPlugin {
         economy = rsp.getProvider();
         return economy != null;
     }
-    
+
     /**
      * Register all the commands!
      */
@@ -192,7 +214,7 @@ public class StickyCommands extends JavaPlugin {
 
         commandList.add(new Speed(this));
         commandList.add(new Seen(this));
-    
+
         commandList.add(new Kill(this));
         commandList.add(new Jump(this));
         commandList.add(new Memory(this));
@@ -215,7 +237,7 @@ public class StickyCommands extends JavaPlugin {
 
     /**
      * Get an online user
-     * 
+     *
      * @param uuid the UUID of the user to lookup
      * @return The user if found, otherwise null
      */
@@ -226,19 +248,21 @@ public class StickyCommands extends JavaPlugin {
         }
         return null;
     }
-    
+
 
     // Before you get mad, just remember this knob named md_5 couldn't help but make Bukkit the worst Minecraft API
     // and while making it, didn't add a way of getting the server's TPS without NMS or reflection.
     // Special thanks to this guy who saved me all of 5 minutes! https://gist.github.com/vemacs/6a345b2f9822b79a9a7f
-    
+
     private static Object minecraftServer;
-    private static Field recentTps; 
+    private static Field recentTps;
+
     /**
      * Get the server's recent TPS
+     *
      * @return {@link java.lang.Double} The server TPS in the last 15 minutes (1m, 5m, 15m)
      */
-    public double[] getRecentTps() {        
+    public double[] getRecentTps() {
         try {
             if (minecraftServer == null) {
                 Server server = Bukkit.getServer();
@@ -253,6 +277,6 @@ public class StickyCommands extends JavaPlugin {
             return (double[]) recentTps.get(minecraftServer);
         } catch (IllegalAccessException | NoSuchFieldException ignored) {
         }
-        return new double[] {0, 0, 0}; // If there's an issue, let's make it known.
+        return new double[]{0, 0, 0}; // If there's an issue, let's make it known.
     }
 }

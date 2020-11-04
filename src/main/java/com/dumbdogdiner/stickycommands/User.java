@@ -5,15 +5,19 @@ import java.util.UUID;
 
 import com.dumbdogdiner.stickyapi.common.cache.Cacheable;
 
+import me.xtomyserrax.StaffFacilities.SFAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.metadata.MetadataValue;
 import org.jetbrains.annotations.NotNull;
 import me.clip.placeholderapi.PlaceholderAPI;
 
 import lombok.Getter;
 import lombok.Setter;
+
+//TODO Move to stickyapi
 
 public class User implements Cacheable {
 
@@ -41,17 +45,46 @@ public class User implements Cacheable {
     @Getter
     private Integer afkTime = 0;
 
-    public boolean setAfk(boolean AFKState){
+    public void setAfk(boolean AFKState){
         if(!AFKState)
             afkTime = 0;
         afk = AFKState;
-        if(afk){
-            getPlayer().setMetadata("AFK", new FixedMetadataValue(StickyCommands.getInstance(), "&8[AFK]"));
-        } else {
-            getPlayer().removeMetadata("AFK", StickyCommands.getInstance());
-        }
-        return afk;
     }
+
+    /**
+     * Checks if a given player is hidden, vanished, staffvanished, or fakeleaved
+     * @return Whether the user is hidden.
+     */
+    public boolean isHidden(){
+        if(StickyCommands.getInstance().isStaffFacilitiesEnabled()){
+            Player player = this.getPlayer();
+            /*System.out.println(SFAPI.isPlayerFakeleaved(player));
+            System.out.println(SFAPI.isPlayerStaffVanished(player));
+            System.out.println(SFAPI.isPlayerVanished(player));
+            System.out.println(isVanished()); */
+            return  SFAPI.isPlayerFakeleaved(player) ||
+                    SFAPI.isPlayerStaffVanished(player) ||
+                    SFAPI.isPlayerVanished(player) ||
+                    isVanished();
+        }
+        return false;
+    }
+
+    /**
+     * Checks if a given player is in a vanished state.
+     *
+     * @return Whether the user is vanished.
+     */
+    public boolean isVanished() {
+        for (MetadataValue meta : getPlayer().getMetadata("vanished")) {
+            if (meta.asBoolean()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 
     public int incAfkTime(){
         return ++afkTime;

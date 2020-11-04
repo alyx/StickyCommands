@@ -1,5 +1,5 @@
 name: StickyCommands
-version: 3.1.5
+version: 3.1.5-afkfix
 main: com.dumbdogdiner.stickycommands.StickyCommands
 load: STARTUP
 authors:
@@ -9,4 +9,5 @@ softdepend:
   - PlaceholderAPI
   - Vault
   - LuckPerms
+  - StaffFacilities
 api-version: 1.16

@@ -5,6 +5,7 @@ import java.util.TreeMap;
 import com.dumbdogdiner.stickycommands.StickyCommands;
 import com.dumbdogdiner.stickycommands.User;
 
+import com.dumbdogdiner.stickycommands.commands.Afk;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
@@ -91,12 +92,7 @@ public class AfkEventListener implements Listener {
         assert user != null;
         user.resetAfkTime();
         if (user.isAfk()) {
-            variables.put("player", player.getName());
-            // Reset their AFK time
-            user.setAfk(false);
-            for (var p : Bukkit.getOnlinePlayers()) {
-                p.sendMessage(StickyCommands.getInstance().getLocaleProvider().translate("afk.not-afk", variables));
-            }
+            Afk.setAFKAndBroadcast(user, false);
         }
     }
 

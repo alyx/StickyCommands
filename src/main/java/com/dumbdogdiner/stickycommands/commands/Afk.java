@@ -34,20 +34,27 @@ public class Afk extends AsyncCommand {
         variables.put("player", user.getName());
         variables.put("player_uuid", user.getUniqueId().toString());
         
-        if (user.isAfk()) {
-            user.setAfk(false);
-            user.resetAfkTime();
-            for (Player p : Bukkit.getOnlinePlayers()) {
-                p.sendMessage(StickyCommands.getInstance().getLocaleProvider().translate("afk.not-afk", variables));
-            }
-            return ExitCode.EXIT_SUCCESS;
-        }
-        user.setAfk(true);
-        // Bukkit is literally fucking retarded, and I can't use broadcastMessage because that magically doesn't work now! Who knew....
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            p.sendMessage(StickyCommands.getInstance().getLocaleProvider().translate("afk.afk", variables));
-        }
-        
+        setAFKAndBroadcast(user, !user.isAfk());
         return ExitCode.EXIT_SUCCESS;
+    }
+
+    public static void setAFKAndBroadcast(User user, boolean afk){
+        TreeMap<String, String> variables = locale.newVariables();
+        variables.put("player", user.getName());
+        variables.put("player_uuid", user.getUniqueId().toString());
+        user.setAfk(afk);
+
+        if(!user.isHidden()){
+            if(user.isAfk()){
+                // Bukkit is literally fucking retarded, and I can't use broadcastMessage because that magically doesn't work now! Who knew....
+                for (Player p : Bukkit.getOnlinePlayers()) {
+                    p.sendMessage(StickyCommands.getInstance().getLocaleProvider().translate("afk.afk", variables));
+                }
+            } else {
+                for (Player p : Bukkit.getOnlinePlayers()) {
+                    p.sendMessage(StickyCommands.getInstance().getLocaleProvider().translate("afk.not-afk", variables));
+                }
+            }
+        }
     }
 }
