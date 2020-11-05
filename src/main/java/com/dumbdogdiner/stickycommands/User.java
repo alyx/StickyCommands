@@ -4,20 +4,20 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 import com.dumbdogdiner.stickyapi.common.cache.Cacheable;
+import com.dumbdogdiner.stickycommands.utils.SpeedType;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.jetbrains.annotations.NotNull;
-import me.clip.placeholderapi.PlaceholderAPI;
 
 import lombok.Getter;
 import lombok.Setter;
 
 public class User implements Cacheable {
 
-    /**A
+    /**
      * The username of the user.
      */
     @Getter
@@ -97,15 +97,15 @@ public class User implements Cacheable {
     }
 
     public void setSpeed(SpeedType type, Float speed) {
-        speed = speed < 1.9F 
-                ? (speed > 0F
-                    ? (type == SpeedType.FLY
-                            ? speed
-                            : speed + 0.1F > 1F
-                                ? speed
-                                : speed + 0.1F)
-                    : 0.1F) 
-                : 1F;
+        if (speed <= 0F)
+            speed = 0.1F;
+
+        else if (speed > 1F)
+            speed = 1F;
+
+        if (type == SpeedType.WALK)
+            speed = speed + 0.1F > 1F ? speed : speed + 0.1F;
+                
         switch(type) {
             case FLY:
                 Bukkit.getPlayer(this.uniqueId).setFlySpeed(speed);

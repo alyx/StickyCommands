@@ -26,7 +26,7 @@ public class AfkTimeRunnable extends TimerTask {
                     for (Player players : Bukkit.getOnlinePlayers()) {
                         players.sendMessage(StickyCommands.getInstance().getLocaleProvider().translate("afk.afk", variables));
                     }
-                } else if (exceedsPermissionTime(user, user.getAfkTime() - AFK_TIMEOUT)) {
+                } else if (exceedsPermittedTime(user, user.getAfkTime() - AFK_TIMEOUT)) {
                     variables.put("time", String.valueOf(user.getAfkTime() - AFK_TIMEOUT));
                     System.out.println(variables.get("time"));
                     Bukkit.getScheduler().scheduleSyncDelayedTask(StickyCommands.getInstance(), () -> Bukkit.getPlayer(user.getUniqueId()).kickPlayer(StickyCommands.getInstance().getLocaleProvider().translate("afk.afk-kick", variables)), 1L);
@@ -35,7 +35,7 @@ public class AfkTimeRunnable extends TimerTask {
         }
     }
 
-    private Boolean exceedsPermissionTime(User user, Integer time) {
+    private Boolean exceedsPermittedTime(User user, Integer time) {
         Player player = Bukkit.getPlayer(user.getUniqueId());
         if (player == null) {
             System.err.println("Error in exceedsPermissionTime: Player was null. Defaulting to false.");

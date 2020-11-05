@@ -8,6 +8,7 @@ import java.util.TreeMap;
 import com.dumbdogdiner.stickycommands.StickyCommands;
 import com.dumbdogdiner.stickyapi.bukkit.command.AsyncCommand;
 import com.dumbdogdiner.stickyapi.bukkit.command.ExitCode;
+import com.dumbdogdiner.stickyapi.bukkit.util.ServerUtil;
 import com.dumbdogdiner.stickyapi.common.translation.LocaleProvider;
 import com.dumbdogdiner.stickyapi.common.util.TimeUtil;
 import com.dumbdogdiner.stickyapi.common.util.StringUtil;
@@ -17,11 +18,11 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-public class Memory extends AsyncCommand {
+public class MemoryCommand extends AsyncCommand {
     LocaleProvider locale = StickyCommands.getInstance().getLocaleProvider();
     TreeMap<String, String> variables = locale.newVariables();
 
-    public Memory(Plugin owner) {
+    public MemoryCommand(Plugin owner) {
         super("memory", owner);
         setPermission("stickycommands.memory");
         setDescription("Check the server's performance");
@@ -47,7 +48,7 @@ public class Memory extends AsyncCommand {
             double usage = Double.parseDouble(df.format(((used / max) * 100)));
             char color = usage < 60 ? 'a' : (usage < 85 ? 'e' : 'c');
             
-            double[] tps = StickyCommands.getInstance().getRecentTps();
+            double[] tps = ServerUtil.getRecentTps();
             
             variables.put("tps_1m", String.valueOf(df.format(tps[0])));
             variables.put("tps_5m", String.valueOf(df.format(tps[1])));

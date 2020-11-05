@@ -16,12 +16,12 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-public class Kill extends AsyncCommand {
+public class KillCommand extends AsyncCommand {
 
     private final LocaleProvider locale = StickyCommands.getPlugin(StickyCommands.class).getLocaleProvider();
     TreeMap<String, String> variables = locale.newVariables();
 
-    public Kill(Plugin owner) {
+    public KillCommand(Plugin owner) {
         super("kill", owner);
         setPermission("stickycommands.kill");
         setDescription("Kill a player, or yourself...");

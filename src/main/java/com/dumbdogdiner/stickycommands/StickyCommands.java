@@ -1,6 +1,5 @@
-package com.dumbdogdiner.stickycommands; // package owo
+package com.dumbdogdiner.stickycommands;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,10 +21,8 @@ import com.dumbdogdiner.stickyapi.bukkit.util.StartupUtil;
 import com.dumbdogdiner.stickyapi.common.translation.LocaleProvider;
 import com.dumbdogdiner.stickyapi.common.util.TimeUtil;
 
-import me.clip.placeholderapi.PlaceholderAPI;
 import net.luckperms.api.LuckPerms;
 import org.bukkit.Bukkit;
-import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -136,10 +133,10 @@ public class StickyCommands extends JavaPlugin {
         }
         
         if (!registerEvents())
-        return;
+            return;
         
         if (!registerCommands())
-        return;
+            return;
         
         afkRunnable.scheduleAtFixedRate(new AfkTimeRunnable(), 1000L, 1000L); // We must run this every ONE second!
         
@@ -186,26 +183,29 @@ public class StickyCommands extends JavaPlugin {
         List<Command> commandList = new ArrayList<Command>();
         // Register economy based commands only if the economy provider is not null.
         if (economy != null) {
-            commandList.add(new Sell(this));
-            commandList.add(new Worth(this));
+            commandList.add(new SellCommand(this));
+            commandList.add(new WorthCommand(this));
         }
 
-        commandList.add(new Speed(this));
-        commandList.add(new Seen(this));
+        commandList.add(new SpeedCommand(this));
+        commandList.add(new SeenCommand(this));
     
-        commandList.add(new Kill(this));
-        commandList.add(new Jump(this));
-        commandList.add(new Memory(this));
-        commandList.add(new Top(this));
-        commandList.add(new PowerTool(this));
-        commandList.add(new Afk(this));
-        commandList.add(new PlayerTime(this));
-        commandList.add(new Smite(this));
+        commandList.add(new KillCommand(this));
+        commandList.add(new JumpCommand(this));
+        commandList.add(new MemoryCommand(this));
+        commandList.add(new TopCommand(this));
+        commandList.add(new PowerToolCommand(this));
+        commandList.add(new AfkCommand(this));
+        commandList.add(new PlayerTimeCommand(this));
+        commandList.add(new SmiteCommand(this));
 
         CommandUtil.registerCommands(getServer(), commandList);
         return true;
     }
 
+    /**
+     * Register all of our events
+     */
     boolean registerEvents() {
         getServer().getPluginManager().registerEvents(new PlayerInteractionListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
@@ -225,34 +225,5 @@ public class StickyCommands extends JavaPlugin {
                 return user;
         }
         return null;
-    }
-    
-
-    // Before you get mad, just remember this knob named md_5 couldn't help but make Bukkit the worst Minecraft API
-    // and while making it, didn't add a way of getting the server's TPS without NMS or reflection.
-    // Special thanks to this guy who saved me all of 5 minutes! https://gist.github.com/vemacs/6a345b2f9822b79a9a7f
-    
-    private static Object minecraftServer;
-    private static Field recentTps; 
-    /**
-     * Get the server's recent TPS
-     * @return {@link java.lang.Double} The server TPS in the last 15 minutes (1m, 5m, 15m)
-     */
-    public double[] getRecentTps() {        
-        try {
-            if (minecraftServer == null) {
-                Server server = Bukkit.getServer();
-                Field consoleField = server.getClass().getDeclaredField("console");
-                consoleField.setAccessible(true);
-                minecraftServer = consoleField.get(server);
-            }
-            if (recentTps == null) {
-                recentTps = minecraftServer.getClass().getSuperclass().getDeclaredField("recentTps");
-                recentTps.setAccessible(true);
-            }
-            return (double[]) recentTps.get(minecraftServer);
-        } catch (IllegalAccessException | NoSuchFieldException ignored) {
-        }
-        return new double[] {0, 0, 0}; // If there's an issue, let's make it known.
     }
 }

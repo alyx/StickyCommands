@@ -18,11 +18,11 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 
 //TODO: add a /powertooltoggle to this!
-public class PowerTool extends AsyncCommand {
+public class PowerToolCommand extends AsyncCommand {
     LocaleProvider locale = StickyCommands.getInstance().getLocaleProvider();
     TreeMap<String, String> variables = locale.newVariables();
 
-    public PowerTool(Plugin owner) {
+    public PowerToolCommand(Plugin owner) {
         super("powertool", owner);
         setPermission("stickycommands.powertool");
         setDescription("Bind an item to a command");

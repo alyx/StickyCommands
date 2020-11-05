@@ -13,12 +13,12 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-public class Afk extends AsyncCommand {
+public class AfkCommand extends AsyncCommand {
 
     private static LocaleProvider locale = StickyCommands.getInstance().getLocaleProvider();
     TreeMap<String, String> variables = locale.newVariables();
     
-    public Afk(Plugin owner) {
+    public AfkCommand(Plugin owner) {
         super("afk", owner);
         setPermission("stickycommands.afk");
         setDescription("Let the server know you're afk!");

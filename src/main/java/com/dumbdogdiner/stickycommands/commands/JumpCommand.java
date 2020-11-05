@@ -16,11 +16,11 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.entity.Player;
 
-public class Jump extends AsyncCommand {
+public class JumpCommand extends AsyncCommand {
     private static LocaleProvider locale = StickyCommands.getInstance().getLocaleProvider();
     TreeMap<String, String> variables = locale.newVariables();
 
-    public Jump(Plugin owner) {
+    public JumpCommand(Plugin owner) {
         super("jump", owner);
         setPermission("stickycommands.jump");
         setDescription("Jump to a block");

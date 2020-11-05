@@ -1,6 +1,5 @@
 package com.dumbdogdiner.stickycommands.commands;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.TreeMap;
@@ -14,9 +13,7 @@ import com.dumbdogdiner.stickyapi.bukkit.command.AsyncCommand;
 import com.dumbdogdiner.stickyapi.bukkit.command.ExitCode;
 import com.dumbdogdiner.stickyapi.common.translation.ChatMessage;
 import com.dumbdogdiner.stickyapi.common.translation.LocaleProvider;
-import com.dumbdogdiner.stickyapi.common.translation.Translation;
 import com.dumbdogdiner.stickyapi.common.util.NumberUtil;
-import com.dumbdogdiner.stickyapi.common.util.TimeUtil;
 
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -24,12 +21,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
-public class Sell extends AsyncCommand {
+public class SellCommand extends AsyncCommand {
     static StickyCommands self = StickyCommands.getInstance();
     LocaleProvider locale = StickyCommands.getInstance().getLocaleProvider();
     TreeMap<String, String> variables = locale.newVariables();
 
-    public Sell(Plugin owner) {
+    public SellCommand(Plugin owner) {
         super("sell", owner);
         setDescription("Sell an item.");
         setPermission("stickycommands.sell");
