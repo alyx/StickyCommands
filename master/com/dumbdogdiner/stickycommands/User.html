@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":9,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10};
+var data = {"i0":10,"i1":9,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -226,72 +226,60 @@ implements com.dumbdogdiner.stickyapi.common.cache.Cacheable</pre>
 </td>
 </tr>
 <tr id="i7" class="rowColor">
-<td class="colFirst"><code><a href="utils/PowerTool.html" title="class in com.dumbdogdiner.stickycommands.utils">PowerTool</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getPowerTool()">getPowerTool</a></span>()</code></th>
+<td class="colFirst"><code>java.util.HashMap&lt;org.bukkit.Material,&#8203;<a href="utils/PowerTool.html" title="class in com.dumbdogdiner.stickycommands.utils">PowerTool</a>&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getPowerTools()">getPowerTools</a></span>()</code></th>
 <td class="colLast">
-<div class="block">The powertool of the user</div>
+<div class="block">The list of powertools the user has</div>
 </td>
 </tr>
 <tr id="i8" class="altColor">
-<td class="colFirst"><code>java.util.HashMap&lt;org.bukkit.Material,&#8203;<a href="utils/PowerTool.html" title="class in com.dumbdogdiner.stickycommands.utils">PowerTool</a>&gt;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getPowerTools()">getPowerTools</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i9" class="rowColor">
 <td class="colFirst"><code>@NotNull java.util.UUID</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getUniqueId()">getUniqueId</a></span>()</code></th>
 <td class="colLast">
 <div class="block">The UUID of the user.</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>int</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#incAfkTime()">incAfkTime</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>@org.jetbrains.annotations.NotNull boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isAfk()">isAfk</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Whether or not this user is AFK.</div>
 </td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#removePowerTool(com.dumbdogdiner.stickycommands.utils.Item)">removePowerTool</a></span>&#8203;(<a href="utils/Item.html" title="class in com.dumbdogdiner.stickycommands.utils">Item</a>&nbsp;item)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#resetAfkTime()">resetAfkTime</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setAfk(boolean)">setAfk</a></span>&#8203;(boolean&nbsp;AFKState)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i15" class="rowColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setName(java.lang.String)">setName</a></span>&#8203;(@NotNull java.lang.String&nbsp;name)</code></th>
 <td class="colLast">
 <div class="block">The username of the user.</div>
 </td>
 </tr>
-<tr id="i16" class="altColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setPowerTool(com.dumbdogdiner.stickycommands.utils.PowerTool)">setPowerTool</a></span>&#8203;(<a href="utils/PowerTool.html" title="class in com.dumbdogdiner.stickycommands.utils">PowerTool</a>&nbsp;powerTool)</code></th>
-<td class="colLast">
-<div class="block">The powertool of the user</div>
-</td>
-</tr>
-<tr id="i17" class="rowColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setSpeed(com.dumbdogdiner.stickycommands.utils.SpeedType,java.lang.Float)">setSpeed</a></span>&#8203;(<a href="utils/SpeedType.html" title="enum in com.dumbdogdiner.stickycommands.utils">SpeedType</a>&nbsp;type,
         java.lang.Float&nbsp;speed)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i18" class="altColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setUniqueId(java.util.UUID)">setUniqueId</a></span>&#8203;(@NotNull java.util.UUID&nbsp;uniqueId)</code></th>
 <td class="colLast">
@@ -483,28 +471,6 @@ public&nbsp;@NotNull java.util.UUID&nbsp;getUniqueId()</pre>
 <div class="block">The UUID of the user.</div>
 </li>
 </ul>
-<a id="getPowerTool()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getPowerTool</h4>
-<pre class="methodSignature">@Nullable
-public&nbsp;<a href="utils/PowerTool.html" title="class in com.dumbdogdiner.stickycommands.utils">PowerTool</a>&nbsp;getPowerTool()</pre>
-<div class="block">The powertool of the user</div>
-</li>
-</ul>
-<a id="setPowerTool(com.dumbdogdiner.stickycommands.utils.PowerTool)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>setPowerTool</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;setPowerTool&#8203;(@Nullable
-                         <a href="utils/PowerTool.html" title="class in com.dumbdogdiner.stickycommands.utils">PowerTool</a>&nbsp;powerTool)</pre>
-<div class="block">The powertool of the user</div>
-</li>
-</ul>
 <a id="getPowerTools()">
 <!--   -->
 </a>
@@ -512,6 +478,7 @@ public&nbsp;<a href="utils/PowerTool.html" title="class in com.dumbdogdiner.stic
 <li class="blockList">
 <h4>getPowerTools</h4>
 <pre class="methodSignature">public&nbsp;java.util.HashMap&lt;org.bukkit.Material,&#8203;<a href="utils/PowerTool.html" title="class in com.dumbdogdiner.stickycommands.utils">PowerTool</a>&gt;&nbsp;getPowerTools()</pre>
+<div class="block">The list of powertools the user has</div>
 </li>
 </ul>
 <a id="isAfk()">
