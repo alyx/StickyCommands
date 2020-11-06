@@ -1,12 +1,9 @@
 package com.dumbdogdiner.stickycommands;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Set;
 import java.util.UUID;
 
-import javax.annotation.Nullable;
 
 import com.dumbdogdiner.stickyapi.common.cache.Cacheable;
 import com.dumbdogdiner.stickycommands.utils.Item;
@@ -41,13 +38,8 @@ public class User implements Cacheable {
     private UUID uniqueId;
 
     /**
-     * The powertool of the user
+     * The list of powertools the user has
      */
-    @Getter
-    @Setter
-    @Nullable
-    private PowerTool powerTool;
-
     @Getter
     private HashMap<Material, PowerTool> powerTools = new HashMap<Material, PowerTool>();
 
