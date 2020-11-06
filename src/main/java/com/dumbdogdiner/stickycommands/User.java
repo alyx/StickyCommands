@@ -1,9 +1,16 @@
 package com.dumbdogdiner.stickycommands;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Set;
 import java.util.UUID;
 
+import javax.annotation.Nullable;
+
 import com.dumbdogdiner.stickyapi.common.cache.Cacheable;
+import com.dumbdogdiner.stickycommands.utils.Item;
+import com.dumbdogdiner.stickycommands.utils.PowerTool;
 import com.dumbdogdiner.stickycommands.utils.SpeedType;
 
 import org.bukkit.Bukkit;
@@ -22,6 +29,7 @@ public class User implements Cacheable {
      */
     @Getter
     @Setter
+    @NotNull
     private String name;
 
     /**
@@ -29,16 +37,30 @@ public class User implements Cacheable {
      */
     @Getter
     @Setter
+    @NotNull
     private UUID uniqueId;
+
+    /**
+     * The powertool of the user
+     */
+    @Getter
+    @Setter
+    @Nullable
+    private PowerTool powerTool;
+
+    @Getter
+    private HashMap<Material, PowerTool> powerTools = new HashMap<Material, PowerTool>();
 
     /**
      * Whether or not this user is AFK.
      * We need a CUSTOM setter.
      */
     @Getter
+    @NotNull
     private boolean afk = false;
 
     @Getter
+    @NotNull
     private Integer afkTime = 0;
 
     public boolean setAfk(boolean AFKState){
@@ -96,6 +118,17 @@ public class User implements Cacheable {
         return this.uniqueId.toString();
     }
 
+    public void addPowerTool(PowerTool powerTool) {
+        this.powerTools.put(powerTool.getItem().getType(), powerTool);
+    }
+
+    public void removePowerTool(Item item) {
+        for (PowerTool pt : this.powerTools.values()) {
+            if (item.getType() == pt.getItem().getType())
+                this.powerTools.remove(pt.getItem().getType());
+        }
+    }
+
     public void setSpeed(SpeedType type, Float speed) {
         if (speed <= 0F)
             speed = 0.1F;
@@ -104,7 +137,7 @@ public class User implements Cacheable {
             speed = 1F;
 
         if (type == SpeedType.WALK)
-            speed = speed + 0.1F > 1F ? speed : speed + 0.1F;
+            speed = (speed + 0.1F > 1F) ? speed : speed + 0.1F;
                 
         switch(type) {
             case FLY:
