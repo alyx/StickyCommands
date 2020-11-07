@@ -7,6 +7,8 @@ import com.dumbdogdiner.stickyapi.common.util.NumberUtil;
 import com.dumbdogdiner.stickycommands.StickyCommands;
 import com.dumbdogdiner.stickycommands.User;
 
+import com.dumbdogdiner.stickycommands.commands.AfkCommand;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachmentInfo;
@@ -21,11 +23,7 @@ public class AfkTimeRunnable extends TimerTask {
             if (user.getAfkTime() >= AFK_TIMEOUT) {
                 var variables = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
                 if (!user.isAfk()) {
-                    user.setAfk(true);
-                    variables.put("player", user.getName());
-                    for (Player players : Bukkit.getOnlinePlayers()) {
-                        players.sendMessage(StickyCommands.getInstance().getLocaleProvider().translate("afk.afk", variables));
-                    }
+                    AfkCommand.setAFKAndBroadcast(user, true);
                 } else if (exceedsPermittedTime(user, user.getAfkTime() - AFK_TIMEOUT)) {
                     variables.put("time", String.valueOf(user.getAfkTime() - AFK_TIMEOUT));
                     System.out.println(variables.get("time"));

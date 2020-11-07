@@ -25,12 +25,14 @@ import net.luckperms.api.LuckPerms;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import lombok.Getter;
 import net.milkbowl.vault.economy.Economy;
 
+import  me.xtomyserrax.StaffFacilities.SFAPI;
 public class StickyCommands extends JavaPlugin {
 
     /**
@@ -41,6 +43,9 @@ public class StickyCommands extends JavaPlugin {
 
     @Getter
     protected Boolean enabled = false;
+
+    @Getter
+    private boolean staffFacilitiesEnabled;
 
     /**
      * Thread pool for the execution of asynchronous tasks.
@@ -60,7 +65,7 @@ public class StickyCommands extends JavaPlugin {
      */
     @Getter
     protected Timer afkRunnable = new Timer();
-    
+
 
     /**
      * The server's uptime in seconds
@@ -89,7 +94,7 @@ public class StickyCommands extends JavaPlugin {
     @Getter
     Database database;
 
-    
+
     @Override
     public void onLoad() {
         enabled = true;
@@ -99,39 +104,39 @@ public class StickyCommands extends JavaPlugin {
         new Item();
         // onlineUserCache.setMaxSize(1000);
     }
-    
+
     @Override
     public void onEnable() {
         if (!StartupUtil.setupConfig(this))
             return;
-        
+
         this.localeProvider = StartupUtil.setupLocale(this, this.localeProvider);
         if (this.localeProvider == null)
             return;
-        // Register PAPI support if present
-        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            Bukkit.getLogger().info("Registering PlaceholderAPI placeholders");
 
-            StickyCommandsPlaceholder.getInstance().register();
-        }
 
-        
+        if (!setupPAPI())
+            getLogger().severe("PlaceholderAPI is not availible, is it installed?");
+
         if (!setupEconomy())
             getLogger().severe("Disabled economy commands due to no Vault dependency found!");
 
         if (!setupLuckperms())
             getLogger().severe("Disabled group listing/luckperms dependant features due to no Luckperms dependency found!");
 
-        
+        if (!setupStaffFacilities())
+            getLogger().severe("StaffFacilities not found, disabling integration");
+
+
         this.database = new Database();
         database.createMissingTables();
-        
+
         // Register currently online users - in case of a reload.
         // (stop reloading spigot, please.)
         for (Player player : Bukkit.getOnlinePlayers()) {
             this.onlineUserCache.put(player.getUniqueId(), new User(player));
         }
-        
+
         if (!registerEvents())
             return;
         
@@ -139,8 +144,26 @@ public class StickyCommands extends JavaPlugin {
             return;
         
         afkRunnable.scheduleAtFixedRate(new AfkTimeRunnable(), 1000L, 1000L); // We must run this every ONE second!
-        
+
         getLogger().info("StickyCommands started successfully!");
+    }
+
+    private boolean setupStaffFacilities() {
+        return staffFacilitiesEnabled = Bukkit.getPluginManager().getPlugin("StaffFacilities") != null;
+    }
+
+
+    private boolean setupPAPI() {
+        // Register PAPI support if present
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            Bukkit.getLogger().info("Registering PlaceholderAPI placeholders");
+
+            StickyCommandsPlaceholder.getInstance().register();
+            return true;
+        } else {
+            return false;
+        }
+
     }
 
     private boolean setupLuckperms() {
@@ -160,7 +183,7 @@ public class StickyCommands extends JavaPlugin {
         afkRunnable.cancel(); // Stop our AFK runnable
         enabled = false;
     }
-    
+
     /**
      * Setup the vault economy instance.
      */
@@ -175,7 +198,7 @@ public class StickyCommands extends JavaPlugin {
         economy = rsp.getProvider();
         return economy != null;
     }
-    
+
     /**
      * Register all the commands!
      */
@@ -215,7 +238,7 @@ public class StickyCommands extends JavaPlugin {
 
     /**
      * Get an online user
-     * 
+     *
      * @param uuid the UUID of the user to lookup
      * @return The user if found, otherwise null
      */
