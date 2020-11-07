@@ -1,27 +1,24 @@
 package com.dumbdogdiner.stickycommands.commands;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.TreeMap;
-
-import com.dumbdogdiner.stickycommands.StickyCommands;
-import com.dumbdogdiner.stickycommands.utils.Item;
-import com.dumbdogdiner.stickycommands.utils.PowerTool;
-import com.google.common.base.Joiner;
 import com.dumbdogdiner.stickyapi.bukkit.command.AsyncCommand;
 import com.dumbdogdiner.stickyapi.bukkit.command.ExitCode;
 import com.dumbdogdiner.stickyapi.common.translation.LocaleProvider;
 import com.dumbdogdiner.stickyapi.common.util.ReflectionUtil;
-
-import org.bukkit.Bukkit;
+import com.dumbdogdiner.stickycommands.StickyCommands;
+import com.dumbdogdiner.stickycommands.utils.Item;
+import com.dumbdogdiner.stickycommands.utils.PowerTool;
+import com.google.common.base.Joiner;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandMap;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.TreeMap;
 
 public class PowerToolCommand extends AsyncCommand {
     LocaleProvider locale = StickyCommands.getInstance().getLocaleProvider();

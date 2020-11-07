@@ -2,12 +2,8 @@ package com.dumbdogdiner.stickycommands.utils;
 
 public class Constants {
 
-    protected Constants() {} // ???
-
-    /**
-     * Permission for smite command
-     */
-    public static final String SMITE_PERMISSION_USE = "stickycommands.smite";
+    //Exists to defeat instantiation
+    private Constants() {}
 
     /**
      * Lightning explosion strength

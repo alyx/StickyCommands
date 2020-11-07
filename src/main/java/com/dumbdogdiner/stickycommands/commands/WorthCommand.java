@@ -1,21 +1,19 @@
 package com.dumbdogdiner.stickycommands.commands;
 
-import java.util.TreeMap;
-
-import com.dumbdogdiner.stickycommands.StickyCommands;
-import com.dumbdogdiner.stickycommands.utils.Item;
 import com.dumbdogdiner.stickyapi.bukkit.command.AsyncCommand;
 import com.dumbdogdiner.stickyapi.bukkit.command.ExitCode;
 import com.dumbdogdiner.stickyapi.common.translation.LocaleProvider;
-
+import com.dumbdogdiner.stickycommands.StickyCommands;
+import com.dumbdogdiner.stickycommands.utils.Item;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
+import java.util.TreeMap;
+
 public class WorthCommand extends AsyncCommand {
-    static StickyCommands self = StickyCommands.getInstance();
     LocaleProvider locale = StickyCommands.getInstance().getLocaleProvider();
     TreeMap<String, String> variables = locale.newVariables();
     

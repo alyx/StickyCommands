@@ -1,5 +1,5 @@
 name: StickyCommands
-version: 3.1.5-afkfix
+version: 3.3.0
 main: com.dumbdogdiner.stickycommands.StickyCommands
 load: STARTUP
 authors:

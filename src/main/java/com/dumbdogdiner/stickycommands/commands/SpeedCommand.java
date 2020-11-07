@@ -1,24 +1,22 @@
 package com.dumbdogdiner.stickycommands.commands;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.TreeMap;
-
-import com.dumbdogdiner.stickycommands.StickyCommands;
-import com.dumbdogdiner.stickycommands.utils.Constants;
-import com.dumbdogdiner.stickycommands.utils.SpeedType;
-import com.dumbdogdiner.stickycommands.User;
 import com.dumbdogdiner.stickyapi.bukkit.command.AsyncCommand;
 import com.dumbdogdiner.stickyapi.bukkit.command.ExitCode;
 import com.dumbdogdiner.stickyapi.common.arguments.Arguments;
 import com.dumbdogdiner.stickyapi.common.translation.LocaleProvider;
-
+import com.dumbdogdiner.stickycommands.StickyCommands;
+import com.dumbdogdiner.stickycommands.User;
+import com.dumbdogdiner.stickycommands.utils.Constants;
+import com.dumbdogdiner.stickycommands.utils.SpeedType;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.TreeMap;
+
 public class SpeedCommand extends AsyncCommand {
-    //TODO: Move constants to a config file
     LocaleProvider locale = StickyCommands.getInstance().getLocaleProvider();
     TreeMap<String, String> variables = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     public SpeedCommand(Plugin owner) {

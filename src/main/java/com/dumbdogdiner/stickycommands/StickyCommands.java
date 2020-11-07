@@ -25,14 +25,12 @@ import net.luckperms.api.LuckPerms;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import lombok.Getter;
 import net.milkbowl.vault.economy.Economy;
 
-import  me.xtomyserrax.StaffFacilities.SFAPI;
 public class StickyCommands extends JavaPlugin {
 
     /**
@@ -221,6 +219,7 @@ public class StickyCommands extends JavaPlugin {
         commandList.add(new AfkCommand(this));
         commandList.add(new PlayerTimeCommand(this));
         commandList.add(new SmiteCommand(this));
+        commandList.add(new HatCommand(this));
 
         CommandUtil.registerCommands(getServer(), commandList);
         return true;

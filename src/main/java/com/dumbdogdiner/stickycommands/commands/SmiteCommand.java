@@ -21,13 +21,14 @@ import org.bukkit.plugin.Plugin;
 import java.util.*;
 
 public class SmiteCommand extends AsyncCommand {
+    public static final String SMITE_PERMISSION_USE = "stickycommands.smite";
 
     private final LocaleProvider locale = StickyCommands.getPlugin(StickyCommands.class).getLocaleProvider();
     TreeMap<String, String> variables = locale.newVariables();
 
     public SmiteCommand(Plugin owner) {
         super("smite", owner);
-        setPermission(Constants.SMITE_PERMISSION_USE);
+        setPermission(SMITE_PERMISSION_USE);
         setDescription("Smite a player, block, or yourself...");
         setAliases(Arrays.asList("strike", "lightningify"));
         variables.put("syntax",
@@ -52,7 +53,7 @@ public class SmiteCommand extends AsyncCommand {
     @Override
     public ExitCode executeCommand(CommandSender sender, String commandLabel, String[] args) {
         // Should really be in some sort of util function
-        if (!sender.hasPermission(Constants.SMITE_PERMISSION_USE))
+        if (!sender.hasPermission(SMITE_PERMISSION_USE))
             return ExitCode.EXIT_PERMISSION_DENIED.setMessage(locale.translate("no-permission", variables));
         Arguments a = new Arguments(args);
         a.optionalFlag("group", "group");
