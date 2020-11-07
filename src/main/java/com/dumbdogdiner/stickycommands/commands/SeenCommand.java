@@ -13,11 +13,11 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-public class Seen extends AsyncCommand {
+public class SeenCommand extends AsyncCommand {
     private static LocaleProvider locale = StickyCommands.getInstance().getLocaleProvider();
     TreeMap<String, String> variables = locale.newVariables();
     
-    public Seen(Plugin owner) {
+    public SeenCommand(Plugin owner) {
         super("seen", owner);
         setPermission("stickycommands.seen");
         setDescription("Check when a player was last online!");

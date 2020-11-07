@@ -98,6 +98,7 @@ public class LocationUtil {
             case LAVA:
             case FIRE:
                 return true;
+            default: break;
         }
 
         try {

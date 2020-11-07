@@ -5,6 +5,8 @@ import com.dumbdogdiner.stickyapi.bukkit.command.ExitCode;
 import com.dumbdogdiner.stickyapi.common.arguments.Arguments;
 import com.dumbdogdiner.stickyapi.common.translation.LocaleProvider;
 import com.dumbdogdiner.stickycommands.StickyCommands;
+import com.dumbdogdiner.stickycommands.utils.Constants;
+
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.model.group.Group;
 import org.bukkit.Bukkit;
@@ -18,18 +20,14 @@ import org.bukkit.plugin.Plugin;
 
 import java.util.*;
 
-public class Smite extends AsyncCommand {
+public class SmiteCommand extends AsyncCommand {
 
     private final LocaleProvider locale = StickyCommands.getPlugin(StickyCommands.class).getLocaleProvider();
     TreeMap<String, String> variables = locale.newVariables();
-    private static final String PERMISSION_USE = "stickycommands.smite";
 
-    private static final float EXPLOSION_STRENGTH = 1.5F;
-    private static final int TARGET_RANGE = 100;
-
-    public Smite(Plugin owner) {
+    public SmiteCommand(Plugin owner) {
         super("smite", owner);
-        setPermission(PERMISSION_USE);
+        setPermission(Constants.SMITE_PERMISSION_USE);
         setDescription("Smite a player, block, or yourself...");
         setAliases(Arrays.asList("strike", "lightningify"));
         variables.put("syntax",
@@ -54,7 +52,7 @@ public class Smite extends AsyncCommand {
     @Override
     public ExitCode executeCommand(CommandSender sender, String commandLabel, String[] args) {
         // Should really be in some sort of util function
-        if (!sender.hasPermission(PERMISSION_USE))
+        if (!sender.hasPermission(Constants.SMITE_PERMISSION_USE))
             return ExitCode.EXIT_PERMISSION_DENIED.setMessage(locale.translate("no-permission", variables));
         Arguments a = new Arguments(args);
         a.optionalFlag("group", "group");
@@ -105,7 +103,7 @@ public class Smite extends AsyncCommand {
                         return ExitCode.EXIT_SUCCESS;
                     } else { // MUST be target
                         // TODO: Allow targetting an entity rather than a block
-                        Location toStrike = ((Player) sender).getTargetBlock(null, TARGET_RANGE).getLocation();
+                        Location toStrike = ((Player) sender).getTargetBlock(null, Constants.SMITE_TARGET_RANGE).getLocation();
                         World strikeWorld = ((Player) sender).getWorld();
                         variables.put("X", Integer.toString(toStrike.getBlockX()));
                         variables.put("Y", Integer.toString(toStrike.getBlockY()));
@@ -177,7 +175,7 @@ public class Smite extends AsyncCommand {
             public void run() {
                 LightningStrike strike = world.strikeLightning(location);
 
-                world.createExplosion(location, EXPLOSION_STRENGTH, false, false, strike);
+                world.createExplosion(location, Constants.SMITE_EXPLOSION_STRENGTH, false, false, strike);
             }
         }, 1L);
 

@@ -7,7 +7,8 @@ import com.dumbdogdiner.stickyapi.common.util.NumberUtil;
 import com.dumbdogdiner.stickycommands.StickyCommands;
 import com.dumbdogdiner.stickycommands.User;
 
-import com.dumbdogdiner.stickycommands.commands.Afk;
+import com.dumbdogdiner.stickycommands.commands.AfkCommand;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachmentInfo;
@@ -22,8 +23,8 @@ public class AfkTimeRunnable extends TimerTask {
             if (user.getAfkTime() >= AFK_TIMEOUT) {
                 var variables = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
                 if (!user.isAfk()) {
-                    Afk.setAFKAndBroadcast(user, true);
-                } else if (exceedsPermissionTime(user, user.getAfkTime() - AFK_TIMEOUT)) {
+                    AfkCommand.setAFKAndBroadcast(user, true);
+                } else if (exceedsPermittedTime(user, user.getAfkTime() - AFK_TIMEOUT)) {
                     variables.put("time", String.valueOf(user.getAfkTime() - AFK_TIMEOUT));
                     System.out.println(variables.get("time"));
                     Bukkit.getScheduler().scheduleSyncDelayedTask(StickyCommands.getInstance(), () -> Bukkit.getPlayer(user.getUniqueId()).kickPlayer(StickyCommands.getInstance().getLocaleProvider().translate("afk.afk-kick", variables)), 1L);
@@ -32,7 +33,7 @@ public class AfkTimeRunnable extends TimerTask {
         }
     }
 
-    private Boolean exceedsPermissionTime(User user, Integer time) {
+    private Boolean exceedsPermittedTime(User user, Integer time) {
         Player player = Bukkit.getPlayer(user.getUniqueId());
         if (player == null) {
             System.err.println("Error in exceedsPermissionTime: Player was null. Defaulting to false.");

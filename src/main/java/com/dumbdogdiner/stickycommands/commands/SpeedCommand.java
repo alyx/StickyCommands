@@ -5,7 +5,8 @@ import java.util.List;
 import java.util.TreeMap;
 
 import com.dumbdogdiner.stickycommands.StickyCommands;
-import com.dumbdogdiner.stickycommands.SpeedType;
+import com.dumbdogdiner.stickycommands.utils.Constants;
+import com.dumbdogdiner.stickycommands.utils.SpeedType;
 import com.dumbdogdiner.stickycommands.User;
 import com.dumbdogdiner.stickyapi.bukkit.command.AsyncCommand;
 import com.dumbdogdiner.stickyapi.bukkit.command.ExitCode;
@@ -16,13 +17,11 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-public class Speed extends AsyncCommand {
+public class SpeedCommand extends AsyncCommand {
     //TODO: Move constants to a config file
-    private static final float DEFAULT_WALKING_SPEED = 0.2f; // 0.1 is sneak, supposedly.
-    private static final float DEFAULT_FLYING_SPEED = 0.1f; // according to google
     LocaleProvider locale = StickyCommands.getInstance().getLocaleProvider();
     TreeMap<String, String> variables = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-    public Speed(Plugin owner) {
+    public SpeedCommand(Plugin owner) {
         super("speed", owner);
         setPermission("stickycommands.speed");
         setDescription("Change your fly or walk speed");
@@ -45,9 +44,9 @@ public class Speed extends AsyncCommand {
         variables.put("speed", a.exists("speed") ? a.get("speed") : "1");
         if(!a.exists("speed")){ // No argument provided, use the default
             if(flying) {
-                speed = DEFAULT_FLYING_SPEED;
+                speed = Constants.DEFAULT_FLYING_SPEED;
             } else {
-                speed = DEFAULT_WALKING_SPEED;
+                speed = Constants.DEFAULT_WALKING_SPEED;
             }
         } else if (!(a.get("speed").matches("\\d*\\.?\\d+"))) {
             return ExitCode.EXIT_INVALID_SYNTAX.setMessage(locale.translate("invalid-syntax", variables));

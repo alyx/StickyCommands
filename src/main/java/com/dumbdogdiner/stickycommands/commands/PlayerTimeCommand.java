@@ -14,12 +14,12 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-public class PlayerTime extends AsyncCommand {
+public class PlayerTimeCommand extends AsyncCommand {
 
     LocaleProvider locale = StickyCommands.getInstance().getLocaleProvider();
     TreeMap<String, String> variables = locale.newVariables();
 
-    public PlayerTime(Plugin owner) {
+    public PlayerTimeCommand(Plugin owner) {
         super("ptime", owner);
         setPermission("stickycommands.ptime");
         setDescription("Adjust player's client time.");

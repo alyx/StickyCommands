@@ -14,12 +14,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
-public class Worth extends AsyncCommand {
+public class WorthCommand extends AsyncCommand {
     static StickyCommands self = StickyCommands.getInstance();
     LocaleProvider locale = StickyCommands.getInstance().getLocaleProvider();
     TreeMap<String, String> variables = locale.newVariables();
     
-    public Worth(Plugin owner) {
+    public WorthCommand(Plugin owner) {
         super("worth", owner);
         setDescription("Check the worth of an item.");
         setPermission("stickycommands.worth");

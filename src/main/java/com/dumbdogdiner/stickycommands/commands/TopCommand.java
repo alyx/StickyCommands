@@ -14,11 +14,11 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-public class Top extends AsyncCommand {
+public class TopCommand extends AsyncCommand {
 
     LocaleProvider locale = StickyCommands.getInstance().getLocaleProvider();
     TreeMap<String, String> variables = locale.newVariables();
-    public Top(Plugin owner) {
+    public TopCommand(Plugin owner) {
         super("top", owner);
         setPermission("stickycommands.top");
         setDescription("Teleport to the highest block above you");

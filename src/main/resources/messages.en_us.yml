@@ -76,6 +76,8 @@ powertool:
   cleared: "{prefix}&bCleared your powertool!"
   assigned: "{prefix}&bPowertool created with command &f\"{COMMAND}\""
   cannot-bind-air: "{prefix}&cYou may not bind a command to your hand!"
+  toggled: "{prefix}&bYour powertool has been toggled {toggled|yesno:'&aOn,&cOff'}"
+  no-powertool: "{prefix}&cYou do not have a powertool to toggle!"
 
 player-time:
   time-reset: "{prefix}&bYour time has been synced with the server &f({time} ticks)&b!"
