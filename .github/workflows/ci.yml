@@ -21,7 +21,8 @@ jobs:
         echo "ghUser=${GITHUB_ACTOR}" >> ~/.gradle/gradle.properties
         echo "ghPass=${GITHUB_TOKEN}" >> ~/.gradle/gradle.properties
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_ACTOR: ${{ secrets.PACKAGES_GH_EMAIL }}
+        GITHUB_TOKEN: ${{ secrets.PACKAGES_GH_TOKEN }}
     - name: Build with Gradle
       run: ./gradlew build
     - name: Save build artifact
