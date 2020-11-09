@@ -6,7 +6,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath group: 'org.yaml', name: 'snakeyaml', version: '1.26'
+        classpath group: 'org.yaml', name: 'snakeyaml', version: '1.27'
     }
 }
 
