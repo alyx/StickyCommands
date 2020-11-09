@@ -58,8 +58,12 @@ public class SeenCommand extends AsyncCommand {
 
     @Override
     public @NotNull List<String> tabComplete(@NotNull CommandSender sender, @NotNull String alias, String[] args) {
+        List<String> players = PlayerUtils.Names.getAllPlayers();
         if (args.length < 2) {
-            return PlayerUtils.Names.getAllPlayers();
+            if(args.length >=1){
+                players.removeIf(str -> (!str.toLowerCase().contains(args[0].toLowerCase())));
+            }
+            return players;
         }
         return List.of();
     }
