@@ -15,6 +15,7 @@ import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,7 +82,7 @@ public class PowerToolCommand extends AsyncCommand {
     }
 
     @Override
-    public List<String> tabComplete(CommandSender sender, String alias, String[] args) {
+    public @NotNull List<String> tabComplete(CommandSender sender, String alias, String[] args) {
         var commands = new ArrayList<String>();
         if (args.length < 2) {
             commands.add("toggle");

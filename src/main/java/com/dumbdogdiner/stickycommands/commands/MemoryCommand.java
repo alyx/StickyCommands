@@ -1,22 +1,22 @@
 package com.dumbdogdiner.stickycommands.commands;
 
-import java.text.DecimalFormat;
-import java.util.Arrays;
-import java.util.List;
-import java.util.TreeMap;
-
-import com.dumbdogdiner.stickycommands.StickyCommands;
 import com.dumbdogdiner.stickyapi.bukkit.command.AsyncCommand;
 import com.dumbdogdiner.stickyapi.bukkit.command.ExitCode;
 import com.dumbdogdiner.stickyapi.bukkit.util.ServerUtil;
 import com.dumbdogdiner.stickyapi.common.translation.LocaleProvider;
-import com.dumbdogdiner.stickyapi.common.util.TimeUtil;
 import com.dumbdogdiner.stickyapi.common.util.StringUtil;
-
+import com.dumbdogdiner.stickyapi.common.util.TimeUtil;
+import com.dumbdogdiner.stickycommands.StickyCommands;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
+
+import java.text.DecimalFormat;
+import java.util.Arrays;
+import java.util.List;
+import java.util.TreeMap;
 
 public class MemoryCommand extends AsyncCommand {
     LocaleProvider locale = StickyCommands.getInstance().getLocaleProvider();
@@ -43,6 +43,7 @@ public class MemoryCommand extends AsyncCommand {
             var df = new DecimalFormat("0.0");
 
             // FIXME: Memory usage is always 0%
+            // TODO Use an external utility to get memory usage stuffs
             var max = Runtime.getRuntime().maxMemory() / 1024 / 1024;
             var used = Runtime.getRuntime().totalMemory() / 1024 / 1024 - Runtime.getRuntime().freeMemory() / 1024 / 1024;
             double usage = Double.parseDouble(df.format(((used / max) * 100)));
@@ -69,24 +70,24 @@ public class MemoryCommand extends AsyncCommand {
         return ExitCode.EXIT_SUCCESS;
     }
     @Override
-    public List<String> tabComplete(CommandSender sender, String alias, String[] args) {
-        return null;
+    public @NotNull List<String> tabComplete(@NotNull CommandSender sender, @NotNull String alias, String[] args) {
+        return List.of();
     }
 
     public String createBar(double size, double usage) {
         var barCount = ((usage / 100) * size);
-        var bar = "";
+        StringBuilder bar = new StringBuilder();
         for (var i = 0.0; i < size; i++) {
             if (i < barCount && size - i > 5)
-                bar += "\u0258";
+                bar.append("\u0258");
             else {
                 if (size - i == 5) {
-                    bar += usage + "%";
+                    bar.append(usage).append("%");
                     break;
                 }
-                bar += " "; // single space
+                bar.append(" "); // single space
             }
         }
-        return bar;
+        return bar.toString();
     }
 }

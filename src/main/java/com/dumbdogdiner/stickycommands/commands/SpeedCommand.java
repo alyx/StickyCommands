@@ -11,6 +11,7 @@ import com.dumbdogdiner.stickycommands.utils.SpeedType;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.List;
@@ -23,7 +24,7 @@ public class SpeedCommand extends AsyncCommand {
         super("speed", owner);
         setPermission("stickycommands.speed");
         setDescription("Change your fly or walk speed");
-        variables.put("syntax", "/speed [1-10]");
+        variables.put("syntax", "/speed [0-10]");
     }
     
     @Override
@@ -65,10 +66,10 @@ public class SpeedCommand extends AsyncCommand {
     }
 
     @Override
-    public List<String> tabComplete(CommandSender sender, String alias, String[] args) {
+    public @NotNull List<String> tabComplete(@NotNull CommandSender sender, @NotNull String alias, String[] args) {
         if (args.length < 2) {
             return Arrays.asList("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "0");
         }
-        return null;
+        return List.of();
     }
 }

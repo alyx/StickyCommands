@@ -42,11 +42,11 @@ public class WorthCommand extends AsyncCommand {
             }
             
             var worth = item.getWorth();
-            double percentage = 100.00;
+
             if(item.hasDurability()) {
                 double maxDur = item.getAsItemStack().getType().getMaxDurability();
-                double currDur = maxDur - item.getAsItemStack().getDurability(); 
-                percentage = Math.round((currDur / maxDur) * 100.00) / 100.00;
+                double currDur = maxDur - item.getAsItemStack().getDurability();
+                double percentage = Math.round((currDur / maxDur) * 100.00) / 100.00;
     
                 if((currDur / maxDur) < 0.4) {
                     worth = 0.0;

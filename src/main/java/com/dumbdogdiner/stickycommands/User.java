@@ -1,25 +1,21 @@
 package com.dumbdogdiner.stickycommands;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.UUID;
-
-
 import com.dumbdogdiner.stickyapi.common.cache.Cacheable;
 import com.dumbdogdiner.stickycommands.utils.Item;
 import com.dumbdogdiner.stickycommands.utils.PowerTool;
 import com.dumbdogdiner.stickycommands.utils.SpeedType;
-
+import lombok.Getter;
+import lombok.Setter;
 import me.xtomyserrax.StaffFacilities.SFAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 import org.jetbrains.annotations.NotNull;
 
-import lombok.Getter;
-import lombok.Setter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.UUID;
 
 //TODO Move to stickyapi
 
@@ -115,7 +111,7 @@ public class User implements Cacheable {
     @NotNull
     private ArrayList<Material> blockBuffer = new ArrayList<Material>();
 
-    public User(String username, UUID uniqueId) {
+    public User(@NotNull String username, @NotNull UUID uniqueId) {
         this.name = username;
         this.uniqueId = uniqueId;
     }
@@ -163,14 +159,17 @@ public class User implements Cacheable {
 
         if (type == SpeedType.WALK)
             speed = (speed + 0.1F > 1F) ? speed : speed + 0.1F;
+
+        Player p = getPlayer();
+        assert p != null;
                 
         switch(type) {
             case FLY:
-                Bukkit.getPlayer(this.uniqueId).setFlySpeed(speed);
+                p.setFlySpeed(speed);
                 StickyCommands.getInstance().getDatabase().setSpeed(this.uniqueId, speed, 1);
                 break;
             case WALK:
-                Bukkit.getPlayer(this.uniqueId).setWalkSpeed(speed);
+                p.setWalkSpeed(speed);
                 StickyCommands.getInstance().getDatabase().setSpeed(this.uniqueId, speed, 0);
                 break;
         }

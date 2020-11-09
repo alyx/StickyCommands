@@ -1,4 +1,16 @@
-//import com.github.jengelman.gradle.plugins.shadow.tasks.ConfigureShadowRelocation
+import org.yaml.snakeyaml.DumperOptions
+import org.yaml.snakeyaml.Yaml
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath group: 'org.yaml', name: 'snakeyaml', version: '1.26'
+    }
+}
+
+
 
 plugins {
     id "java"
@@ -7,8 +19,12 @@ plugins {
     id "io.freefair.lombok" version "5.3.0"
 }
 
+
+
+
 group = "com.dumbdogdiner"
-version = "3.3.0"
+version = "3.3.1"
+
 
 repositories {
     mavenCentral()
@@ -31,6 +47,9 @@ repositories {
             password "$ghPass"
         }
         url = "https://maven.pkg.github.com/DumbDogDiner/closedsource-package-mirror" }
+
+    //for testing stuff locally, do not remove plz
+    flatDir {dirs 'libs'}
 }
 
 dependencies {
@@ -46,18 +65,30 @@ dependencies {
     // plugin-specific deps
     compileOnly "com.github.MilkBowl:VaultAPI:1.7"
     compileOnly "me.clip:placeholderapi:2.10.6"
-    implementation "com.dumbdogdiner:stickyapi:1.4.6"
+    implementation "com.dumbdogdiner:stickyapi:1.5.0"
     compileOnly 'net.luckperms:api:5.2'
     compileOnly 'com.dumbdogdiner.closedsource-package-mirror:stafffacilities:4.8.4'
     //compileOnly 'me.xtomyserrax:StaffFacilities'
     //compile fileTree(dir: 'libs', include: '*.jar')
 }
 
+task config() {
+    def plugin = new Yaml().load( new File("src/main/resources/plugin.yml").newInputStream().getText() )
+
+    plugin.version = version
+
+    def yamlopts = new DumperOptions()
+    yamlopts.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+
+    new File("src/main/resources/plugin.yml").write(new Yaml(yamlopts).dump(plugin))
+}
+
+
 tasks.withType(JavaCompile) {
     options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
 }
 
-tasks.build.dependsOn tasks.shadowJar
+tasks.build.dependsOn tasks.shadowJar, config
 shadowJar {
     archiveClassifier.set("")
     project.configurations.implementation.canBeResolved = true

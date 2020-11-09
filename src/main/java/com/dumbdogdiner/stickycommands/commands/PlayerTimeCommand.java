@@ -1,18 +1,17 @@
 package com.dumbdogdiner.stickycommands.commands;
 
-import java.util.Arrays;
-import java.util.TreeMap;
-
 import com.dumbdogdiner.stickyapi.bukkit.command.AsyncCommand;
 import com.dumbdogdiner.stickyapi.bukkit.command.ExitCode;
 import com.dumbdogdiner.stickyapi.common.arguments.Arguments;
 import com.dumbdogdiner.stickyapi.common.translation.LocaleProvider;
 import com.dumbdogdiner.stickyapi.common.util.NumberUtil;
 import com.dumbdogdiner.stickycommands.StickyCommands;
-
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+
+import java.util.Arrays;
+import java.util.TreeMap;
 
 public class PlayerTimeCommand extends AsyncCommand {
 
@@ -37,11 +36,12 @@ public class PlayerTimeCommand extends AsyncCommand {
         variables.put("player_uuid", player.getUniqueId().toString());
         variables.put("time", String.valueOf(player.getWorld().getFullTime()));
         variables.put("time_hour", String.valueOf(player.getWorld().getTime()));
-        variables.put("world", String.valueOf(player.getWorld().getName()));
+        variables.put("world", player.getWorld().getName());
 
         Arguments a = new Arguments(args);
+        //TODO: In stickyapi, make a optionalFlag that has multiple possible names
         a.optionalString("time");
-        a.optionalFlag("relative", "relative");
+        a.optionalFlag("relative");
         variables.put("relative", String.valueOf(a.exists("relative")));
 
         String time = a.get("time");

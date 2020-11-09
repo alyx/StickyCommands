@@ -5,6 +5,10 @@ import org.bukkit.entity.Player;
 
 public class StickyCommandsPlaceholder extends PlaceholderExpansion {
     private static StickyCommandsPlaceholder INSTANCE;
+
+    /**
+     * Exists to defeat instantiation
+     */
     private StickyCommandsPlaceholder(){
 
     }

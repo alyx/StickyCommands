@@ -1,17 +1,15 @@
 package com.dumbdogdiner.stickycommands.runnables;
 
-import java.util.TimerTask;
-import java.util.TreeMap;
-
 import com.dumbdogdiner.stickyapi.common.util.NumberUtil;
 import com.dumbdogdiner.stickycommands.StickyCommands;
 import com.dumbdogdiner.stickycommands.User;
-
 import com.dumbdogdiner.stickycommands.commands.AfkCommand;
-
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachmentInfo;
+
+import java.util.TimerTask;
+import java.util.TreeMap;
 
 public class AfkTimeRunnable extends TimerTask {
     protected Integer AFK_TIMEOUT = StickyCommands.getInstance().getConfig().getInt("afk-timeout", 300);
@@ -39,6 +37,8 @@ public class AfkTimeRunnable extends TimerTask {
             System.err.println("Error in exceedsPermissionTime: Player was null. Defaulting to false.");
             return false;
         }
+        if(user.isHidden() || user.isVanished())
+            return false;
         for (PermissionAttachmentInfo permission : player.getEffectivePermissions()) {
             if (!permission.getPermission().contains("stickycommands.afk.autokick"))
                 continue; // We don't care about other permissions

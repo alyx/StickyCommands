@@ -1,17 +1,19 @@
 package com.dumbdogdiner.stickycommands.commands;
 
-import java.util.TreeMap;
-
-import com.dumbdogdiner.stickycommands.StickyCommands;
 import com.dumbdogdiner.stickyapi.bukkit.command.AsyncCommand;
 import com.dumbdogdiner.stickyapi.bukkit.command.ExitCode;
+import com.dumbdogdiner.stickyapi.bukkit.player.PlayerUtils;
 import com.dumbdogdiner.stickyapi.common.arguments.Arguments;
 import com.dumbdogdiner.stickyapi.common.translation.LocaleProvider;
 import com.dumbdogdiner.stickyapi.common.util.StringUtil;
-
+import com.dumbdogdiner.stickycommands.StickyCommands;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
+import java.util.TreeMap;
 
 public class SeenCommand extends AsyncCommand {
     private static LocaleProvider locale = StickyCommands.getInstance().getLocaleProvider();
@@ -51,5 +53,14 @@ public class SeenCommand extends AsyncCommand {
         sender.sendMessage(locale.translate("seen-message", userData));
 
         return ExitCode.EXIT_SUCCESS;
+    }
+
+
+    @Override
+    public @NotNull List<String> tabComplete(@NotNull CommandSender sender, @NotNull String alias, String[] args) {
+        if (args.length < 2) {
+            return PlayerUtils.Names.getAllPlayers();
+        }
+        return List.of();
     }
 }

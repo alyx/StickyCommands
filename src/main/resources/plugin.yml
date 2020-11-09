@@ -1,13 +1,13 @@
 name: StickyCommands
-version: 3.3.0
+version: 3.3.1
 main: com.dumbdogdiner.stickycommands.StickyCommands
 load: STARTUP
 authors:
-  - NotZachery
-  - aakatz3
+- NotZachery
+- aakatz3/Rodwuff
 softdepend:
-  - PlaceholderAPI
-  - Vault
-  - LuckPerms
-  - StaffFacilities
+- PlaceholderAPI
+- Vault
+- LuckPerms
+- StaffFacilities
 api-version: 1.16
