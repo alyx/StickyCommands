@@ -58,7 +58,9 @@ public class SeenCommand extends AsyncCommand {
 
     @Override
     public @NotNull List<String> tabComplete(@NotNull CommandSender sender, @NotNull String alias, String[] args) {
-        List<String> players = PlayerUtils.Names.getAllPlayers();
+        //List<String> players = PlayerUtils.Names.getAllPlayers();
+        //FIXME: The line above generates too much lag, needs to be cached. for now, lets just grab online players i guess
+        List<String> players = PlayerUtils.Names.getOnlinePlayers();
         if (args.length < 2) {
             if(args.length >=1){
                 players.removeIf(str -> (!str.toLowerCase().contains(args[0].toLowerCase())));
