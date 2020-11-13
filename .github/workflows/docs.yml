@@ -3,7 +3,7 @@ name: docs
 on:
   push:
     branches:
-      - master
+      - release
   release:
     # Type 'created' will be triggered when a NON-draft release is created and published.
     types: [created]
@@ -22,15 +22,6 @@ jobs:
           persist-credentials: false
       - name: Echo branch name
         run: echo ${GITHUB_REF##*/}
-      - name: Setup gradle.properties
-        run: |
-          mkdir -p ~/.gradle/
-          echo "GRADLE_USER_HOME=$HOME/.gradle" >> $GITHUB_ENV
-          echo "ghUser=${GITHUB_ACTOR}" >> ~/.gradle/gradle.properties
-          echo "ghPass=${GITHUB_TOKEN}" >> ~/.gradle/gradle.properties
-        env:
-          GITHUB_ACTOR: ${{ secrets.PACKAGES_GH_EMAIL }}
-          GITHUB_TOKEN: ${{ secrets.PACKAGES_GH_TOKEN }}
       - name: Build docs
         run: |
           ./gradlew javadoc
