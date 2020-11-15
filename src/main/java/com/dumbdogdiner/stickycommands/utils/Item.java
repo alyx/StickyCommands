@@ -28,12 +28,6 @@ public class Item {
     static DecimalFormat decimalFormat = new DecimalFormat("0.00"); // We don't want something like 25.3333333333, instead we want 25.33
     static File configFile;
     static FileConfiguration config;
-    private static String[] modifierPool = {
-        "white", "orange", "magenta", "lightblue", "yellow", "lime", "pink", "gray", "lightgray", "cyan", "purple", "blue", "brown", "green", "red", "black", "oak", "spruce", "birch", "jungle", "acacia", "darkoak"
-    };
-    private static String[] durItemPool = {
-        "helmet", "tunic", "chestplate", "leggings", "boots", "axe", "shovel", "sword", "hoe"
-    };
 
     @Getter
     private Material type;
@@ -70,7 +64,7 @@ public class Item {
         this.amount = is.getAmount();
         this.data = is.getData();
         this.itemMeta = is.getItemMeta();
-        this.name = StringUtil.capitaliseSentence(is.getType().toString().replace("_", " "));
+        this.name = StringUtil.capitaliseSentence(is.getType().toString());
         this.asItemStack = is;
     }
 
@@ -81,16 +75,8 @@ public class Item {
      * @return The worth of the ItemStack
      */
     public double getWorth(final ItemStack is) {
-        final var name = is.getType().toString().replace("_", "").toLowerCase();
+        final var name = is.getType().toString();
         final var worth = config.getDouble(name, 0.0);
-        if (worth == 0) {
-            for (final var s : modifierPool) {
-                if (name.startsWith(s)) {
-                    final var it = name.replace(s, "");
-                    return Double.valueOf(decimalFormat.format(config.getDouble(it)));
-                }
-            }
-        }
         if (!isSellable(is))
             return 0.0;
 
@@ -114,16 +100,8 @@ public class Item {
      * @return The worth of the ItemStack
      */
     public double getWorth() {
-        final var name = this.getType().toString().replace("_", "").toLowerCase();
+        final var name = this.getType().toString();
         final var worth = config.getDouble(name, 0.0);
-        if (worth == 0.0) {
-            for (final String s : modifierPool) {
-                if (name.startsWith(s)) {
-                    final String it = name.replace(s, "");
-                    return config.getDouble(it, 0.0);
-                }
-            }
-        }
         if (!sellable())
             return 0.0;
 
@@ -141,12 +119,7 @@ public class Item {
     }
 
     public boolean hasDurability() {
-        for(String s : durItemPool) {
-            if(getName().toLowerCase().endsWith(s)) {
-                return true;
-            }
-        }
-        return false;
+        return this.asItemStack.getDurability() > 0;
     } 
 
     public void sell(Player player, Boolean sellInventory, TreeMap<String, String> variables, Integer amount) {
@@ -157,12 +130,12 @@ public class Item {
         if (!sellInventory) {
             debug.print("Not selling inventory...");
             StickyCommands.getInstance().getEconomy().depositPlayer(player, getWorth() * amount);
-            debug.print("Depositted " + getWorth() * amount + " in " + player.getName() + "'s account");
+            debug.print("Deposited " + getWorth() * amount + " in " + player.getName() + "'s account");
             player.getInventory().getItemInMainHand().setAmount(0);
             debug.print("removed items");
         } else {
             StickyCommands.getInstance().getEconomy().depositPlayer(player, getWorth() * amount);
-            debug.print("Depositted " + getWorth() * amount + " in " + player.getName() + "'s account");
+            debug.print("Deposited " + getWorth() * amount + " in " + player.getName() + "'s account");
             debug.print("removing items...");
             consumeItem(player, amount, getType());
         }

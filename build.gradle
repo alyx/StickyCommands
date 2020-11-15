@@ -23,7 +23,7 @@ plugins {
 
 
 group = "com.dumbdogdiner"
-version = "3.3.1a"
+version = "3.3.2"
 
 
 repositories {
