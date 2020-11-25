@@ -42,11 +42,10 @@ public class MemoryCommand extends AsyncCommand {
             var player = (Player) sender;
             var df = new DecimalFormat("0.0");
 
-            // FIXME: Memory usage is always 0%
             // TODO Use an external utility to get memory usage stuffs
             var max = Runtime.getRuntime().maxMemory() / 1024 / 1024;
             var used = Runtime.getRuntime().totalMemory() / 1024 / 1024 - Runtime.getRuntime().freeMemory() / 1024 / 1024;
-            double usage = Double.parseDouble(df.format(((used / max) * 100)));
+            double usage = Double.parseDouble(df.format((((float)used / max) * 100)));
             char color = usage < 60 ? 'a' : (usage < 85 ? 'e' : 'c');
             
             double[] tps = ServerUtil.getRecentTps();
